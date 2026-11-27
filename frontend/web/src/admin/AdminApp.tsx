@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Pastry, WhiskMark } from '../art/art';
+import { Backdrop, Pastry, WhiskMark } from '../art/art';
 import { IS_MOCK, asApiError, pad2, request, type ApiError } from '../shared/api';
 import type { AdminDetail, AdminList, AdminSlot, RevisionSummary } from '../shared/types';
 import { Announcer, Awning, Icon, MockBadge, Notice } from '../shared/ui';
@@ -215,6 +215,7 @@ export function AdminApp() {
           </section>
         </div>
       </main>
+      <Backdrop />
       <Announcer text={announcement} />
     </div>
   );

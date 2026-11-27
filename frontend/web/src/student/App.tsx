@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { TeaPour, TeacupMark } from '../art/art';
+import { Backdrop, TeaPour, TeacupMark } from '../art/art';
 import { IS_MOCK, asApiError, pad2, request, type ApiError } from '../shared/api';
 import type { AttemptResponse, CatalogExam, SubmissionResponse } from '../shared/types';
 import { Announcer, Awning, Icon, MockBadge, Notice } from '../shared/ui';
@@ -291,6 +291,7 @@ export function App() {
           </motion.div>
         </AnimatePresence>
       </main>
+      <Backdrop />
       <Announcer text={announcement} />
     </div>
   );

@@ -29,6 +29,15 @@ Buttons put cocoa text on the pastel fill instead of white text, because white o
 - **Nunito** (400–800) for body text.
 - Both are self-hosted woff2 from `@fontsource` (SIL OFL 1.1). Only the latin, latin-ext and vietnamese subsets ship (`web/src/shared/fonts.css`).
 
+## Illustration style
+
+Soft sticker style, inspired by kawaii strawberry-dessert sticker sheets (reference image from the product owner; nothing is traced or copied):
+
+- Outlines are a deeper shade of the shape they surround (berry red, crust brown, mint, pink), never black or cocoa.
+- A light SVG turbulence filter (`Sheet` in `art.tsx`) makes lines wobble like a hand drawing.
+- Strawberries carry seeds, mint leaves and a white highlight. Cream is white with a soft pink outline. Sparkles (`Spark`) sit around each drawing.
+- The page ground is pink grid paper, with a few faint sparkles and berries fixed behind the content (`Backdrop`).
+
 ## Shapes and motion
 
 - Radii are soft everywhere: `rounded-blob` (2rem) for plates, `rounded-pill` for buttons and chips.

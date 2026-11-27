@@ -135,8 +135,8 @@ function PastryCard({ exam, index, onStart }: { exam: CatalogExam; index: number
       onClick={() => onStart(exam)}
       className="plate group flex w-full flex-col p-3 text-left transition-[transform,box-shadow] duration-200 enabled:hover:-translate-y-1 enabled:hover:shadow-lift enabled:active:translate-y-0 disabled:cursor-not-allowed disabled:bg-cream-soft"
     >
-      <span className="relative block rounded-[1.4rem] bg-cream-soft px-2 pt-3 group-enabled:group-hover:bg-blush-soft">
-        <Pastry index={index} covered={!exam.available} className="mx-auto h-24 w-full transition-transform duration-300 group-enabled:group-hover:-rotate-3 group-enabled:group-hover:scale-105" />
+      <span className="relative block rounded-[1.4rem] bg-cream-soft/70 px-1 pt-5 group-enabled:group-hover:bg-blush-soft">
+        <Pastry index={index} covered={!exam.available} className="mx-auto h-32 w-full transition-transform duration-300 group-enabled:group-hover:-rotate-3 group-enabled:group-hover:scale-105" />
         <span className="absolute left-2 top-2 rounded-pill bg-white px-2.5 py-0.5 font-display text-sm font-bold ring-2 ring-cocoa-line">Slide {n}</span>
       </span>
       <span className="mt-3 block px-1 font-display text-[1.05rem] font-bold leading-snug">{exam.title}</span>
