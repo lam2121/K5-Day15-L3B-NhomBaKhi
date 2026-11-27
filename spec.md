@@ -6,23 +6,28 @@
 
 ## §0. Hiện tại việc này diễn ra thế nào *(guide 1.1)*
 
-Theo giả thuyết trong [Canvas](canvas.md), học viên mở slide theo buổi, tự tìm phần trọng tâm, tìm câu hỏi để tự kiểm rồi dò lại slide khi chưa chắc. Nhóm sẽ đối chiếu từng bước với người học và ghi công cụ họ đang dùng trong [tổng hợp bằng chứng](evidence/summary.md).
+Trong 14 học viên từng ôn bằng slide, 13 người đọc lại slide và 12 người dùng ChatGPT hoặc công cụ AI khác trong lúc ôn. Sau đó 7 người nhờ AI tạo câu hỏi, 5 làm câu hỏi có sẵn của khóa và 6 không tự kiểm tra. Đây là các lựa chọn có thể trùng nhau. Ở lần gần nhất, 8/14 chỉ làm xong một phần và 6/14 bỏ dở. [Tổng hợp bằng chứng CP3](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/blob/7520b52ee813c42e3e067c4673e35a4e7d6f8bd4/evidence/summary.md).
+
+P2 lướt slide để tìm kiến thức áp dụng vào lab rồi nhờ AI giải thích chỗ khó. P3 tra lại nội dung cần cho hackathon và bỏ dở khi chưa tìm thấy. P4 nhờ AI giải thích thuật ngữ trong lúc ôn lại bài nhưng vẫn thấy mơ hồ. [P2](evidence/interviews/P2.md) · [P3](evidence/interviews/P3.md) · [P4](evidence/interviews/P4.md).
 
 ## §1. Người dùng & bằng chứng *(guide 1.1, 1.2)*
 
 - **Người học chính** là học viên L3 đang ôn thi giữa kỳ. Họ muốn tự kiểm tra mức hiểu trước kỳ thi.
-- **Pain giả thuyết.** Khi kiến thức rải qua nhiều buổi, học viên khó chọn nội dung cần ôn, mất thời gian tìm câu tự kiểm và dò lại nguồn.
-- **Bằng chứng cần chốt.** Ghi số người gặp, thời gian và hành vi quan sát được vào [tổng hợp bằng chứng](evidence/summary.md). Dữ liệu pre-class nếu dùng chỉ bổ trợ tín hiệu hành vi trên pre-class. Kết luận về ôn giữa kỳ cần đối chiếu với lời kể hoặc khảo sát.
+- **Chỗ vướng.** Trong khảo sát 21 học viên ngoài nhóm, 14 từng mở lại slide để ôn. Trong 14 người đó, 12 gặp slide khó tự hiểu và 8 mất từ một giờ trở lên ở lần ôn gần nhất. [Kết quả khảo sát](evidence/survey/results.csv).
+- **Kiểm chéo.** Bốn người được phỏng vấn đều ngoài nhóm. Ba người kể lại một lần ôn slide và đều gặp khó khi tìm trọng tâm hoặc hiểu nội dung. P2 mất khoảng 15 phút tìm phần cần để làm lab. P3 tìm khoảng 10 phút rồi bỏ dở. P4 dành hơn một giờ cho một buổi và ước ôn được khoảng 30% nội dung. [Phỏng vấn P1–P4](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/tree/d41a9f0413420fa299fdacd2a8e93648e0775950/evidence/interviews).
+- **Kết luận CP3.** Giả thuyết đúng một phần. Có căn cứ cho khó khăn khi tìm, hiểu và tự kiểm sau khi ôn. Trong khảo sát, 8/14 chỉ ôn một ngày học ở lần gần nhất. Các ví dụ phỏng vấn là ôn để làm lab, làm hackathon hoặc ôn lại sau buổi học. Mức độ khó khi ôn giữa kỳ qua nhiều ngày học còn cần đo riêng. [Đối chiếu bằng chứng](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/blob/7520b52ee813c42e3e067c4673e35a4e7d6f8bd4/evidence/summary.md).
 
 ## §2. Impact & quyết định chọn *(guide 1.3)*
 
-| Hướng | Việc học viên hoàn thành | Căn cứ cần kiểm |
+| Hướng | Việc học viên hoàn thành | Căn cứ từ khảo sát hoặc phỏng vấn |
 |---|---|---|
-| Tóm tắt từng buổi | Tìm kiến thức trọng tâm | Thời gian đọc lại slide và mức thường gặp |
-| Tra nguồn theo chủ đề | Mở đúng phần cần ôn | Số lần dò trang và thời gian mỗi lần |
-| Làm đề có căn cứ | Tự kiểm theo một buổi hoặc cả kỳ | Số lượt tự ôn, số phút tạo/tìm câu hỏi và dò đáp án |
+| Tóm tắt từng buổi | Tìm kiến thức trọng tâm | 12/14 người từng ôn gặp slide khó tự hiểu. |
+| Tra nguồn theo chủ đề | Mở đúng phần cần ôn | P2 và P3 mất khoảng 10–15 phút tìm nội dung cần dùng. |
+| Làm đề có căn cứ | Tự kiểm theo một buổi hoặc nhiều ngày | 7/14 từng nhờ AI tạo câu hỏi và 6/14 không tự kiểm tra. |
 
-Nhóm chọn đề ôn có căn cứ vì 7/14 người từng ôn bằng slide đã nhờ công cụ AI tạo câu hỏi, còn 6/14 chưa tự kiểm tra sau khi ôn. Phạm vi theo chủ đề hoặc khoảng ngày phù hợp với ghi nhận 8/14 người chỉ ôn một ngày học ở lần gần nhất. Nhóm sẽ đo tiếp thời gian tiết kiệm được theo lượt để tính impact. [Số liệu khảo sát](evidence/summary.md).
+Nhóm chọn đề ôn có căn cứ để học viên tự kiểm và mở đúng trang nguồn khi cần đối chiếu. Phạm vi theo chủ đề hoặc khoảng ngày phù hợp với lần ôn ngắn và vẫn hỗ trợ ôn tổng hợp.
+
+**Impact ước tính.** Kịch bản cơ sở dùng khoảng 470 người, 5,16 lượt ôn mỗi người mỗi tháng và giả định tiết kiệm 15 phút mỗi lượt. Tích số là khoảng 77 phút/người/tháng hoặc 610 giờ/tháng cho cả kịch bản cơ sở. Số 470 lấy mốc gần đúng 700 học viên L3 nhân với 14/21 người từng ôn bằng slide rồi làm tròn. Số lượt lấy từ tần suất khảo sát, kết hợp giả định của persona. Mức tiết kiệm 15 phút là ước tính của nhóm, chờ đo bằng dùng thử. [Ước tính và nguồn từng thừa số](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/blob/7520b52ee813c42e3e067c4673e35a4e7d6f8bd4/evidence/summary.md).
 
 ## §3. Giải pháp tương tự *(guide 2.1)*
 
@@ -150,6 +155,7 @@ Mỗi người sửa file thuộc vai của mình và bàn giao thay đổi file
 | Thời điểm | Đổi gì | Vì sao (trỏ về câu thử / lỗi / bằng chứng nào) |
 |---|---|---|
 | 27/11 · 23:07 | Xác nhận adapter Claude và ghi lượt đo chính thức trên bản tích hợp `2567816`. | T012 và T017 cần usage thật và một mốc đánh giá trên 24 ca. [CSV lượt 1](eval/run-1.csv) · [Trace lượt 1](traces/run-1.jsonl). |
+| 27/11 · 23:37 | Tổng hợp khảo sát, P1–P4 và ghi impact ước tính vào §0–§2. | T016 chốt bằng chứng CP3 và giới hạn của dữ liệu hiện có. [Tổng hợp bằng chứng CP3](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/blob/7520b52ee813c42e3e067c4673e35a4e7d6f8bd4/evidence/summary.md). |
 
 **Sau CP4 (đến 23:59 Thứ Bảy 28/11)** (sửa theo góp ý — không sửa chuẩn "đạt", câu thử, số bằng chứng, kết quả các lượt đã chạy)
 
