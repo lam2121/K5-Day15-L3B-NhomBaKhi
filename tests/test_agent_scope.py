@@ -52,5 +52,8 @@ class ScopeTests(unittest.TestCase):
         for role in ("lam", "hung", "khiem", "phuoc-anh"):
             self.assertFalse(is_owned(role, "run.py"))
             self.assertEqual(is_owned(role, ".github/workflows/ci.yml"), role == "lam")
+            self.assertEqual(is_owned(role, "backend/app.py"), role == "lam")
+            self.assertEqual(is_owned(role, "deploy/README.md"), role == "lam")
+            self.assertEqual(is_owned(role, "frontend/admin/index.html"), role == "phuoc-anh")
             self.assertEqual(is_owned(role, "eval/run-1.csv"), role == "lam")
             self.assertEqual(is_owned(role, "cost/simulate-1-summary.md"), role == "lam")
