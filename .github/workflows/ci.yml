@@ -1,0 +1,106 @@
+name: CramAI CI/CD
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, lam]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cramai-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    name: Tests (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: '3.10'
+          - os: windows-latest
+            python: '3.12'
+    env:
+      MODEL_PROVIDER: fake
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install project dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Show benchmark, metrics and team diagnostics
+        run: python run.py check
+      - name: Verify evaluation runner offline
+        run: python run.py eval --fake
+
+  scope:
+    name: Role scope
+    if: github.event_name == 'pull_request' && (github.head_ref == 'lam' || startsWith(github.head_ref, 'cramai/'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PR_BRANCH: ${{ github.head_ref }}
+      PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Check role ownership
+        shell: bash
+        run: |
+          case "$PR_BRANCH" in
+            lam|cramai/lam-integration) role=lam ;;
+            cramai/hung-workflow) role=hung ;;
+            cramai/khiem-data) role=khiem ;;
+            cramai/phuoc-anh-product) role=phuoc-anh ;;
+            *) echo "Unknown CramAI role branch. See docs/agents.md." >&2; exit 1 ;;
+          esac
+          python3 scripts/check_agent_scope.py --role "$role" --base "$PR_BASE_SHA"
+
+  package:
+    name: Package repository snapshot
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build ZIP and checksum
+        shell: bash
+        run: |
+          ignored="$(git ls-files --cached --ignored --exclude-standard)"
+          if [[ -n "$ignored" ]]; then
+            echo "A tracked file matches the repository's ignore rules. Review before packaging." >&2
+            exit 1
+          fi
+
+          mkdir -p "$RUNNER_TEMP/cramai-artifact"
+          git archive --format=zip --prefix=CramAI/ --output="$RUNNER_TEMP/cramai-artifact/cramai.zip" HEAD
+          cd "$RUNNER_TEMP/cramai-artifact"
+          unzip -tq cramai.zip
+          sha256sum cramai.zip > cramai.zip.sha256
+      - name: Upload snapshot
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: cramai-${{ github.sha }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/cramai-artifact/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0

@@ -6,7 +6,7 @@ README của nhóm có mục "Dùng AI vào việc gì" (2–3 dòng, bắt bu�
 
 | Việc | Công cụ AI | AI làm gì | Người kiểm/sửa gì | Ai phụ trách |
 |---|---|---|---|---|
-| Code bản chạy thử | | | | |
+| Adapter model và kiểm thử | Codex | Viết kết nối Gemini/OpenAI, chuẩn hoá usage và thêm kiểm thử phản hồi HTTP giả lập | Lâm review cách lấy token, giữ thông tin xác thực cục bộ và xác minh bằng một cuộc gọi thật trước lượt chính thức | Lâm |
 | Prompt / thiết kế lời gọi mô hình | | | | |
 | Đào data (viết script đếm, gợi ý nhãn) | | | Kiểm tay __ dòng, khớp __ | |
 | Rà câu hỏi phỏng vấn / khảo sát | | Chỉ rà câu dẫn dắt | | |
