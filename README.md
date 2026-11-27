@@ -97,7 +97,7 @@ Nhóm dùng stack khác (Node, Streamlit, notebook…): sửa hàm `run_app()` t
 
 | Thành phần | Thật / Giả | Ghi chú |
 |---|---|---|
-| Lời gọi AI ở quyết định trung tâm | Giả trong cấu hình mặc định | Adapter hỗ trợ Gemini và OpenAI. CP3 cần model thật đã xác minh usage. |
+| Lời gọi AI ở quyết định trung tâm | Giả trong cấu hình mặc định | Adapter hỗ trợ Gemini, OpenAI và Claude. CP3 cần model thật đã xác minh usage. |
 |  |  |  |
 
 ## Dùng AI vào việc gì

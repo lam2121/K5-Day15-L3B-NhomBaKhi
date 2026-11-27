@@ -106,6 +106,35 @@ def _call_gemini(system: str, user: str) -> ModelResponse:
     }
 
 
+def _call_anthropic(system: str, user: str) -> ModelResponse:
+    body = {
+        "model": MODEL_NAME,
+        "max_tokens": 8192,
+        "messages": [{"role": "user", "content": user}],
+    }
+    if system:
+        body["system"] = system
+    payload = _post_json(
+        "https://api.anthropic.com/v1/messages",
+        {"Authorization": f"Bearer {API_KEY}", "anthropic-version": "2026-10-21"},
+        body,
+    )
+    if payload.get("stop_reason") != "end_turn":
+        raise RuntimeError("anthropic: phản hồi bị chặn, thiếu nội dung hoặc chưa hoàn tất.")
+
+    usage = payload.get("usage") or {}
+    input_tokens = _tokens(usage.get("input_tokens"), "input_tokens")
+    for field in ("cache_creation_input_tokens", "cache_read_input_tokens"):
+        if usage.get(field) is not None:
+            input_tokens += _tokens(usage[field], field)
+    return {
+        "text": "".join(block["text"] for block in (payload.get("content") or []) if block.get("type") == "text"),
+        "model": payload.get("model") or MODEL_NAME,
+        "tokens_in": input_tokens,
+        "tokens_out": _tokens(usage.get("output_tokens"), "output_tokens"),
+    }
+
+
 @model_call
 def call_model(system: str, user: str) -> ModelResponse:
     """Return model text and measured usage. Technical errors reach the runner."""
@@ -113,9 +142,9 @@ def call_model(system: str, user: str) -> ModelResponse:
         last = (user.strip().splitlines() or [""])[-1]
         return {"text": "[câu trả lời giả — chưa nối model] " + last[:60], "model": "fake", "tokens_in": 0, "tokens_out": 0}
 
-    providers = {"openai": _call_openai, "gemini": _call_gemini}
+    providers = {"openai": _call_openai, "gemini": _call_gemini, "anthropic": _call_anthropic}
     if MODEL_PROVIDER not in providers:
-        raise RuntimeError("MODEL_PROVIDER phải là fake, openai hoặc gemini.")
+        raise RuntimeError("MODEL_PROVIDER phải là fake, openai, gemini hoặc anthropic.")
     if not MODEL_NAME or not API_KEY:
         raise RuntimeError(f"{MODEL_PROVIDER}: cần MODEL_NAME và API_KEY trong .env.")
 
