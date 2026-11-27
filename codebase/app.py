@@ -50,8 +50,16 @@ def render_question(question: dict, review: str | None = None, show_review: bool
     head = f'{question["question_id"]} · {DIFFICULTY_LABELS.get(question["difficulty"], question["difficulty"])}'
     if show_review:
         head += f" · {REVIEW_LABELS.get(review, review)}"
-    sources = "; ".join(f'{c["file_name"]}, trang {c["page"]} [{c["source_id"]}]' for c in question["citations"])
+    sources = "; ".join(f'{_day_label(c["source_id"])}{c["file_name"]}, trang {c["page"]} [{c["source_id"]}]' for c in question["citations"])
     return f'{head}\n{question["prompt"].strip()}\nĐáp án: {question["answer"].strip()}\nNguồn: {sources}'
+
+
+def _day_label(source_id: str) -> str:
+    """'day03-p074-s01' → 'Ngày 3 · '. Ngày học lấy từ mã đoạn của corpus, vì tên file gốc có thể ghi khác (vd. day04)."""
+    prefix = source_id.split("-", 1)[0]
+    if prefix.startswith("day") and prefix[3:].isdigit():
+        return f"Ngày {int(prefix[3:])} · "
+    return ""
 
 
 def render_result(result: dict, reviews: dict | None = None) -> str:

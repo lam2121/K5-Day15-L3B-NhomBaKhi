@@ -79,3 +79,14 @@ P4 chưa biết lời giải thích của AI có đúng không. Các cuộc ph�
 - **Mỗi người:** 5,16 × 15 ≈ 77 phút/tháng (≈1,3 giờ) *(tự ước tính theo thừa số trên)*.
 - **Toàn khoá:** thấp 300 × 77 ≈ 390 giờ · cơ sở 470 × 77 ≈ 610 giờ · cao 700 × 77 ≈ 900 giờ/tháng.
 - Thừa số yếu nhất là 15 phút tiết kiệm. Cần đo bằng phỏng vấn hoặc buổi dùng thử (`validation/log.md`) trước CP4.
+
+## 8. Bàn giao cho `spec.md` §0–§2 (Lâm dán vào)
+
+**§0. Hiện tại việc này diễn ra thế nào.** 13/14 người từng ôn bằng slide đọc lại slide và 12/14 hỏi ChatGPT hoặc công cụ AI khác trong lúc ôn. Sau khi ôn, 7/14 nhờ AI ra câu hỏi tự kiểm, 5/14 làm câu hỏi có sẵn của khoá và 6/14 không kiểm tra. Lần ôn gần nhất có 0/14 người ôn xong hẳn. Phỏng vấn cho thấy học viên mất khoảng 10–15 phút để tìm đúng nội dung trong slide (P2, P3), P3 bỏ dở và P4 ôn hơn một giờ được khoảng 30% bài. Câu hỏi do AI tạo có bám đúng slide hay không và mất bao lâu để dò lại: chưa kiểm. [Tổng hợp bằng chứng](evidence/summary.md).
+
+**§1. Người dùng và bằng chứng.**
+- **Người học chính** là học viên L3 ôn lại kiến thức từ slide để tự kiểm tra mức hiểu, trước lab, hackathon hoặc giữa kỳ.
+- **Pain đã kiểm.** Khảo sát 21 học viên L3A/L3B ngoài nhóm: 14/21 từng mở lại slide để ôn; trong 14 người này, 12/14 gặp slide không tự hiểu hết, 8/14 ôn từ 1 giờ trở lên và 6/14 bỏ dở. Phỏng vấn 4 học viên ngoài nhóm: 3/4 kể lại một lần ôn bằng slide và cả 3 gặp khó khi tìm trọng tâm hoặc hiểu nội dung. Trích: "slide nhiều quá tìm lâu" (phiếu 17), "mất rất nhiều thời gian khoảng 10 phút xong lại bỏ ngang vì không tìm được thông tin cần thiết" (P3).
+- **Giới hạn.** 8/14 người chỉ ôn một ngày học ở lần gần nhất, nên pain "ôn nhiều ngày" chưa được chứng minh riêng. Nhóm chưa dùng log pre-class làm nguồn.
+
+**§2. Impact và quyết định chọn.** Giả thuyết đúng một phần. Nhóm giữ hướng đề ôn có căn cứ vì 7/14 người đã tự nhờ AI ra câu hỏi và 6/14 không tự kiểm tra; CramAI thêm đáp án kèm file và trang để học viên dò lại được. Impact ước tính khoảng 77 phút mỗi người mỗi tháng (5,16 lần ôn × 15 phút tiết kiệm), tức khoảng 610 giờ mỗi tháng ở kịch bản cơ sở 470 người. Thừa số 15 phút là *(tự ước tính)*, chưa đo. [Mục 7](evidence/summary.md#7-impact-tháng-cho-specmd-2-và-costpersonasyaml).
