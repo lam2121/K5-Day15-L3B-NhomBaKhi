@@ -10,7 +10,8 @@
 # Mã đoạn bắt đầu bằng tiền tố ngày dayNN (vd day03-...), dùng để biết câu hỏi lấy từ ngày nào.
 # Output không có khối qNN nào = phản hồi không ra đề (hỏi lại, thiếu căn cứ, ngoài phạm vi).
 # Hai kiểu yêu cầu: ôn theo chủ đề (một khái niệm / một buổi) và ôn tổng hợp (nhiều ngày).
-# Câu hỏi gồm trắc nghiệm (có các phương án A, B, C, D trong đề bài) và tự luận ngắn.
+# Mọi câu hỏi đều là trắc nghiệm: đề bài có đủ bốn phương án A, B, C, D, dòng Đáp án ghi một chữ cái.
+# Không sinh câu tự luận (quyết định 27/11, trước CP2).
 # Nhãn độ khó (Dễ / Vừa / Khó) vẫn có trong output theo hợp đồng v1 nhưng KHÔNG được chấm:
 # nhóm tạm bỏ qua độ khó trong lát cắt này (quyết định 27/11, trước CP2).
 
@@ -21,7 +22,7 @@ metrics:
     threshold: "100% câu thử có ra đề"
     why: "Học viên dùng số trang để mở lại slide kiểm chứng và sửa câu sai trước kỳ thi; trích sai trang làm mất đúng khả năng kiểm chứng đó (pain: tốn giờ đọc lại slide, canvas.md dòng 3 và 6)."
   - name: "dap_an_co_can_cu"
-    definition: "Người chấm đọc nội dung đoạn được trích (lấy text từ trace) cho từng khối qNN. Khối đạt khi đáp án đúng và mọi ý chính của đáp án đều đọc ra được từ đoạn trích, không thêm kiến thức ngoài đoạn. Câu trắc nghiệm còn phải có đúng một phương án đúng theo đoạn trích. Slide chỉ ghi gạch đầu dòng gợi ý giảng mà không có nội dung trả lời thì không được dùng làm căn cứ cho đáp án. Tỉ lệ = số khối đạt / tổng số khối qNN trên các câu thử thuong và kho có ra đề."
+    definition: "Người chấm đọc nội dung đoạn được trích (lấy text từ trace) cho từng khối qNN. Khối đạt khi đáp án đúng và mọi ý chính của đáp án đều đọc ra được từ đoạn trích, không thêm kiến thức ngoài đoạn. Khối phải là câu trắc nghiệm có đủ bốn phương án A, B, C, D và đúng một phương án đúng theo đoạn trích; khối tự luận hoặc thiếu phương án tính là không đạt. Slide chỉ ghi gạch đầu dòng gợi ý giảng mà không có nội dung trả lời thì không được dùng làm căn cứ cho đáp án. Tỉ lệ = số khối đạt / tổng số khối qNN trên các câu thử thuong và kho có ra đề."
     grader: "nguoi"
     threshold: "≥ 90% khối câu hỏi"
     why: "Nhiều slide chỉ là dàn ý cho giảng viên, nên model dễ tự điền kiến thức ngoài slide; đáp án bịa hoặc lệch slide khiến học viên học sai và mất điểm thi thật (canvas.md dòng 6)."
