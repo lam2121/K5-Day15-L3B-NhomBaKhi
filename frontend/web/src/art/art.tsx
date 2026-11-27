@@ -182,26 +182,159 @@ function Donut() {
   );
 }
 
-const SHAPES = [ShortcakeSlice, Macaron, Cupcake, BigBerry, Parfait, Donut, MilkCarton];
+function RollCake() {
+  return (
+    <g>
+      <Plate rx={38} />
+      <path d="M30 46h52v32H30z" fill={F.cream} {...line(L.crust)} />
+      <path d="M30 46c-9 0-14 7-14 16s5 16 14 16" fill={F.apricot} {...line(L.crust)} />
+      <ellipse cx="30" cy="62" rx="14" ry="16" fill={F.cream} {...line(L.crust)} />
+      <path d="M30 62c0-4 6-4 6 0 0 6-10 7-11 0-1-8 13-10 15-1 2 10-14 14-18 4" fill="none" stroke={F.white} strokeWidth="4" strokeLinecap="round" />
+      <path d="M30 62c0-4 6-4 6 0 0 6-10 7-11 0-1-8 13-10 15-1 2 10-14 14-18 4" fill="none" {...line(L.soft, 1.4)} />
+      <circle cx="31" cy="62" r="3.2" fill={F.berry} {...line(L.berry, 1.2)} />
+      <path d="M38 44c2-5 7-5 9-1 2-5 8-5 10 0 2-5 8-5 10 0 2-4 7-4 9 1" fill={F.white} {...line(L.soft, 2)} />
+      <Berry x={52} y={36} s={0.55} />
+      <Berry x={72} y={37} s={0.5} />
+      <Spark x={104} y={34} r={4} />
+    </g>
+  );
+}
+
+function Pudding() {
+  return (
+    <g>
+      <Plate rx={36} />
+      <path d="M40 40h40l10 40c0 3-2 5-5 5H35c-3 0-5-2-5-5z" fill={F.apricot} {...line(L.crust)} />
+      <path d="M40 40h40l3 11c-3 5-6 0-9 4-3 5-7-1-10 3-4 4-7-2-10 2-3 3-6-2-9 0-3 1-5-2-6-5z" fill="#C98C66" {...line(L.crust)} />
+      <path d="M46 58c-1 8-2 16-3 22" stroke={F.white} strokeWidth="3.5" strokeLinecap="round" opacity=".7" />
+      <path d="M44 38c0-5 6-7 9-4 2-5 10-6 13-1 4-3 10-1 10 5z" fill={F.white} {...line(L.soft, 2)} />
+      <Berry x={60} y={26} s={0.7} />
+      <Spark x={98} y={44} r={4} />
+      <Spark x={20} y={50} r={3} color={F.blush} />
+    </g>
+  );
+}
+
+function IceCream() {
+  return (
+    <g>
+      <Plate rx={22} y={88} />
+      <path d="M46 50h28L61 88c-.4 1.2-1.6 1.2-2 0z" fill={F.apricot} {...line(L.crust)} />
+      <path d="M50 58l18 14M54 70l10 8M70 58 52 72M66 70l-10 8" {...line(L.crust, 1.4)} />
+      <path d="M42 50c-4 0-5-5-2-7-2-6 3-11 9-9 1-6 9-9 14-5 5-3 12 0 12 6 6 0 8 6 5 10 2 3 0 6-3 5z" fill={F.blush} {...line(L.pink)} />
+      <path d="M48 46c4 2 9 2 14 0" fill="none" {...line(L.pink, 1.6)} />
+      <ellipse cx="52" cy="36" rx="4" ry="2" fill={F.white} opacity=".75" transform="rotate(-20 52 36)" />
+      <Berry x={62} y={22} s={0.65} />
+      <path d="M76 34l12-14" {...line(L.mint, 3)} />
+      <Spark x={92} y={44} r={4} />
+      <Spark x={28} y={30} r={3} color={F.apricot} />
+    </g>
+  );
+}
+
+function Daifuku() {
+  return (
+    <g>
+      <Plate rx={36} />
+      <path d="M24 74c0-22 16-36 36-36s36 14 36 36c0 6-16 9-36 9s-36-3-36-9z" fill={F.white} {...line(L.soft)} />
+      <path d="M60 46c10 0 18 8 18 18 0 6-8 10-18 10s-18-4-18-10c0-10 8-18 18-18z" fill={F.blushSoft} opacity=".9" />
+      <Berry x={60} y={60} s={0.95} />
+      <path d="M38 54c2-6 6-10 12-12" stroke={F.blushSoft} strokeWidth="4" strokeLinecap="round" fill="none" />
+      <circle cx="36" cy="70" r="3" fill={F.blush} opacity=".8" />
+      <circle cx="84" cy="70" r="3" fill={F.blush} opacity=".8" />
+      <Spark x={100} y={36} r={4} />
+    </g>
+  );
+}
+
+function Tart() {
+  return (
+    <g>
+      <Plate rx={42} />
+      <path d="M18 58h84l-6 22c-1 3-3 4-6 4H30c-3 0-5-1-6-4z" fill={F.apricot} {...line(L.crust)} />
+      <path d="M26 60l3 20M38 60l2 22M50 60l1 22M62 60v22M74 60l-1 22M86 60l-2 22M98 60l-3 18" {...line(L.crust, 1.2)} opacity=".6" />
+      <ellipse cx="60" cy="58" rx="42" ry="9" fill={F.creamSoft} {...line(L.crust)} />
+      <Berry x={40} y={50} s={0.6} leaves={false} />
+      <Berry x={60} y={47} s={0.65} />
+      <Berry x={80} y={50} s={0.6} leaves={false} />
+      <circle cx="50" cy="58" r="3.2" fill={F.mint} {...line(L.mint, 1.2)} />
+      <circle cx="70" cy="58" r="3.2" fill={F.blush} {...line(L.pink, 1.2)} />
+      <Spark x={104} y={34} r={4} />
+    </g>
+  );
+}
+
+function Teacup() {
+  return (
+    <g>
+      <ellipse cx="60" cy="84" rx="38" ry="7" fill={F.white} {...line(L.soft, 2)} />
+      <path d="M30 48h52v12c0 14-11 24-26 24s-26-10-26-24z" fill={F.white} {...line(L.pink)} />
+      <path d="M82 52h5c7 0 7 13 0 13h-6" fill="none" {...line(L.pink)} />
+      <ellipse cx="56" cy="48" rx="26" ry="5" fill={F.apricot} {...line(L.pink, 2)} />
+      <path d="M36 62c4 2 6-2 10 0s6-2 10 0 6-2 10 0 6-2 10 0" fill="none" {...line(L.mint, 1.6)} />
+      <Berry x={56} y={72} s={0.42} leaves={false} />
+      <path d="M48 38c-3-5 3-7 0-12M62 38c-3-5 3-7 0-12" fill="none" stroke={F.mint} strokeWidth="2.4" strokeLinecap="round" />
+      <Spark x={96} y={34} r={4} />
+      <Spark x={22} y={40} r={3} color={F.blush} />
+    </g>
+  );
+}
+
+function CookieStack() {
+  return (
+    <g>
+      <Plate rx={34} />
+      <ellipse cx="60" cy="74" rx="30" ry="9" fill={F.apricot} {...line(L.crust)} />
+      <ellipse cx="60" cy="64" rx="28" ry="8" fill={F.blush} {...line(L.pink)} />
+      <ellipse cx="60" cy="56" rx="30" ry="9" fill={F.apricot} {...line(L.crust)} />
+      {[[46, 54], [58, 51], [70, 55], [52, 59], [66, 59]].map(([x, y]) => (
+        <ellipse key={`${x}${y}`} cx={x} cy={y} rx="2.4" ry="1.6" fill="#A86A48" />
+      ))}
+      <path d="M38 50c4-3 8-4 12-4" stroke={F.white} strokeWidth="2.5" strokeLinecap="round" opacity=".7" />
+      <Berry x={74} y={40} s={0.6} />
+      <Spark x={100} y={36} r={4} />
+      <Spark x={22} y={44} r={3} color={F.apricot} />
+    </g>
+  );
+}
+
+// Fourteen drawings, one per slide deck.
+const SHAPES = [ShortcakeSlice, Macaron, Cupcake, BigBerry, Parfait, Donut, MilkCarton, RollCake, Pudding, IceCream, Daifuku, Tart, Teacup, CookieStack];
 
 /** One pastry per slide deck, so each card on the menu looks different. */
 export function Pastry({ index, covered = false, className = '' }: { index: number; covered?: boolean; className?: string }) {
   const Shape = SHAPES[index % SHAPES.length];
+  const id = useId().replace(/:/g, '');
   return (
-    <Sheet viewBox="0 0 120 100" className={className}>
-      <g opacity={covered ? 0.5 : 1}>
-        <Shape />
+    <svg viewBox="0 0 120 100" className={className} aria-hidden="true" focusable="false">
+      <defs>
+        <filter id={`w${id}`} x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7" />
+          <feDisplacementMap in="SourceGraphic" scale="1.8" />
+        </filter>
+        <filter id={`g${id}`}>
+          <feColorMatrix type="saturate" values="0.15" />
+        </filter>
+      </defs>
+      <g filter={`url(#w${id})`}>
+        {covered ? (
+          // Not ready yet: the same drawing, faded and desaturated, with a small lock sticker.
+          <>
+            <g filter={`url(#g${id})`} opacity="0.4">
+              <Shape />
+            </g>
+            <g transform="translate(92 70)">
+              <circle r="13" fill={F.white} {...line(L.soft, 2)} />
+              <path d="M-4.5-2v-3a4.5 4.5 0 0 1 9 0v3" fill="none" {...line(L.crust, 2)} />
+              <rect x="-6.5" y="-2" width="13" height="10" rx="2.5" fill={F.apricot} {...line(L.crust, 2)} />
+              <circle cy="3" r="1.4" fill="#A86A48" />
+            </g>
+          </>
+        ) : (
+          <Shape />
+        )}
       </g>
-      {covered && (
-        // Glass cloche: this deck is not ready yet.
-        <g>
-          <path d="M18 86c0-34 18-58 42-58s42 24 42 58z" fill="rgba(214,240,233,.55)" {...line(L.mint)} />
-          <path d="M32 70c0-18 9-31 20-35" stroke={F.white} strokeWidth="4" strokeLinecap="round" fill="none" />
-          <circle cx="60" cy="23" r="5" fill={F.mint} {...line(L.mint, 2)} />
-          <path d="M12 86h96" {...line(L.mint)} />
-        </g>
-      )}
-    </Sheet>
+    </svg>
   );
 }
 
