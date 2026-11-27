@@ -42,6 +42,24 @@ Học viên → Chọn đề → Lấy nguồn đã xuất bản → AI tạo đ
          → Làm bài → Nộp → Chấm theo đáp án đã lưu → Xem điểm và nguồn
 ```
 
+**Kiến trúc AI tạo đề**
+
+```mermaid
+flowchart LR
+    input["Input<br/>Phạm vi ôn và đoạn slide đã duyệt"]
+    core["AI Core<br/>Đề xuất câu trắc nghiệm A–D,<br/>đáp án và mã đoạn nguồn"]
+    guard{"Chặn rủi ro<br/>Kiểm mã đoạn, trang và phạm vi<br/>Bốn phương án, một đáp án<br/>Đủ số câu và độ phủ theo phạm vi"}
+    output["Output<br/>Đề hợp lệ kèm đáp án,<br/>tên file và số trang nguồn"]
+    fallback["G10<br/>Hỏi rõ phạm vi hoặc báo thiếu căn cứ"]
+
+    input --> core --> guard
+    guard -->|Đề đủ căn cứ sau khi lọc| output
+    input -->|Phạm vi mơ hồ hoặc thiếu nguồn| fallback
+    guard -->|Còn thiếu căn cứ sau khi lọc| fallback
+```
+
+CLI hiển thị đề nháp để học viên duyệt. Trên web, backend lưu đáp án và trích dẫn trong snapshot rồi hiển thị sau khi học viên nộp.
+
 | Công cụ hoặc bước | Input | Output | Tác động |
 |---|---|---|---|
 | Trích PDF do Khiêm phụ trách | PDF được admin duyệt để nhập, vị trí 1–14 | Đoạn có mã, file và số trang | Trả dữ liệu cho backend, bản xuất bản đổi khi admin xác nhận |
