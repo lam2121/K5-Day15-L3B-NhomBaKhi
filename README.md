@@ -9,6 +9,8 @@
 
 Nhóm phối hợp theo [hướng dẫn bốn agent](docs/agents.md). GitHub Spec Kit lưu [đặc tả, kế hoạch và API chung](specs/001-cramai/plan.md) cùng [backlog theo checkpoint](specs/001-cramai/tasks.md).
 
+[CI/CD](docs/ci-cd.md) kiểm thử pull request và đóng gói bản bàn giao từ commit đã qua kiểm tra trên `main`.
+
 ---
 
 ## Nhóm làm gì, khung làm gì
@@ -86,14 +88,14 @@ Nhóm dùng stack khác (Node, Streamlit, notebook…): sửa hàm `run_app()` t
 
 | Thành phần | Thật / Giả | Ghi chú |
 |---|---|---|
-| Lời gọi AI ở quyết định trung tâm | **Thật** (bắt buộc từ CP3) | Model: ____ |
+| Lời gọi AI ở quyết định trung tâm | Giả trong cấu hình mặc định | Adapter hỗ trợ Gemini và OpenAI. CP3 cần model thật đã xác minh usage. |
 |  |  |  |
 
 ## Dùng AI vào việc gì
 
 2–3 dòng (bắt buộc): nhóm dùng công cụ AI nào để làm gì, người kiểm lại phần nào. Chi tiết: [docs/ai-usage.md](docs/ai-usage.md). Coding agent đọc [AGENTS.md](AGENTS.md).
 
-____
+Codex được dùng để chuẩn bị Spec Kit, hợp đồng giữa các vai, adapter model và kiểm thử. Lâm phụ trách review cấu hình, cách lấy usage và trace trước lượt chạy chính thức.
 
 ## File mẫu — điền ở bước nào
 

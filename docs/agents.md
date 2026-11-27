@@ -4,7 +4,7 @@ Dùng bốn phiên Codex, mỗi người một vai và một branch. Khởi đ�
 
 | Người và vai | Branch | File phụ trách |
 |---|---|---|
-| Nguyễn Văn Lâm · tích hợp và model | `cramai/lam-integration` | `codebase/ai.py`, `codebase/contracts.py`, tài liệu và cấu hình dùng chung, Spec Kit, `scripts/`, `tests/`, `eval/README.md` và output các lượt chính thức. |
+| Nguyễn Văn Lâm · tích hợp và model | `lam` | `codebase/ai.py`, `codebase/contracts.py`, tài liệu và cấu hình dùng chung, Spec Kit, [CI/CD](ci-cd.md), `scripts/`, `tests/`, `eval/README.md` và output các lượt chính thức. |
 | Nguyễn Duy Hưng · workflow AI | `cramai/hung-workflow` | `codebase/agent.py`, `codebase/prompts/` (nếu cần), `eval/report.md`. |
 | Nguyễn Trọng Khiêm · nguồn và bộ câu thử | `cramai/khiem-data` | `codebase/tools.py`, `data/`, ghi chép và cách đếm trong `evidence/` trừ summary, `eval/benchmark.csv`. |
 | Bùi Phước Anh · trải nghiệm và sản phẩm | `cramai/phuoc-anh-product` | `codebase/app.py`, `canvas.md`, `evidence/summary.md`, `eval/metric_spec.yaml`, hai file cấu hình/báo cáo chi phí, `slides/`, `demo-slides.pdf`, `validation/`. |
@@ -46,6 +46,6 @@ Mỗi agent báo ID hoàn thành trong PR. Lâm là người cập nhật ô tas
    git diff --check
    ```
 
-   Script phát hiện file ngoài phạm vi đã commit, staged, unstaged, untracked và cả hai đầu của đổi tên. Đây là kiểm tra cục bộ; Lâm chạy lại khi review. Khi review branch tích hợp đã gom nhiều vai, kiểm từng PR trước khi ghép. Nếu một file ngoài phạm vi xuất hiện, gửi yêu cầu cho người phụ trách file đó và bỏ thay đổi ngoài phạm vi khỏi PR hiện tại.
+   Script phát hiện file ngoài phạm vi đã commit, staged, unstaged, untracked và cả hai đầu của đổi tên. GitHub Actions chạy lại kiểm phạm vi khi PR từ branch của vai vào `main`. Khi branch tích hợp gom nhiều vai, kiểm từng PR trước khi ghép. Nếu một file ngoài phạm vi xuất hiện, gửi yêu cầu cho chủ file và bỏ thay đổi đó khỏi PR.
 
 Mẫu nội dung PR gồm ID task, file đã đổi, lệnh kiểm và kết quả, đầu ra cần người khác dùng, rủi ro hoặc phụ thuộc còn lại. Việc phát sinh sau CP2 đưa cho Lâm ghi vào changelog.

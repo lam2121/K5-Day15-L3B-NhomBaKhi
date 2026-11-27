@@ -51,5 +51,6 @@ class ScopeTests(unittest.TestCase):
     def test_harness_and_official_results(self):
         for role in ("lam", "hung", "khiem", "phuoc-anh"):
             self.assertFalse(is_owned(role, "run.py"))
+            self.assertEqual(is_owned(role, ".github/workflows/ci.yml"), role == "lam")
             self.assertEqual(is_owned(role, "eval/run-1.csv"), role == "lam")
             self.assertEqual(is_owned(role, "cost/simulate-1-summary.md"), role == "lam")

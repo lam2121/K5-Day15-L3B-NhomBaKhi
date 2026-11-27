@@ -12,7 +12,8 @@ ROLE_FILES = {
     "lam": {
         ".gitignore", ".env.example", "AGENTS.md", "README.md", "TEAMS.md",
         "spec.md", "tasks.md", "requirements.txt", "codebase/ai.py", "codebase/contracts.py",
-        "docs/agents.md", "docs/connect-model.md", "docs/ai-usage.md", "eval/README.md",
+        ".github/workflows/ci.yml", "docs/agents.md", "docs/ci-cd.md", "docs/connect-model.md",
+        "docs/ai-usage.md", "eval/README.md",
         "reflection/nguyen-van-lam.md",
     },
     "hung": {"codebase/agent.py", "eval/report.md", "reflection/nguyen-duy-hung.md"},
