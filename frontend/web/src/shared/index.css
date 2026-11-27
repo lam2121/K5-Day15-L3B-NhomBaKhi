@@ -1,0 +1,98 @@
+@import './fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    @apply bg-milk font-body text-cocoa antialiased;
+    font-size: 16px;
+    line-height: 1.55;
+    /* Gingham tablecloth, kept very faint so text stays the focus. */
+    background-image:
+      linear-gradient(90deg, rgba(255, 182, 175, 0.14) 50%, transparent 50%),
+      linear-gradient(rgba(255, 182, 175, 0.14) 50%, transparent 50%);
+    background-size: 44px 44px;
+  }
+  h1, h2, h3 {
+    @apply font-display text-cocoa;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 3px solid #22705f;
+    outline-offset: 3px;
+    border-radius: 12px;
+  }
+  ::selection {
+    background: #ffb6af;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill px-5 font-display text-[1.05rem] font-bold
+      transition-[transform,box-shadow,background-color] duration-150 ease-out select-none;
+  }
+  .btn:not(:disabled):hover {
+    transform: translateY(-2px);
+  }
+  .btn:not(:disabled):active {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  .btn svg {
+    @apply h-5 w-5 shrink-0;
+  }
+  /* Primary: strawberry icing with cocoa text (5.6:1). */
+  .btn-primary {
+    @apply bg-strawberry text-cocoa shadow-[0_3px_0_#B5433A];
+  }
+  .btn-primary:not(:disabled):hover {
+    @apply shadow-[0_5px_0_#B5433A];
+  }
+  .btn-primary:not(:disabled):active {
+    @apply shadow-[0_1px_0_#B5433A];
+  }
+  .btn-secondary {
+    @apply bg-white text-cocoa ring-2 ring-inset ring-cocoa-line shadow-[0_3px_0_#E9CDBB];
+  }
+  .btn-secondary:not(:disabled):hover {
+    @apply bg-cream-soft;
+  }
+  .btn-mint {
+    @apply bg-mint text-cocoa shadow-[0_3px_0_#22705F];
+  }
+  .btn-quiet {
+    @apply bg-transparent text-cocoa underline decoration-blush decoration-[3px] underline-offset-4;
+  }
+  .btn-lg {
+    @apply min-h-[52px] px-7 text-[1.15rem];
+  }
+  .plate {
+    @apply rounded-blob bg-white shadow-plate ring-1 ring-cocoa-line/60;
+  }
+  /* Scalloped bottom edge, like a paper doily or a cake case. */
+  .scallop-bottom {
+    -webkit-mask: radial-gradient(12px at 50% 100%, #0000 98%, #000) 50% / 24px 100%;
+    mask: radial-gradient(12px at 50% 100%, #0000 98%, #000) 50% / 24px 100%;
+  }
+  .sr-only-focusable:not(:focus) {
+    @apply sr-only;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
