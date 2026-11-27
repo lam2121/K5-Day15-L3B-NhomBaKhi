@@ -7,6 +7,8 @@
 
 *Lát cắt = phần nhỏ nhất làm xong được trong hackathon: một người dùng · một việc · một quyết định AI · một kết quả.*
 
+Nhóm phối hợp theo [hướng dẫn bốn agent](docs/agents.md). GitHub Spec Kit lưu [đặc tả, kế hoạch và API chung](specs/001-cramai/plan.md) cùng [backlog theo checkpoint](specs/001-cramai/tasks.md).
+
 ---
 
 ## Nhóm làm gì, khung làm gì

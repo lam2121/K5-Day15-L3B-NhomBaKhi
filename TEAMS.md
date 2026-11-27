@@ -11,10 +11,10 @@
 
 | STT | Họ và tên | Mã học viên | Vai trò | Phần việc chính |
 |---|---|---|---|---|
-| 1 | Nguyễn Văn Lâm | 2A202604115 | Đội trưởng | DevOps: quản lý repo, nộp checkpoint, nối môi trường và chạy eval/simulate (run.py, cost/) |
-| 2 | Nguyễn Duy Hưng | 2A202604110 | Thành viên | AI: thiết kế kiến trúc, luồng rút trích cây kiến thức và sinh/lọc đề 14 PDF (spec.md, codebase/agent.py, ai.py, eval/) |
-| 3 | Nguyễn Trọng Khiêm | 2A202604109 | Thành viên | Full stack: xử lý 14 PDF, tool tra cứu slide, phỏng vấn và bộ câu thử (codebase/tools.py, data/, evidence/, eval/) |
-| 4 | Bùi Phước Anh | 2A202604102 | Thành viên | Full stack: giao diện chạy thử, tổng hợp pain/impact, chi phí và slide (codebase/app.py, evidence/, cost/, slides/) |
+| 1 | Nguyễn Văn Lâm | 2A202604115 | Đội trưởng | Tích hợp, API chung, nối model (`ai.py`), các lượt eval/simulate chính thức và nộp checkpoint |
+| 2 | Nguyễn Duy Hưng | 2A202604110 | Thành viên | Kiến trúc, workflow chọn câu có căn cứ (`agent.py`), phân tích lỗi và báo cáo đánh giá |
+| 3 | Nguyễn Trọng Khiêm | 2A202604109 | Thành viên | Nguồn slide và công cụ tra cứu (`tools.py`), phỏng vấn, đào dữ liệu và bộ câu thử |
+| 4 | Bùi Phước Anh | 2A202604102 | Thành viên | CLI (`app.py`), tổng hợp pain/impact, metric, báo cáo chi phí và slide |
 
 **Quy tắc điền**
 - **Lớp:** `L3A` hoặc `L3B`. **Track:** một chữ `A` (EdTech), `B` (Y tế), `C` (Du lịch), `D` (Thương mại điện tử), `E` (Tài chính) hoặc `F` (Làn khác). **Link repo:** link GitHub công khai của nhóm.

@@ -6,6 +6,10 @@
 
 Repo nộp bài hackathon AI20K của nhóm: một bản chạy thử AI cho **một lát cắt** (xem `spec.md` §4), kèm bằng chứng, bộ câu thử và mô phỏng chi phí. Mọi câu trả lời phải chạy được bằng các lệnh dưới đây.
 
+## Bắt đầu với vai của bạn
+
+Đọc [vai và quy trình tích hợp](docs/agents.md), [hiến chương](.specify/memory/constitution.md), [hợp đồng CramAI v1](specs/001-cramai/contracts/cramai.md) và [task Spec Kit](specs/001-cramai/tasks.md). Khi được giao vai và task ID, áp dụng các tài liệu này cho đúng phần việc. Agent ngoài vai `lam` báo kết quả và ID task qua PR để Lâm cập nhật checklist chung. Nếu cần thay đổi file ngoài vai, bàn giao nội dung cho chủ file.
+
 ## Lệnh
 
 ```
@@ -24,9 +28,11 @@ Khung chỉ dùng thư viện chuẩn của Python. Thêm thư viện thì ghi v
 
 | File | Ai sửa | Hợp đồng |
 |---|---|---|
-| `codebase/agent.py` | nhóm | `answer(text) -> {"output": str}` — luồng chính, đúng hình dạng ở `spec.md` §4 |
-| `codebase/ai.py` | nhóm | `call_model(system, user) -> {"text", "model", "tokens_in", "tokens_out"}`, giữ `@model_call`. Token lấy từ `usage` của API, không ước lượng |
-| `codebase/tools.py` | nhóm | mỗi công cụ một hàm có `@tool`, docstring: tên · input · output · có tác động ra ngoài không |
+| `codebase/contracts.py` | Lâm | Kiểu Python dùng chung, kiểm nguồn và tạo `output` từ `result`. |
+| `codebase/agent.py` | Hưng | `answer(text) -> AnswerResponse` có `output: str` và `result` theo hợp đồng v1. |
+| `codebase/ai.py` | Lâm | `call_model(system, user) -> ModelResponse`, giữ `@model_call`. Token lấy từ `usage` của API. |
+| `codebase/tools.py` | Khiêm | `search_slides(query, *, limit=12) -> list[SlidePassage]`, dùng `@tool`. |
+| `codebase/app.py` | Phước Anh | CLI gọi `answer(text)`, hiển thị và duyệt bằng `result`. |
 | `codebase/tracing.py`, `eval/run_eval.py`, `cost/simulate.py`, `run.py` | **khung — không sửa** | ghi trace, chạy bộ câu thử, mô phỏng chi phí |
 
 ## Luật — agent KHÔNG được làm
@@ -40,6 +46,5 @@ Khung chỉ dùng thư viện chuẩn của Python. Thêm thư viện thì ghi v
 
 ## Quy ước của nhóm
 
-- Ngôn ngữ trả lời người dùng: __
-- Phong cách code / đặt tên: __
-- Ai duyệt thay đổi do agent tạo trước khi commit: __
+- Trả lời người học bằng tiếng Việt, file UTF-8. Dùng `snake_case` cho hàm, biến, khoá JSON và `PascalCase` cho kiểu Python. Mã đoạn và mã câu thử theo hợp đồng v1.
+- Chạy `python scripts/check_agent_scope.py --role <vai> --base <nhánh-đích>` và các kiểm tra liên quan trước PR. Cặp cùng review, Lâm hợp nhất và ghi artefact các lượt chính thức.

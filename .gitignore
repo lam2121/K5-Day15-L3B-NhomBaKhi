@@ -35,3 +35,5 @@ evidence/**/raw-*
 # Nguyên file data BTC cấp (data/preclass, data/training-ops… của repo đề): để ở đây, không commit
 data-btc
 data-btc/
+# PDF gốc, corpus riêng và dữ liệu chưa xử lý nằm ở máy nhóm
+/data-private/

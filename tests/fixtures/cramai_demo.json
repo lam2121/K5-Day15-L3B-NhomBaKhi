@@ -1,0 +1,35 @@
+{
+  "synthetic": true,
+  "input": "Cho một câu ôn tập về bộ câu thử.",
+  "passages": [
+    {
+      "source_id": "demo-p001-s01",
+      "file_name": "vi-du-tu-dung.pdf",
+      "page": 1,
+      "text": "Bộ câu thử chung giúp so sánh hai lượt đánh giá trên cùng đầu vào."
+    }
+  ],
+  "selected_source_ids": ["demo-p001-s01"],
+  "result": {
+    "schema_version": 1,
+    "status": "ok",
+    "message": "Đề nháp từ dữ liệu tự dựng để kiểm hợp đồng.",
+    "questions": [
+      {
+        "question_id": "q01",
+        "prompt": "Vì sao dùng cùng bộ câu thử cho hai lượt?",
+        "answer": "Để so sánh hai lượt trên cùng đầu vào.",
+        "difficulty": "easy",
+        "citations": [
+          {"source_id": "demo-p001-s01", "file_name": "vi-du-tu-dung.pdf", "page": 1}
+        ]
+      }
+    ]
+  },
+  "no_evidence_result": {
+    "schema_version": 1,
+    "status": "no_evidence",
+    "message": "Chưa có slide phù hợp. Hãy chọn chủ đề có trong bộ slide.",
+    "questions": []
+  }
+}
