@@ -99,11 +99,17 @@ def main() -> int:
         return 2
 
     try:
-        subject = git(ROOT, "log", "-1", "--format=%s").strip()
+        base_commit = git(ROOT, "rev-parse", "--verify", "--end-of-options", f"{options.base}^{{commit}}").strip()
+        merge_base = git(ROOT, "merge-base", base_commit, "HEAD").strip()
+        subjects = git(ROOT, "log", "--format=%s", f"{merge_base}..HEAD").splitlines()
     except (OSError, RuntimeError) as error:
-        print(f"Cannot read the current commit subject: {error}", file=sys.stderr)
+        print(f"Cannot read task IDs from commits on this branch: {error}", file=sys.stderr)
         return 2
-    task_ids = set(re.findall(r"\[(T\d{3})\]", subject))
+    task_ids = {
+        task_id
+        for subject in subjects
+        for task_id in re.findall(r"\[(T\d{3})\]", subject)
+    }
     rejected = sorted(path for path in paths if not is_in_scope(options.role, path, task_ids))
     if rejected:
         print(f"Outside scope for {options.role}:", file=sys.stderr)
