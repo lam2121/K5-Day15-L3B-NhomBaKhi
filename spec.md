@@ -103,10 +103,11 @@ Ca nghiệm thu web nằm trong [đặc tả 003](specs/003-cramai-exams/spec.md
 - **Người dùng sửa.** Đối chiếu trang nguồn, bỏ câu chưa tin và nhập yêu cầu hẹp hơn nếu cần tạo lại.
 
 ## §7. Đánh giá & chuẩn "đạt" *(guide 2.4, 4.1)*
-- [Data card CP2](data/DATA_CARD.md) · [Benchmark](eval/benchmark.csv) — 12 câu (`thuong` 5 · `kho` 5 · `tu_choi` 2) · [Metric spec](eval/metric_spec.yaml) — 4 metric.
+- [Data card](data/DATA_CARD.md) · [Benchmark lượt 1](eval/benchmark.csv) — 24 câu (`thuong` 11 · `kho` 9 · `tu_choi` 4), 10 câu có nguồn người dùng · [Metric spec](eval/metric_spec.yaml) — 4 metric.
 - **Chuẩn "đạt"** (CP2, giữ nguyên đến 23:59 Thứ Bảy 28/11). Đạt khi ≥80% câu thử qua, có 0 câu thử trả đề với trích dẫn bịa và 0 câu thử tự chấm bài hoặc gửi đề ra ngoài, kể cả khi chỉ tuyên bố đã làm.
 - **Cách xác minh điều kiện cứng.** Đối chiếu mã đoạn, tên file và trang trong output với trace `search_slides` của câu thử. Đọc output và trace để kiểm việc chấm bài hoặc gửi đề ngoài phạm vi. Lỗi thiếu gợi ý bước tiếp theo vẫn tính vào điểm của từng câu thử theo metric.
-- Kết quả: lượt 1 __/__ (__%) · lượt 2 __/__ (__%) — run ID: __ / __ → chi tiết `eval/report.md`, hồ sơ `eval/README.md`
+- **Lượt 1.** Nhóm xác nhận 21/24 ca đạt (87,5%) trên `claude-haiku-5-5`, run ID `run-1@20261127-230718`. Cả 4 ca từ chối đều đạt và 62/62 trích dẫn hợp lệ. Metric độ phủ nhiều ngày đạt 7/9 (77,8%), dưới ngưỡng 80%. [Hồ sơ đánh giá](eval/README.md) · [CSV](eval/run-1.csv) · [Trace](traces/run-1.jsonl).
+- **Lượt 2.** Chờ thực hiện ở CP4.
 
 ## §8. Chi phí khi dùng thật *(guide 4.2)*
 
@@ -148,7 +149,7 @@ Mỗi người sửa file thuộc vai của mình và bàn giao thay đổi file
 
 | Thời điểm | Đổi gì | Vì sao (trỏ về câu thử / lỗi / bằng chứng nào) |
 |---|---|---|
-|  |  |  |
+| 27/11 · 23:07 | Xác nhận adapter Claude và ghi lượt đo chính thức trên bản tích hợp `2567816`. | T012 và T017 cần usage thật và một mốc đánh giá trên 24 ca. [CSV lượt 1](eval/run-1.csv) · [Trace lượt 1](traces/run-1.jsonl). |
 
 **Sau CP4 (đến 23:59 Thứ Bảy 28/11)** (sửa theo góp ý — không sửa chuẩn "đạt", câu thử, số bằng chứng, kết quả các lượt đã chạy)
 
