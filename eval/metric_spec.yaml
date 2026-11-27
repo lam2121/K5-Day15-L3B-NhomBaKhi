@@ -2,29 +2,36 @@
 # Ôn lại: ngày 5, ngày 9 · lab ngày 5, lab ngày 9.
 # CHỐT TRƯỚC 19:30 Thứ Sáu 27/11 (CP2), KHÔNG SỬA SAU. Sửa sau CP2 → khối R4 0 điểm (03-rubric).
 #
-# ≥3 metric. Mỗi metric:
-#   name        tên ngắn, không dấu (vd trich_dung_nguon)
-#   definition  định nghĩa KIỂM CHỨNG ĐƯỢC — người ngoài nhóm đọc output là chấm ra cùng kết quả
-#               ✗ "trả lời hay"   ✓ "mọi khẳng định có mã đoạn nguồn, và mã đó có trong dữ liệu"
-#   grader      code | llm | nguoi   (llm: ghi rõ đã kiểm tay bao nhiêu câu, khớp bao nhiêu)
-#   threshold   ngưỡng bằng số, vd "≥ 90% câu thuong" hoặc "100% câu tu_choi"
-#   why         vì sao người dùng quan tâm — trỏ về pain ở evidence/summary.md (từ pain, không từ AI)
-# Kiểm: python run.py check  (báo nếu chưa đủ 3 metric hoặc còn mẫu <…>)
-# Người thứ hai chấm thử 5 output theo file này → ghi kết quả vào eval/README.md mục 3.
+# Người phụ trách: Bùi Phước Anh (cùng Khiêm). Review và chấm thử độc lập: Nguyễn Duy Hưng.
+# Đơn vị chấm: mỗi câu thử là một dòng trong eval/run-N.csv. Người chấm đọc cột output
+# và trace của đúng câu đó trong traces/run-N.jsonl (danh sách đoạn search_slides trả về).
+# Mỗi câu hỏi trong output là một khối bắt đầu bằng mã qNN, có dòng `Đáp án:` và dòng `Nguồn:`
+# dạng `tên-file.pdf, trang N [mã-đoạn]` (do make_response trong codebase/contracts.py sinh ra).
+# Mã đoạn bắt đầu bằng tiền tố ngày dayNN (vd day03-...), dùng để biết câu hỏi lấy từ ngày nào.
+# Output không có khối qNN nào = phản hồi không ra đề (hỏi lại, thiếu căn cứ, ngoài phạm vi).
+# Hai kiểu yêu cầu: ôn theo chủ đề (một khái niệm / một buổi) và ôn tổng hợp (nhiều ngày).
+# Câu hỏi gồm trắc nghiệm (có các phương án A, B, C, D trong đề bài) và tự luận ngắn.
+# Nhãn độ khó (Dễ / Vừa / Khó) vẫn có trong output theo hợp đồng v1 nhưng KHÔNG được chấm:
+# nhóm tạm bỏ qua độ khó trong lát cắt này (quyết định 27/11, trước CP2).
 
 metrics:
-  - name: "<metric_1>"
-    definition: "<định nghĩa kiểm chứng được>"
-    grader: "<code | llm | nguoi>"
-    threshold: "<ngưỡng bằng số>"
-    why: "<vì sao người dùng quan tâm>"
-  - name: "<metric_2>"
-    definition: "<…>"
-    grader: "<…>"
-    threshold: "<…>"
-    why: "<…>"
-  - name: "<metric_3>"
-    definition: "<…>"
-    grader: "<…>"
-    threshold: "<…>"
-    why: "<…>"
+  - name: "trich_dan_hop_le"
+    definition: "Với output có ra đề: mọi khối qNN có ít nhất một nguồn, và mỗi mã đoạn trong dòng Nguồn đều nằm trong danh sách đoạn search_slides trả về ở trace của chính câu thử đó, với tên file và số trang trùng khớp bản ghi đoạn. Chỉ cần một mã sai là câu thử không đạt metric này."
+    grader: "code"
+    threshold: "100% câu thử có ra đề"
+    why: "Học viên dùng số trang để mở lại slide kiểm chứng và sửa câu sai trước kỳ thi; trích sai trang làm mất đúng khả năng kiểm chứng đó (pain: tốn giờ đọc lại slide, canvas.md dòng 3 và 6)."
+  - name: "dap_an_co_can_cu"
+    definition: "Người chấm đọc nội dung đoạn được trích (lấy text từ trace) cho từng khối qNN. Khối đạt khi đáp án đúng và mọi ý chính của đáp án đều đọc ra được từ đoạn trích, không thêm kiến thức ngoài đoạn. Câu trắc nghiệm còn phải có đúng một phương án đúng theo đoạn trích. Slide chỉ ghi gạch đầu dòng gợi ý giảng mà không có nội dung trả lời thì không được dùng làm căn cứ cho đáp án. Tỉ lệ = số khối đạt / tổng số khối qNN trên các câu thử thuong và kho có ra đề."
+    grader: "nguoi"
+    threshold: "≥ 90% khối câu hỏi"
+    why: "Nhiều slide chỉ là dàn ý cho giảng viên, nên model dễ tự điền kiến thức ngoài slide; đáp án bịa hoặc lệch slide khiến học viên học sai và mất điểm thi thật (canvas.md dòng 6)."
+  - name: "khong_ra_de_khi_thieu_can_cu"
+    definition: "Với câu thử tu_choi và câu thử kho có expected là hỏi lại, thiếu căn cứ hoặc ngoài phạm vi: output không chứa khối qNN nào, và có ít nhất một câu nêu bước tiếp theo cụ thể cho học viên (vd chọn chủ đề có trong bộ slide, nêu rõ ngày hoặc file muốn ôn). Output vừa từ chối vừa ra câu hỏi tính là không đạt."
+    grader: "code"
+    threshold: "100% câu tu_choi · ≥ 80% câu kho thuộc loại này"
+    why: "Khi chủ đề không có trong slide, một đề trông hợp lý nhưng không có căn cứ còn hại hơn không có đề: học viên tin là trọng tâm và ôn lệch (G10, canvas.md dòng 6)."
+  - name: "phu_nhieu_ngay"
+    definition: "Với câu thử ôn tổng hợp (input yêu cầu ôn nhiều ngày hoặc cả khoá) có ra đề: đếm số ngày khác nhau theo tiền tố dayNN của mã đoạn trong dòng Nguồn. Đạt khi đề có câu từ ít nhất 4 ngày khác nhau và không ngày nào chiếm quá 1/3 số khối qNN. Nếu input chỉ định một khoảng ngày thì mọi mã đoạn phải thuộc khoảng đó."
+    grader: "code"
+    threshold: "≥ 80% câu thử ôn tổng hợp có ra đề"
+    why: "Kiến thức thi giữa kỳ trải 14 ngày với nhiều bộ slide mỗi ngày; đề dồn vào một vài ngày khiến học viên tưởng đã ôn đủ mà vẫn hổng phần còn lại (canvas.md dòng 3)."
