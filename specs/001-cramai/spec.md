@@ -4,6 +4,8 @@
 
 Bài nộp BTC dùng [spec gốc](../../spec.md). Đặc tả Spec Kit này giúp bốn vai phát triển cùng một prototype. [Canvas của nhóm](../../canvas.md).
 
+Luồng này là cửa vào CLI và bộ chấm của hackathon. Phiên bản có admin xuất bản 14 bộ slide, danh mục đề và làm bài online dùng [đặc tả web](../003-cramai-exams/spec.md).
+
 ## User Scenarios & Testing
 
 ### User Story 1 — Nhận đề ôn giữa kỳ có căn cứ (P1)
@@ -36,4 +38,4 @@ Một học viên L3 nhập chủ đề hoặc yêu cầu ôn. AI chọn các c�
 
 ## Giả định
 
-Khoảng 14 PDF là đầu vào dự kiến. Chỉ phần đã kiểm nguồn và phù hợp thời lượng vào lát cắt. Tập slide, bằng chứng phỏng vấn, thông tin nối model và chuẩn CP2 sẽ được nhóm xác nhận. [Kế hoạch triển khai](plan.md).
+Corpus theo các ngày học và bộ slide trong Canvas chốt tại CP2. Một ngày có thể gồm nhiều PDF. Chỉ phần đã kiểm nguồn và đủ nội dung làm căn cứ vào lát cắt. Bằng chứng, thông tin nối model và chuẩn CP2 do nhóm xác nhận. [Kế hoạch triển khai](plan.md).
