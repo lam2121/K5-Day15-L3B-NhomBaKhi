@@ -5,11 +5,9 @@
 
 ## 1. Nguồn đã dùng
 
-| Nguồn | Đạt ngưỡng? | File |
-|---|---|---|
-| Đào data (x/N, %, cách đếm chạy lại được, ≥5 ví dụ) | Chưa dùng để kết luận về việc ôn slide | [Ghi chú đào dữ liệu](data-mining.md) |
-| Phỏng vấn (≥3 người ngoài nhóm, đúng người dùng) | Nhóm đã hoàn tất 4 cuộc. Các bản ghi còn thiếu thông tin để xác nhận ngưỡng người ngoài nhóm. | [P1](interviews/P1.md), [P2](interviews/P2.md), [P3](interviews/P3.md), [P4](interviews/P4.md) |
-| Khảo sát (≥20 người ngoài nhóm, đúng người dùng) | ☑ n = 21 học viên L3A/L3B ngoài nhóm (thành viên NhomBaKhi không điền form — Phước Anh xác nhận 27/11) | `evidence/survey/results.csv` (số phiếu 1–21 = thứ tự dòng theo dấu thời gian) |
+- [x] **Khảo sát.** 21 học viên L3A/L3B ngoài nhóm. Phước Anh xác nhận ngày 27/11 rằng thành viên NhomBaKhi không điền form. Số phiếu 1–21 theo thứ tự dấu thời gian. [Kết quả khảo sát](survey/results.csv).
+- [x] **Phỏng vấn.** Nhóm xác nhận cả 4 người P1–P4 đều ngoài nhóm. P2–P4 kể lại trải nghiệm ôn bằng slide. [Bốn bản ghi phỏng vấn](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/tree/d41a9f0413420fa299fdacd2a8e93648e0775950/evidence/interviews).
+- [ ] **Đào data.** Nhóm chưa dùng log pre-class để kết luận về việc ôn slide. [Ghi chú đào dữ liệu](data-mining.md).
 
 ## 2. Số chính
 
