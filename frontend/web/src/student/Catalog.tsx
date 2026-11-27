@@ -49,7 +49,8 @@ export function Catalog({ resumeTitle, onResume, onStart, onLoaded }: Props) {
           </p>
           <h1 className="text-4xl font-extrabold sm:text-5xl">Hôm nay bạn muốn ôn món nào?</h1>
           <p className="mt-3 text-lg text-cocoa-soft">
-            Mỗi món bánh là một bộ slide. Chọn một món để nhận đề 5 câu trắc nghiệm do AI tạo từ slide đã duyệt. Đáp án và trang slide hiện sau khi
+            Mỗi món trên thực đơn, từ bánh ngọt, kem đến sữa dâu hay tách trà, là một bộ slide. Chọn một món để nhận đề 5 câu trắc nghiệm do AI tạo
+            từ slide đã duyệt. Đáp án và trang slide hiện sau khi
             nộp bài.
           </p>
         </div>
