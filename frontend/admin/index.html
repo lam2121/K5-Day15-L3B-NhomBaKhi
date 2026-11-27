@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex">
+  <title>CramAI · Quản trị slide</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='6' width='28' height='18' rx='2' fill='%231d2a44'/%3E%3Ccircle cx='23' cy='19' r='2.5' fill='%23f59f00'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="fonts.css">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Bỏ qua đến nội dung</a>
+  <header class="shell">
+    <div class="shell-inner">
+      <span class="brand">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="6" width="28" height="18" rx="2"/><circle cx="23" cy="19" r="2.5"/></svg>
+        CramAI
+      </span>
+      <p class="shell-title">Quản trị 14 bộ slide</p>
+      <span class="mock-badge" id="mock-badge" hidden>Dữ liệu mẫu</span>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <div class="page-head">
+      <h1>Nguồn của 14 bộ slide</h1>
+      <p>Tải PDF vào bản nháp, kiểm tra các đoạn trích, rồi xuất bản. Chỉ bản đã xuất bản được dùng để tạo đề; bài đang làm vẫn chấm theo bản cũ.</p>
+    </div>
+    <div class="layout">
+      <section class="slots" aria-labelledby="slots-title">
+        <h2 id="slots-title" class="sr-only">Danh sách bộ slide</h2>
+        <div id="slots" aria-live="polite"></div>
+      </section>
+      <section class="detail" id="detail" aria-live="polite" aria-labelledby="detail-title"></section>
+    </div>
+  </main>
+
+  <p class="sr-only" id="announcer" aria-live="assertive"></p>
+  <script src="admin.js" defer></script>
+</body>
+</html>
