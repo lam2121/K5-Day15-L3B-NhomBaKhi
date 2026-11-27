@@ -124,7 +124,7 @@ export function Result({ session, onRetake, onHome }: Props) {
           );
         })}
       </ol>
-      <p className="text-sm text-cocoa-soft">Điểm chỉ để tự ôn. Mã yêu cầu {result.request_id}.</p>
+      <p className="text-sm text-cocoa-soft">Điểm chỉ để bạn tự xem, không phải điểm thi. Mã yêu cầu {result.request_id}.</p>
     </div>
   );
 }

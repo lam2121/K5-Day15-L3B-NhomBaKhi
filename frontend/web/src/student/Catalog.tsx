@@ -45,13 +45,12 @@ export function Catalog({ resumeTitle, onResume, onStart, onLoaded }: Props) {
       <header className="grid items-end gap-6 md:grid-cols-[1fr_auto]">
         <div className="max-w-2xl">
           <p className="mb-2 inline-flex items-center gap-2 rounded-pill bg-white px-3 py-1 text-sm font-bold text-strawberry-ink ring-2 ring-blush">
-            <Icon name="heart" className="h-4 w-4" /> Tiệc trà ôn thi L3
+            <Icon name="heart" className="h-4 w-4" /> Tiệc trà L3
           </p>
           <h1 className="text-4xl font-extrabold sm:text-5xl">Hôm nay bạn muốn thưởng thức món nào?</h1>
           <p className="mt-3 text-lg text-cocoa-soft">
-            Mỗi món trên thực đơn, từ bánh ngọt, kem đến sữa dâu hay tách trà, là một bộ slide. Chọn một món để nhận đề 5 câu trắc nghiệm do AI tạo
-            từ slide đã duyệt. Đáp án và trang slide hiện sau khi
-            nộp bài.
+            Mỗi món trên thực đơn là một bộ slide. Chọn một món để nhận đề 5 câu trắc nghiệm do AI tạo từ slide đã duyệt. Đáp án và trang slide hiện
+            sau khi nộp bài.
           </p>
         </div>
       </header>
@@ -119,7 +118,7 @@ export function Catalog({ resumeTitle, onResume, onStart, onLoaded }: Props) {
       )}
 
       <p className="text-sm text-cocoa-soft">
-        Đề do AI tạo chỉ dùng để tự ôn, không phải điểm thi. Kiểm lại đáp án với tên file và số trang trước khi tin.
+        Đề do AI tạo, không phải điểm thi. Kiểm lại đáp án với tên file và số trang trước khi tin.
       </p>
     </div>
   );
@@ -145,7 +144,7 @@ function PastryCard({ exam, index, onStart }: { exam: CatalogExam; index: number
         {exam.available ? (
           <>
             <span className="text-cocoa-soft">{exam.question_count} câu</span>
-            <span className="font-bold text-strawberry-ink group-hover:underline">Ôn ngay</span>
+            <span className="font-bold text-strawberry-ink group-hover:underline">Thưởng thức</span>
           </>
         ) : (
           <span className="rounded-pill bg-white px-2.5 py-0.5 font-bold text-cocoa-soft ring-2 ring-cocoa-line">Chưa mở</span>

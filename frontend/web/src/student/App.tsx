@@ -67,7 +67,7 @@ export function App() {
 
   /* ----- titles ----- */
   useEffect(() => {
-    if (view.name === 'catalog') document.title = 'CramAI · Tiệc trà ôn thi';
+    if (view.name === 'catalog') document.title = 'CramAI · Tiệc trà';
     else if (view.name === 'generating') document.title = 'Đang pha đề · CramAI';
     else if (view.name === 'result' && session?.result) document.title = `Kết quả ${session.result.correct_count}/${session.result.total_questions} · CramAI`;
     else if (session?.expired) document.title = 'Hết giờ · CramAI';
