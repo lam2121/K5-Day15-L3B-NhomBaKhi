@@ -145,5 +145,5 @@ Link Drive (thư mục video): [mở thư mục](<https://drive.google.com/drive
 | 4 | Bản chạy thử làm trọn lát cắt | `codebase/` · lệnh ở mục "Lệnh" |
 | 5 | Định nghĩa "tốt" + bộ câu thử | `data/DATA_CARD.md` · `eval/` |
 | 6 | Mô phỏng chi phí khi dùng thật | `cost/` |
-| 7 | Slide + demo + video dự phòng | PDF 8 trang CP4 đã xuất tại `demo-slides.pdf`; nội dung và nguồn ở `slides/content.md`, kịch bản ba ca ở `slides/demo-rehearsal.md`, deck Spaces giữ bản chỉnh sửa. Nhóm còn xác nhận quyết định và tập demo thật. Video CP4 do Lâm tự quay; video CP3 trong [thư mục Drive](<https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing>) chưa được xác nhận có đủ hai ca CP4. |
+| 7 | Slide + demo + video dự phòng | PDF 8 trang CP4 đã xuất tại `demo-slides.pdf`; nội dung và nguồn ở `slides/content.md`, deck Spaces giữ bản chỉnh sửa. Nhóm còn xác nhận quyết định và tập demo thật. Video CP4 do Lâm tự quay; video CP3 trong [thư mục Drive](<https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing>) chưa được xác nhận có đủ hai ca CP4. |
 | + | *Bonus:* người dùng thử | `validation/log.md` |

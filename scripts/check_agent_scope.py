@@ -41,7 +41,7 @@ TASK_SCOPE_OVERRIDES = {
         # Phước Anh's estimate and reconciles the shared slide checklist.
         "T022": {"cost/cost-estimate.md"},
         "T024": {
-            "slides/outline.md", "slides/content.md", "slides/demo-rehearsal.md",
+            "slides/outline.md", "slides/content.md",
             "demo-slides.pdf", ".gitattributes",
         },
     },

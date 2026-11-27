@@ -26,7 +26,7 @@
 
 ## Còn phải kiểm trước khi nộp
 
-- Nhóm xác nhận quyết định go / iterate / stop; deck hiện đề xuất iterate theo số liệu. Kịch bản tập ba tình huống có ở [demo-rehearsal.md](demo-rehearsal.md); nhóm cần tập thật trước khi đánh dấu xong.
+- Nhóm xác nhận quyết định go / iterate / stop; deck hiện đề xuất iterate theo số liệu và cần tập demo thật trước khi nộp.
 - Nộp [demo-slides.pdf](../demo-slides.pdf). Deck Spaces vẫn riêng tư; PDF đã sẵn sàng làm phương án nộp tệp.
 - Xác nhận repo chạy được trên máy demo, `.env` có key riêng trên máy đó, và gọi thử model trong vòng một giờ trước demo.
 - Kiểm video dự phòng CP4 có cả hai tình huống thật, mở được ẩn danh. Video CP3 hiện có trong [Drive](https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing), nhưng chưa xác minh nội dung CP4.
