@@ -12,12 +12,14 @@
 
 - [ ] T004 [P] [US2] **Khiêm** viết trích PDF theo `SlidePassage` trong `codebase/tools.py`, bàn giao cách kiểm PDF hỏng, thiếu lớp văn bản và mã đoạn cho Lâm.
 - [ ] T005 [US2] **Lâm** trong `backend/` triển khai 14 vị trí, auth admin, nhập draft, preview và publish nguyên tử theo `AdminList`, `AdminDetail`, `PublishRequest`.
-- [ ] T006 [P] [US2] **Phước Anh** trong `frontend/admin/` làm màn hình danh sách, chọn bộ, tải PDF, xem bản nháp, xuất bản và báo lỗi theo `AdminDetail`.
+- [x] T006 [P] [US2] **Phước Anh** trong `frontend/admin/` làm màn hình danh sách, chọn bộ, tải PDF, xem bản nháp, xuất bản và báo lỗi theo `AdminDetail`.
+  - Commit `1d7b0c2`. Kiểm bằng `?mock=1` (dữ liệu synthetic) qua Playwright ở desktop, mobile và chế độ tối; chưa ghép backend. [Cách chạy](../../frontend/README.md).
 
 ## Giai đoạn 3 — US1 · Chọn, làm và chấm đề (P1)
 
 - [ ] T007 [US1] **Lâm** trong `backend/` triển khai `CatalogResponse`, `AttemptResponse`, `SubmissionResponse`, snapshot, thời hạn và chấm điểm. Kiểm đúng số câu và khóa đáp án trước khi trả DTO.
-- [ ] T008 [P] [US1] **Phước Anh** trong `frontend/student/` làm danh mục, loading, form làm bài và màn hình kết quả. Dùng mẫu `AttemptResponse` và `SubmissionResponse` trước khi ghép backend.
+- [x] T008 [P] [US1] **Phước Anh** trong `frontend/student/` làm danh mục, loading, form làm bài và màn hình kết quả. Dùng mẫu `AttemptResponse` và `SubmissionResponse` trước khi ghép backend.
+  - Commit `1d7b0c2`. Có thêm màn hình hết hạn, nộp thiếu câu, xác nhận nộp và lỗi theo `ErrorResponse`; kiểm bằng `?mock=1` qua Playwright, chưa ghép backend. [Cách chạy](../../frontend/README.md).
 - [ ] T009 [US1] **Lâm** ghép và thêm `tests/test_web_exams.py`. Kiểm đủ 15 mục, kích hoạt đề giữa kỳ, số câu và phủ đủ bộ, quyền admin, chặn khóa đáp án, nộp trùng, hết hạn, cập nhật slide và lỗi model. Cả nhóm demo hai phạm vi.
 
 ## Giai đoạn 4 — US3 · CI/CD và phát hành VPS (P2)
