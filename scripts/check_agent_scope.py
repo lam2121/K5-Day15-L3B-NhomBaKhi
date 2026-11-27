@@ -27,10 +27,10 @@ ROLE_FILES = {
     },
 }
 ROLE_DIRS = {
-    "lam": (".agents/", ".specify/", "specs/", "scripts/", "tests/", "traces/"),
+    "lam": (".agents/", ".specify/", "specs/", "scripts/", "tests/", "traces/", "backend/", "deploy/"),
     "hung": ("codebase/prompts/",),
     "khiem": ("data/", "evidence/interviews/", "evidence/survey/", "evidence/scripts/"),
-    "phuoc-anh": ("slides/", "validation/"),
+    "phuoc-anh": ("slides/", "validation/", "frontend/"),
 }
 RUN_FILE = re.compile(r"(?:eval/run-[0-9]+\.csv|cost/simulate-[0-9]+(?:\.csv|-summary\.md))")
 

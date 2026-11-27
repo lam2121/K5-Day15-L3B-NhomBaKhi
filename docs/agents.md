@@ -4,10 +4,10 @@ Dùng bốn phiên Codex, mỗi người một vai và một branch. Khởi đ�
 
 | Người và vai | Branch | File phụ trách |
 |---|---|---|
-| Nguyễn Văn Lâm · tích hợp và model | `lam` | `codebase/ai.py`, `codebase/contracts.py`, tài liệu và cấu hình dùng chung, Spec Kit, [CI/CD](ci-cd.md), `scripts/`, `tests/`, `eval/README.md` và output các lượt chính thức. |
+| Nguyễn Văn Lâm · tích hợp và model | `lam` | `codebase/ai.py`, `codebase/contracts.py`, `backend/`, `deploy/`, tài liệu và cấu hình dùng chung, Spec Kit, [CI/CD](ci-cd.md), `scripts/`, `tests/`, `eval/README.md` và output các lượt chính thức. |
 | Nguyễn Duy Hưng · workflow AI | `cramai/hung-workflow` | `codebase/agent.py`, `codebase/prompts/` (nếu cần), `eval/report.md`. |
 | Nguyễn Trọng Khiêm · nguồn và bộ câu thử | `cramai/khiem-data` | `codebase/tools.py`, `data/`, ghi chép và cách đếm trong `evidence/` trừ summary, `eval/benchmark.csv`. |
-| Bùi Phước Anh · trải nghiệm và sản phẩm | `cramai/phuoc-anh-product` | `codebase/app.py`, `canvas.md`, `evidence/summary.md`, `eval/metric_spec.yaml`, hai file cấu hình/báo cáo chi phí, `slides/`, `demo-slides.pdf`, `validation/`. |
+| Bùi Phước Anh · trải nghiệm và sản phẩm | `cramai/phuoc-anh-product` | `frontend/`, `codebase/app.py`, `canvas.md`, `evidence/summary.md`, `eval/metric_spec.yaml`, hai file cấu hình/báo cáo chi phí, `slides/`, `demo-slides.pdf`, `validation/`. |
 
 Mỗi người sở hữu file reflection mang tên mình. Danh sách đường dẫn chính xác nằm trong [script kiểm phạm vi](../scripts/check_agent_scope.py). File khung BTC giữ nguyên theo `AGENTS.md`.
 
@@ -32,6 +32,10 @@ Mỗi người sở hữu file reflection mang tên mình. Danh sách đường 
 - **Phước Anh:** “Dùng `$speckit-implement` cho Txxx của vai `phuoc-anh`. Chỉ sửa file vai `phuoc-anh`. Kiểm CLI với fixture, đọc `result` theo schema, chuẩn bị metric cùng Khiêm. Bàn giao nội dung pain, impact, cách chấm và chi phí cho Lâm cập nhật các trang chung.”
 
 Mỗi agent báo ID hoàn thành trong PR. Lâm là người cập nhật ô task chung, `spec.md` gốc và hồ sơ đánh giá khi hợp nhất. Dùng `$speckit-analyze` để rà chéo. Khi chạy được giao nhiệm vụ cụ thể, ID và vai là phạm vi áp dụng cho `$speckit-implement`.
+
+Trước CP2, dựa trên task T004–T010 của 001. Khi T010 hoàn tất, chọn ID trong [bảng phân công sau CP2](../specs/001-cramai/tasks.md#phân-công-sau-cp2) và bắt đầu từ cùng commit CP2. Hưng và Khiêm ghép workflow với nguồn. Phước Anh làm CLI dựa trên fixture và bàn giao persona. Lâm ghi lượt chạy chính thức và cập nhật task chung.
+
+Khi nhận task web, đặt `SPECIFY_FEATURE_DIRECTORY=specs/003-cramai-exams` và đọc [backlog web](../specs/003-cramai-exams/tasks.md). Luôn ghi mã feature cùng ID task. Lâm làm backend, Hưng giữ core, Khiêm giữ bộ trích PDF, Phước Anh làm hai giao diện. Cả bốn dùng cùng [hợp đồng HTTP](../specs/003-cramai-exams/contracts/openapi.json) và [hợp đồng Python](../specs/003-cramai-exams/contracts/core.md).
 
 ## Handoff và thứ tự ghép
 

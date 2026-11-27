@@ -1,13 +1,15 @@
 > Đây là khung repo nộp bài. Điền mọi chỗ `____`, giữ nguyên tên các mục.
 > Giờ, mốc, luật, rubric: xem `README.md`, `02-guide.md`, `03-rubric.md` trong repo đề (bộ đề BTC phát).
 
-# NhomBaKhi — CramAI: Tổng hợp đề ôn thi giữa kỳ từ 14 slide PDF
+# NhomBaKhi — CramAI: Đề ôn theo 14 bộ slide và đề giữa kỳ
 
 **Thành viên, lớp, track:** xem [TEAMS.md](TEAMS.md). **Điền TEAMS.md đúng format**: khi chấm và đánh giá, BTC quét file này để ghép điểm cho từng người.
 
 *Lát cắt = phần nhỏ nhất làm xong được trong hackathon: một người dùng · một việc · một quyết định AI · một kết quả.*
 
 Nhóm phối hợp theo [hướng dẫn bốn agent](docs/agents.md). GitHub Spec Kit lưu [đặc tả, kế hoạch và API chung](specs/001-cramai/plan.md) cùng [backlog theo checkpoint](specs/001-cramai/tasks.md).
+
+Bản web cho admin xuất bản 14 bộ slide và cho học viên chọn đề, làm bài, xem điểm và đối chiếu nguồn. [Đặc tả web](specs/003-cramai-exams/spec.md) · [Frontend và backend](specs/003-cramai-exams/plan.md) · [API](specs/003-cramai-exams/contracts/openapi.json).
 
 [CI/CD](docs/ci-cd.md) kiểm thử pull request và đóng gói bản bàn giao từ commit đã qua kiểm tra trên `main`.
 
