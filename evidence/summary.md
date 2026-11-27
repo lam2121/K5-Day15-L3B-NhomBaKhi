@@ -55,6 +55,30 @@ Giả thuyết ở `evidence/hypothesis.md`: **đúng một phần, có thể ph
 - Lệch: 7/21 chưa bao giờ mở lại slide; lần ôn gần nhất phần lớn chỉ 1 ngày học (8/14), nên pain "trọng tâm trải dài nhiều buổi" chưa được chứng minh.
 - Vẫn chưa biết: người dùng ChatGPT ra câu hỏi gặp lỗi gì (bịa, lệch slide); cần phỏng vấn ≥3 người ngoài nhóm để hỏi tiếp.
 
+## 6. Hệ thống hiện tại (cách học viên đang ôn)
+
+Nguồn: khảo sát 27/11, 14 người từng ôn bằng slide (chọn nhiều).
+
+1. Mở lại slide khoá học và đọc lại: 13/14.
+2. Hỏi ChatGPT hoặc công cụ AI khác trong lúc ôn: 12/14.
+3. Tự kiểm tra sau khi ôn: 7/14 nhờ AI ra câu hỏi · 5/14 làm câu hỏi có sẵn của khoá · 6/14 không kiểm tra.
+4. Kết quả: 0/14 ôn xong hẳn việc định ôn.
+
+Câu hỏi do ChatGPT tạo có bám đúng slide không, sai ở đâu, mất bao lâu dò lại: **chưa kiểm** (cần phỏng vấn).
+
+## 7. Impact tháng (cho `spec.md` §2 và `cost/personas.yaml`)
+
+| Thừa số | Giá trị | Nguồn |
+|---|---|---|
+| Người dùng (cơ sở) | 470 (thấp 300 · cao 700) | `cost/personas.yaml` › `users`: 700 học viên L3 × 14/21 từng ôn bằng slide. Quy mô 700 chưa có link. |
+| Số lần ôn / người / tháng | 5,16 = 0,14 × 2 + 0,50 × 4 + 0,36 × 8 | Khảo sát câu 3 (số lần mở slide ôn trong 7 ngày) × ~4 tuần. Tỉ trọng ở `cost/personas.yaml`. |
+| Thời gian một lần ôn hiện nay | 12/14 ≥30 phút · 8/14 ≥1 giờ | Khảo sát câu 6 |
+| Phút tiết kiệm mỗi lần nhờ có đề kèm trang slide | 15 phút | *(tự ước tính)*: bớt bước tự nghĩ/nhờ AI ra câu hỏi và dò lại slide để kiểm đáp án. Chưa đo. |
+
+- **Mỗi người:** 5,16 × 15 ≈ 77 phút/tháng (≈1,3 giờ) *(tự ước tính theo thừa số trên)*.
+- **Toàn khoá:** thấp 300 × 77 ≈ 390 giờ · cơ sở 470 × 77 ≈ 610 giờ · cao 700 × 77 ≈ 900 giờ/tháng.
+- Thừa số yếu nhất là 15 phút tiết kiệm. Cần đo bằng phỏng vấn hoặc buổi dùng thử (`validation/log.md`) trước CP4.
+
 ## Lịch hẹn (dùng cho CP2 — chỉ ghi vai và giờ, không tên)
 
 | Vai | Giờ hẹn | Đã xong? |
