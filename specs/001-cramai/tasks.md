@@ -76,7 +76,8 @@ Mở chặng dưới đây khi T010 hoàn tất và cả nhóm có commit CP2 đ
 
 - [x] T027 [P] **Lâm** thiết lập `.github/workflows/ci.yml` để kiểm thử PR, kiểm phạm vi vai và đóng gói commit trên `main`. Xác minh lượt GitHub Actions đầu tiên và tài liệu tải bản bàn giao trong `docs/ci-cd.md`. Làm song song với chuẩn bị CP2.
   - Đã kiểm job `Role scope` trên PR và gói ZIP kèm checksum do CI tạo trên `main`. [CI PR #11](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/actions/runs/46030109366) · [Gói bàn giao trên `main`](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/actions/runs/46033324155) · [Hướng dẫn tải](../../docs/ci-cd.md).
-- [ ] T028 [US1] **Lâm** tích hợp thay đổi sản phẩm được các chủ file đồng ý sau CP2: gỡ duyệt, loại và chốt câu khỏi `codebase/app.py`, cập nhật phản hồi trong `codebase/agent.py`, đồng bộ đặc tả và kiểm tra hồi quy. Chỉ giữ ngoại lệ phạm vi cho đúng hai file này khi commit cuối mang mã `[T028]`; không thay đổi quyền sở hữu file cho các PR khác.
+- [x] T028 [US1] **Lâm** tích hợp thay đổi sản phẩm được các chủ file đồng ý sau CP2: gỡ duyệt, loại và chốt câu khỏi `codebase/app.py`, cập nhật phản hồi trong `codebase/agent.py`, đồng bộ đặc tả và kiểm tra hồi quy. Chỉ giữ ngoại lệ phạm vi cho đúng hai file này khi commit cuối mang mã `[T028]`; không thay đổi quyền sở hữu file cho các PR khác.
+  - CI PR #19 đạt trên Ubuntu và Windows; role scope chỉ cho phép đúng hai file theo ngoại lệ T028. [Run 46041785596](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/actions/runs/46041785596).
 
 ## Thứ tự và điểm bàn giao
 
