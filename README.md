@@ -9,9 +9,16 @@
 
 Nhóm phối hợp theo [hướng dẫn bốn agent](docs/agents.md). GitHub Spec Kit lưu [đặc tả, kế hoạch và API chung](specs/001-cramai/plan.md) cùng [backlog theo checkpoint](specs/001-cramai/tasks.md).
 
-Bản web cho admin xuất bản 14 bộ slide và cho học viên chọn đề, làm bài, xem điểm và đối chiếu nguồn. [Đặc tả web](specs/003-cramai-exams/spec.md) · [Frontend và backend](specs/003-cramai-exams/plan.md) · [API](specs/003-cramai-exams/contracts/openapi.json).
+Phạm vi web dự kiến cho admin xuất bản 14 bộ slide và cho học viên chọn đề, làm bài, xem điểm và đối chiếu nguồn. [Đặc tả web](specs/003-cramai-exams/spec.md) · [Frontend và backend](specs/003-cramai-exams/plan.md) · [API](specs/003-cramai-exams/contracts/openapi.json).
 
 [CI/CD](docs/ci-cd.md) kiểm thử pull request và đóng gói bản bàn giao từ commit đã qua kiểm tra trên `main`.
+
+## Hồ sơ CP2
+
+- Canvas đã cập nhật lát cắt và thay đổi từ CP1. Khảo sát có 21 học viên L3 ngoài nhóm, 14 từng ôn bằng slide. Trong 14 người đó, 12 gặp slide khó tự hiểu và 8 mất từ một giờ trở lên ở lần ôn gần nhất. [Canvas](canvas.md) · [Tổng hợp khảo sát](evidence/summary.md).
+- §4 mô tả workflow CLI, điểm kiểm nguồn và bước học viên đối chiếu. §7 ghi chuẩn đạt bằng số. [Spec nộp bài](spec.md).
+- Benchmark có 12 câu và 4 metric. Năm ca bắt nguồn từ tình huống trong khảo sát, vượt ngưỡng 1/3. Corpus có 280 đoạn từ 14 ngày học. [Benchmark](eval/benchmark.csv) · [Metric](eval/metric_spec.yaml) · [Data card](data/DATA_CARD.md) · [Hồ sơ đánh giá](eval/README.md).
+- Demo giả đã chạy qua luồng tạo đề và hỏi rõ phạm vi. Đặt `MODEL_PROVIDER=fake`, chạy `python run.py`, rồi nhập `Tạo câu trắc nghiệm về Prompt Engineering và Tool Calling ở ngày 3.` để xem ba câu có đáp án và nguồn. Nhập `Ôn hết giúp mình.` để xem phản hồi hỏi lại.
 
 ---
 
@@ -50,7 +57,7 @@ Gõ `dir` (Windows) hoặc `ls` (macOS / Linux): thấy `run.py` và `README.md`
 
 - Windows: gõ `python` mà mở Microsoft Store hoặc báo không có lệnh → dùng `py`. Chưa có Python: cài từ python.org, **tick "Add python.exe to PATH"**, mở lại PowerShell.
 - macOS: báo `command not found: python` là bình thường → dùng `python3`.
-- `python run.py` in ra "[câu trả lời giả — chưa nối model] …" là khung chạy đúng. Nối model thật: [docs/connect-model.md](docs/connect-model.md).
+- Ở chế độ giả, ca có đề in câu hỏi, đáp án, nguồn và dòng thống kê `model: fake` với token vào và ra bằng 0. [Hướng dẫn nối model thật](docs/connect-model.md).
 
 Trong README này lệnh viết là `python …`; máy nhóm cần `python3` hay `py` thì gõ thay.
 
@@ -90,7 +97,7 @@ Nhóm dùng stack khác (Node, Streamlit, notebook…): sửa hàm `run_app()` t
 
 | Thành phần | Thật / Giả | Ghi chú |
 |---|---|---|
-| Lời gọi AI ở quyết định trung tâm | Giả trong cấu hình mặc định | Adapter hỗ trợ Gemini và OpenAI. CP3 cần model thật đã xác minh usage. |
+| Lời gọi AI ở quyết định trung tâm | Giả trong cấu hình mặc định | Adapter hỗ trợ Gemini, OpenAI và Claude. CP3 cần model thật đã xác minh usage. |
 |  |  |  |
 
 ## Dùng AI vào việc gì

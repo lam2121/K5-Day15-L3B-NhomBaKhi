@@ -1,10 +1,10 @@
 # Nối model cho CramAI
 
-`codebase/ai.py` hỗ trợ Gemini và OpenAI qua thư viện chuẩn Python. `call_model(system, user)` giữ hợp đồng `ModelResponse` và `@model_call`, trả văn bản, mã model và số token từ API. Nhánh giả vẫn dùng được cho CP2.
+`codebase/ai.py` hỗ trợ Gemini, OpenAI và Claude qua thư viện chuẩn Python. `call_model(system, user)` giữ hợp đồng `ModelResponse` và `@model_call`, trả văn bản, mã model và số token từ API. Nhánh giả vẫn dùng được cho CP2.
 
 ## Cấu hình
 
-Chép `.env.example` thành `.env` nếu chưa có. Điền một trong hai cấu hình dưới bằng model mà tài khoản nhóm truy cập được.
+Chép `.env.example` thành `.env` nếu chưa có. Chọn cấu hình phù hợp với model mà tài khoản nhóm truy cập được.
 
 ```dotenv
 MODEL_PROVIDER=gemini
@@ -18,7 +18,13 @@ MODEL_NAME=<mã model hỗ trợ Chat Completions>
 API_KEY=<OpenAI API key của nhóm>
 ```
 
-Giữ API key trong `.env` cục bộ. Đặt `MODEL_PROVIDER=fake` hoặc để trống để chạy giả với token 0. Biến môi trường đã đặt trong shell được ưu tiên hơn `.env`. [Gemini API](https://ai.google.dev/api/generate-content) · [OpenAI Chat Completions](https://developers.openai.com/api/reference/resources/chat).
+```dotenv
+MODEL_PROVIDER=anthropic
+MODEL_NAME=claude-haiku-5-5
+API_KEY=<Claude API key của workspace nhóm>
+```
+
+Giữ API key trong `.env` cục bộ. Đặt `MODEL_PROVIDER=fake` hoặc để trống để chạy giả với token 0. Biến môi trường đã đặt trong shell được ưu tiên hơn `.env`. [Gemini API](https://ai.google.dev/api/generate-content) · [OpenAI Chat Completions](https://developers.openai.com/api/reference/resources/chat) · [Anthropic Messages API](https://platform.claude.com/docs/en/api/http/messages/create).
 
 ## Kiểm adapter trước khi ghép workflow
 
@@ -40,4 +46,4 @@ Khi tên model khác `fake` và cả hai số token dương, ghi mã đó trong 
 | HTTP 429 | Kiểm hạn mức. Khi chạy lô, thử `--wait 4` giữa các lượt. |
 | Thiếu usage, hết thời gian hoặc phản hồi bị cắt | Kiểm lại bằng prompt ngắn. Runner ghi lỗi để nhóm xử lý trước lượt chính thức. |
 
-Gemini cộng token suy luận riêng vào token đầu ra. OpenAI đã tính token suy luận trong completion usage. Dữ liệu prompt có thể xuất hiện trong trace, nên chỉ dùng nội dung được phép đưa vào hồ sơ công khai.
+Gemini cộng token suy luận riêng vào token đầu ra. OpenAI và Claude dùng số token đầu ra tổng từ API. Claude cộng token đầu vào đọc và tạo cache vào tổng token đầu vào, nếu API trả các trường này. Dữ liệu prompt có thể xuất hiện trong trace, nên chỉ dùng nội dung được phép đưa vào hồ sơ công khai.
