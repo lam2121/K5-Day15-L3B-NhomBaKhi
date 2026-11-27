@@ -6,7 +6,7 @@
 ## 1. Nguồn đã dùng
 
 - [x] **Khảo sát.** 21 học viên L3A/L3B ngoài nhóm. Phước Anh xác nhận ngày 27/11 rằng thành viên NhomBaKhi không điền form. Số phiếu 1–21 theo thứ tự dấu thời gian. [Kết quả khảo sát](survey/results.csv).
-- [x] **Phỏng vấn.** Nhóm xác nhận cả 4 người P1–P4 đều ngoài nhóm. P2–P4 kể lại trải nghiệm ôn bằng slide. [Bốn bản ghi phỏng vấn](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/tree/d41a9f0413420fa299fdacd2a8e93648e0775950/evidence/interviews).
+- [x] **Phỏng vấn.** Nhóm xác nhận cả 4 người P1–P4 đều ngoài nhóm. P2–P4 kể lại trải nghiệm ôn bằng slide. [Bốn bản ghi phỏng vấn](interviews/).
 - [ ] **Đào data.** Nhóm chưa dùng log pre-class để kết luận về việc ôn slide. [Ghi chú đào dữ liệu](data-mining.md).
 
 ## 2. Số chính
@@ -67,7 +67,7 @@ Nguồn: khảo sát 27/11, 14 người từng ôn bằng slide (chọn nhiều)
 
 P4 chưa biết lời giải thích của AI có đúng không. Các cuộc phỏng vấn hiện chưa có ví dụ câu hỏi do AI tạo đã được dò lại với slide, nên chất lượng các câu hỏi đó và thời gian dò đáp án vẫn chưa được đo.
 
-## 7. Impact tháng (cho `spec.md` §2 và `cost/personas.yaml`)
+## 7. Impact tháng
 
 | Thừa số | Giá trị | Nguồn |
 |---|---|---|

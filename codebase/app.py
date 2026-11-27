@@ -39,13 +39,21 @@ def render_question(question: dict) -> str:
     """Hiển thị câu hỏi cùng đáp án, độ khó và nguồn."""
     head = f'{question["question_id"]} · {DIFFICULTY_LABELS.get(question["difficulty"], question["difficulty"])}'
     sources = "; ".join(
-        f'{citation["file_name"]}, trang {citation["page"]} [{citation["source_id"]}]'
+        f'{_day_label(citation["source_id"])}{citation["file_name"]}, trang {citation["page"]} [{citation["source_id"]}]'
         for citation in question["citations"]
     )
     return (
         f'{head}\n{question["prompt"].strip()}\n'
         f'Đáp án: {question["answer"].strip()}\nNguồn: {sources}'
     )
+
+
+def _day_label(source_id: str) -> str:
+    """'day03-p074-s01' → 'Ngày 3 · '. Ngày học lấy từ mã đoạn của corpus, vì tên file gốc có thể ghi khác (vd. day04)."""
+    prefix = source_id.split("-", 1)[0]
+    if prefix.startswith("day") and prefix[3:].isdigit():
+        return f"Ngày {int(prefix[3:])} · "
+    return ""
 
 
 def render_result(result: dict) -> str:

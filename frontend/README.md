@@ -34,6 +34,7 @@ In the admin mock, Slide 03 has a draft waiting to be published and Slide 07 has
 
 ## Integration notes for the backend (Lâm)
 
+- **Student UI tested against `backend/app.py` (main `f54e189`, fake mode) on 2026-11-28.** The test served `frontend/student/` from the same FastAPI app via `StaticFiles`. The database had 13 published slides with Slide 07 missing. Run through Playwright: `GET /api/v1/catalog` 200, `POST /api/v1/attempts` 201, `POST /api/v1/submissions` 200, no console errors. The catalog showed 14 slides with Slide 07 disabled along with the reason the backend returned. The attempt had 5 questions, and the result listed citations `slide-03.pdf`, page 1. The backend has no `/api/v1/admin/*` routes yet, so the admin UI has not been tested against it.
 - Serve `student/` at the site root and `admin/` at `/admin/`. Each folder is self-contained: it includes its own fonts and `tokens.css`. Keep the two `tokens.css` copies identical.
 - Error bodies must follow `ErrorResponse`. The UI maps `error.code` to Vietnamese copy with a recovery step. A 429 from the proxy without JSON is treated as `busy`. A 413 without JSON is treated as "file too large".
 - The admin upload sends `PUT /api/v1/admin/slides/{n}/draft` as multipart with repeated `files` fields. Before sending, the UI checks: at most 5 files, at most 10 MiB each, at most 25 MiB in total.
