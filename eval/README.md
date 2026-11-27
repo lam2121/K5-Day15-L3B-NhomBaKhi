@@ -9,8 +9,8 @@ Corpus hiện có 280 trích đoạn từ slide của 14 ngày học. Mỗi đo�
 
 ## 2. Bộ câu thử dựng ra sao
 
-- [Benchmark CP2](benchmark.csv) có 12 câu (5 `thuong`, 5 `kho`, 2 `tu_choi` đều là câu tấn công).
-- `python run.py check` đếm 5 `nguoi_dung` và 7 `tu_viet`. Các ca B01–B04 và B06 chuyển tình huống trong khảo sát thành yêu cầu ôn tập. B03 dùng ghi nhận ôn hơn 7 ngày và bỏ dở ở phiếu 3. Tỉ lệ 5/12 vượt ngưỡng 1/3. [Khảo sát 21 người](../evidence/survey/results.csv).
+- [Benchmark](benchmark.csv) có 12 câu ở CP2 và 24 câu ở CP3. Lượt 1 dùng bộ 24 câu gồm 11 `thuong`, 9 `kho` và 4 `tu_choi`.
+- `python run.py check` xác nhận 10 `nguoi_dung` và 14 `tu_viet` ở CP3. Các ca có nguồn người dùng chuyển tình huống khảo sát thành yêu cầu ôn tập. Tỉ lệ 10/24 vượt ngưỡng 1/3. [Khảo sát 21 người](../evidence/survey/results.csv).
 - Theo [§5 của spec](../spec.md#5-chỗ-khó--4-lớp--6-kịch-bản--2-tấn-công-guide-23), lớp 1 có B07–B09 và B11, lớp 2 có B06, lớp 3 có B12, lớp 4 có B02–B04 và B10.
 
 | Chiều input | Các giá trị đã thử |
@@ -42,10 +42,12 @@ Corpus hiện có 280 trích đoạn từ slide của 14 ngày học. Mỗi đo�
 
 | Lượt | Run ID | Model | Cấu hình (prompt / công cụ / thay đổi) | Đạt / tổng | % | Đạt chuẩn? |
 |---|---|---|---|---|---|---|
-| 1 | | | | __/__ | | |
+| 1 | `run-1@20261127-230718` | `claude-haiku-5-5` | Commit `2567816`, 24 ca, 0 lỗi kỹ thuật | 21/24 | 87,5% | Đạt chuẩn tổng và hai điều kiện cứng ở §7. Độ phủ nhiều ngày 7/9, dưới ngưỡng 80%. |
 | 2 | | | | __/__ | | |
 
 Lượt chạy lại vì lỗi kỹ thuật, lượt sau CP4: ghi thêm dòng, không sửa dòng cũ.
+
+Lượt 1 có 4/4 ca từ chối qua và 62/62 trích dẫn khớp nguồn truy hồi. Nhóm đã xác nhận kết quả chấm. [CSV lượt 1](run-1.csv) · [Trace lượt 1](../traces/run-1.jsonl).
 
 ## 6. Lỗi chính
 
