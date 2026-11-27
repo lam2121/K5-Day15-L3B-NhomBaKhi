@@ -1,8 +1,11 @@
-"""Công cụ truy hồi đoạn slide cho CramAI — chỉ đọc, giữ @tool theo hợp đồng v1."""
+"""Công cụ truy hồi và trích xuất đoạn slide cho CramAI."""
 
 import json
+import os
 import re
 import unicodedata
+from collections.abc import Sequence
+from functools import lru_cache
 from pathlib import Path
 
 from contracts import SlidePassage
@@ -22,17 +25,39 @@ _STOP_WORDS = {
     "tu", "khoa", "la", "co", "khong", "den", "toi", "phien", "bo", "du", "lieu",
 }
 
+MAX_PDFS_PER_SLOT = 5
+MAX_PAGES_PER_PDF = 120
+MAX_PAGES_PER_SLOT = 300
+MAX_PASSAGE_CHARS = 1200
+
 
 def _fold(text: str) -> str:
     nfd = unicodedata.normalize("NFD", text.lower().replace("đ", "d").replace("Đ", "d"))
     return "".join(ch for ch in nfd if unicodedata.category(ch) != "Mn")
 
 
-def _load_passages() -> list[SlidePassage]:
+def _day_of(passage: SlidePassage) -> str:
+    match = _DAY_PREFIX.match(passage["source_id"])
+    return match.group(1) if match else ""
+
+
+@lru_cache(maxsize=2)
+def _load_index_cached(path_str: str, mtime_ns: int) -> tuple[tuple[str, str, SlidePassage], ...]:
+    del mtime_ns  # chỉ dùng làm khoá vô hiệu hoá cache khi file thay đổi
+    entries: list[tuple[str, str, SlidePassage]] = []
+    with open(path_str, encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            passage: SlidePassage = json.loads(line)
+            entries.append((_day_of(passage), _fold(f"{passage['file_name']} {passage['text']}"), passage))
+    return tuple(entries)
+
+
+def _load_index() -> tuple[tuple[str, str, SlidePassage], ...]:
     if not _PASSAGES_PATH.exists():
-        return []
-    with _PASSAGES_PATH.open(encoding="utf-8") as f:
-        return [json.loads(line) for line in f if line.strip()]
+        return ()
+    return _load_index_cached(str(_PASSAGES_PATH), _PASSAGES_PATH.stat().st_mtime_ns)
 
 
 def _extract_days(folded: str) -> set[str]:
@@ -46,15 +71,10 @@ def _extract_days(folded: str) -> set[str]:
     return days
 
 
-def _day_of(passage: SlidePassage) -> str:
-    match = _DAY_PREFIX.match(passage["source_id"])
-    return match.group(1) if match else ""
-
-
-def _round_robin_by_day(passages: list[SlidePassage], limit: int) -> list[SlidePassage]:
+def _round_robin_by_day(entries: list[tuple[str, str, SlidePassage]], limit: int) -> list[SlidePassage]:
     buckets: dict[str, list[SlidePassage]] = {}
-    for p in passages:
-        buckets.setdefault(_day_of(p), []).append(p)
+    for day, _, passage in entries:
+        buckets.setdefault(day, []).append(passage)
     picked: list[SlidePassage] = []
     keys = sorted(buckets)
     while len(picked) < limit and any(buckets.values()):
@@ -73,16 +93,15 @@ def search_slides(query: str, *, limit: int = 12) -> list[SlidePassage]:
     if not isinstance(query, str) or not query.strip():
         return []
 
-    passages = _load_passages()
-    if not passages:
+    entries = _load_index()
+    if not entries:
         return []
 
     folded = _fold(query)
     days = _extract_days(folded)
-    if days:
-        passages = [p for p in passages if _day_of(p) in days]
-        if not passages:
-            return []
+    pool = [item for item in entries if item[0] in days] if days else list(entries)
+    if not pool:
+        return []
 
     raw_tokens = re.findall(r"[a-z0-9]+", folded)
     topic_tokens = {
@@ -91,23 +110,96 @@ def search_slides(query: str, *, limit: int = 12) -> list[SlidePassage]:
     }
     if not topic_tokens:
         if days or any(hint in folded for hint in _BROAD_HINTS):
-            return _round_robin_by_day(passages, limit)
+            return _round_robin_by_day(pool, limit)
         return []
 
     scored: list[tuple[int, str, SlidePassage]] = []
-    for p in passages:
-        haystack = _fold(f"{p['file_name']} {p['text']}")
+    for _, haystack, passage in pool:
         hits = sum(1 for tok in topic_tokens if tok in haystack)
         if hits:
-            scored.append((-hits, p["source_id"], p))
+            scored.append((-hits, passage["source_id"], passage))
     scored.sort(key=lambda item: (item[0], item[1]))
     return [item[2] for item in scored[:limit]]
 
 
-# ponytail: giữ stub tạm để starter agent.py không lỗi import trước khi Hưng chuyển sang search_slides
-def search_example(query: str) -> list:
-    """Stub tương thích tạm cho starter agent.py."""
-    return [{"code": p["source_id"], "text": p["text"]} for p in search_slides(query, limit=3)]
+def _sanitize_pdf_name(raw_name: str) -> str:
+    name = Path(raw_name).name.strip()
+    if not name or name in {".", ".."} or any(mark in name for mark in "/\\:\r\n"):
+        raise ValueError(f"Tên tệp PDF không hợp lệ: {raw_name!r}")
+    return name
+
+
+def _open_pdf_doc(pymupdf_mod, item: str | os.PathLike[str] | tuple[str, bytes]):
+    if isinstance(item, tuple):
+        if len(item) != 2 or not isinstance(item[0], str) or not isinstance(item[1], (bytes, bytearray)):
+            raise ValueError("Mục PDF dạng tuple phải là (file_name, bytes).")
+        file_name = _sanitize_pdf_name(item[0])
+        return file_name, pymupdf_mod.open(stream=bytes(item[1]), filetype="pdf")
+    path = Path(item)
+    file_name = _sanitize_pdf_name(path.name)
+    return file_name, pymupdf_mod.open(path)
+
+
+def extract_pdf_passages(
+    files: Sequence[str | os.PathLike[str] | tuple[str, bytes]],
+    slide_number: int,
+) -> dict:
+    """Trích xuất SlidePassage từ 1–5 PDF cho một vị trí slide (01–14) của web backend.
+
+    Hàm thuần trích xuất (không ghi DB/ổ đĩa). Lazy import pymupdf để CLI giữ nguyên stdlib.
+    """
+    if type(slide_number) is not int or not 1 <= slide_number <= 14:
+        raise ValueError("slide_number phải là số nguyên từ 1 đến 14.")
+    if not files or len(files) > MAX_PDFS_PER_SLOT:
+        raise ValueError(f"Mỗi bộ slide nhận từ 1 đến {MAX_PDFS_PER_SLOT} tệp PDF.")
+
+    import pymupdf
+
+    pymupdf.TOOLS.mupdf_display_errors(False)
+    documents: list[dict[str, int | str]] = []
+    passages: list[SlidePassage] = []
+    total_pages = 0
+
+    for doc_idx, item in enumerate(files, start=1):
+        try:
+            file_name, doc = _open_pdf_doc(pymupdf, item)
+        except ValueError:
+            raise
+        except Exception as exc:
+            raise ValueError(f"Tệp PDF hỏng hoặc không đọc được: {exc}") from None
+
+        try:
+            page_count = len(doc)
+            if page_count < 1 or page_count > MAX_PAGES_PER_PDF:
+                raise ValueError(f"{file_name}: số trang ({page_count}) phải nằm trong 1..{MAX_PAGES_PER_PDF}.")
+            total_pages += page_count
+            if total_pages > MAX_PAGES_PER_SLOT:
+                raise ValueError(f"Tổng số trang vượt giới hạn {MAX_PAGES_PER_SLOT} trang/bộ.")
+
+            doc_chars = 0
+            for page_no, page in enumerate(doc, start=1):
+                cleaned = " ".join(page.get_text().split())
+                if not cleaned:
+                    continue
+                doc_chars += len(cleaned)
+                text = (
+                    cleaned[:MAX_PASSAGE_CHARS].rsplit(" ", 1)[0] + "…"
+                    if len(cleaned) > MAX_PASSAGE_CHARS
+                    else cleaned
+                )
+                passages.append({
+                    "source_id": f"day{slide_number:02d}-d{doc_idx:02d}-p{page_no:03d}-s01",
+                    "file_name": file_name,
+                    "page": page_no,
+                    "text": text,
+                })
+            if doc_chars == 0:
+                raise ValueError(f"{file_name}: PDF thiếu lớp văn bản (không hỗ trợ PDF chỉ có ảnh/scan).")
+            documents.append({"file_name": file_name, "page_count": page_count})
+        finally:
+            doc.close()
+
+    return {"slide_number": slide_number, "documents": documents, "passages": passages}
 
 
 if __name__ == "__main__":
@@ -117,4 +209,20 @@ if __name__ == "__main__":
     assert search_slides("Ôn tập ngày 99") == []
     assert len(search_slides("Prompt Engineering và Tool Calling ở ngày 3")) >= 1
     assert search_slides("") == []
+
+    import pymupdf as _pm
+    _doc = _pm.open()
+    _doc.new_page().insert_text((72, 72), "Day 03: Prompt Engineering and Tool Calling.")
+    _res = extract_pdf_passages([("day03-sample.pdf", _doc.tobytes())], 3)
+    assert _res["documents"] == [{"file_name": "day03-sample.pdf", "page_count": 1}]
+    assert _res["passages"][0]["source_id"] == "day03-d01-p001-s01"
+
+    _blank = _pm.open()
+    _blank.new_page()
+    for _bad in (("corrupt.pdf", b"not-a-pdf"), ("scan.pdf", _blank.tobytes())):
+        try:
+            extract_pdf_passages([_bad], 3)
+            raise AssertionError("Expected ValueError")
+        except ValueError:
+            pass
     print("tools.py self-check OK")
