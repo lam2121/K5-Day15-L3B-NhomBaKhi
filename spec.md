@@ -116,15 +116,29 @@ Ca nghiệm thu web nằm trong [đặc tả 003](specs/003-cramai-exams/spec.md
 - **Cách xác minh điều kiện cứng.** Đối chiếu mã đoạn, tên file và trang trong output với trace `search_slides` của câu thử. Đọc output và trace để kiểm việc chấm bài hoặc gửi đề ngoài phạm vi. Lỗi thiếu gợi ý bước tiếp theo vẫn tính vào điểm của từng câu thử theo metric.
 - **Lượt 1.** Nhóm xác nhận 21/24 ca đạt (87,5%) trên `claude-haiku-5-5`, run ID `run-1@20261127-230718`. Cả 4 ca từ chối đều đạt và 62/62 trích dẫn hợp lệ. Metric độ phủ nhiều ngày đạt 7/9 (77,8%), dưới ngưỡng 80%. [Hồ sơ đánh giá](eval/README.md) · [CSV](eval/run-1.csv) · [Trace](traces/run-1.jsonl).
 - **Video demo CP3.** [Thư mục Drive](<https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing>); quyền xem ẩn danh: nhóm xác nhận đã kiểm tra và mở được.
-- **Lượt 2.** Chờ thực hiện ở CP4.
+- **Lượt 2.** Run ID `run-2@20261128-003757` trên `claude-haiku-5-5`, cùng bộ 24 câu; 22/24 (91,7%), tăng một ca so với lượt 1. Cả 4 ca từ chối đạt, 63/63 trích dẫn khớp trace khi đối chiếu và không có lỗi kỹ thuật. Metric phủ nhiều ngày chỉ đạt 5/7 (71,4%), dưới ngưỡng 80%; B05 và B16 còn thiếu ngày hoặc chủ đề. [Hồ sơ đánh giá](eval/README.md) · [CSV](eval/run-2.csv) · [Trace](traces/run-2.jsonl) · [Phân tích](eval/report.md).
+- **Video dự phòng CP4.** Thư mục Drive hiện có tệp `Hackathon - NhomBaKhi.mp4` và mở được ẩn danh. Chưa xác minh nội dung có cả ca thường, ca khó với model thật theo yêu cầu T023; cần kiểm lại trước khi ghi là video CP4.
 
 ## §8. Chi phí khi dùng thật *(guide 4.2)*
 
-Chờ hoàn tất ở CP4 sau lượt 2: dùng số token và model đã đo kết hợp [persona](cost/personas.yaml) để lập [bảng chi phí](cost/cost-estimate.md) cho ba kịch bản thấp, cơ sở, cao và so sánh với impact (§2). Nếu đo riêng bản web, phân biệt lượt tạo đề với lượt nộp để chấm điểm.
+Mô phỏng `simulate-1@20261128-010157` có 50 phiên, seed 42, cùng model `claude-haiku-5-5` với lượt 2; 0/50 phiên lỗi. Run ghi 90 lần gọi model, 108 lần gọi công cụ, 372.463 token vào và 206.135 token ra. Tỉ lệ đạt dùng cho chi phí là 22/24 (91,7%) từ run 2. Bảng dưới là chi phí token ước tính theo giá trả phí; chưa gồm hosting, lưu trữ hoặc nhân công.
+
+| Model (USD/1M token) | USD / task thành công | Tháng thấp · 300 người | Tháng cơ sở · 470 người | Tháng cao · 700 người | USD / người / tháng (cơ sở) |
+|---|---:|---:|---:|---:|---:|
+| Claude Haiku 5.5 (0,10 vào · 0,50 ra) | $0.0031 | $4.74 | $7.42 | $11.06 | $0.0158 |
+| Claude Sonnet 5.5 (2,00 vào · 10,00 ra) | $0.0612 | $94.77 | $148.48 | $221.14 | $0.3159 |
+| Gemini 3.8 Flash (0,75 vào · 3,75 ra) | $0.0230 | $35.54 | $55.68 | $82.93 | $0.1185 |
+
+Số token đo trên Haiku; giá Sonnet và Gemini được tính từ cùng số token nên là ước tính. Kịch bản cơ sở Haiku có chi phí token khoảng $0.0158/người/tháng so với impact ước tính khoảng 77 phút/người/tháng; thời gian tiết kiệm 15 phút mỗi lượt chưa được đo thực tế. Chi tiết persona, giá và lượt mô phỏng ở [cấu hình](cost/personas.yaml), [summary](cost/simulate-1-summary.md), [CSV](cost/simulate-1.csv) và [bảng chi phí cần Phước Anh hoàn thiện](cost/cost-estimate.md). Nếu đo riêng web, cần phân biệt lượt tạo đề với lượt nộp để chấm điểm.
 
 ## §9. Rủi ro & an toàn
 
-PDF gốc và key nằm phía dịch vụ. Admin xác minh quyền sử dụng rồi duyệt nguồn. Model chỉ nhận trích đoạn đã cho phép. Câu không khớp mã nguồn hoặc phạm vi bị loại. Đáp án được giữ phía backend đến khi nộp. Học viên dùng điểm để tự ôn. [Mô hình dữ liệu](specs/003-cramai-exams/data-model.md).
+| Rủi ro | Người có thể bị ảnh hưởng | Kiểm soát hiện có | Giới hạn còn lại |
+|---|---|---|---|
+| Đáp án diễn giải sai dù trích dẫn hợp lệ | Học viên có thể học sai trước kỳ thi | Hệ thống xác nhận mã đoạn, file và trang từ nội dung truy hồi. Benchmark chấm căn cứ đáp án; người học thấy nguồn để đối chiếu. | Mã nguồn đúng không chứng minh đáp án đúng về mặt sư phạm. Run 2 còn lỗi B05 và B16; cần đọc slide gốc khi sửa. |
+| Đề thiếu buổi hoặc chủ đề | Học viên có thể tưởng đã ôn đủ | Hệ thống tính và báo phần độ phủ còn thiếu, gợi ý chọn phạm vi khác. | Metric phủ nhiều ngày run 2 là 5/7 (71,4%), dưới ngưỡng 80%; không nên coi kết quả hiện tại là đề ôn toàn diện. |
+| Đoạn slide hoặc thông tin khoá học bị lộ | Chủ sở hữu tài liệu và người học | Chỉ dùng trích đoạn được phép trong corpus công khai; PDF gốc và key nằm phía dịch vụ. Admin xác minh quyền sử dụng tài liệu trước khi xuất bản lên web. | Phạm vi quyền sử dụng từng PDF cần được xác nhận theo tài liệu cụ thể; không đưa key hoặc PDF gốc vào repo. |
+| Lạm dụng để chấm điểm thật hoặc gửi dữ liệu ra ngoài | Học viên và lớp học | Lát cắt từ chối yêu cầu chấm bài hoặc gửi đề lên LMS/Discord; benchmark có ca tấn công. | Không kết nối LMS, Discord hoặc hệ thống chấm thi thật. [Mô hình dữ liệu web](specs/003-cramai-exams/data-model.md). |
 
 ## §10. Phân công & changelog
 
@@ -161,6 +175,9 @@ Mỗi người sửa file thuộc vai của mình và bàn giao thay đổi file
 | 27/11 · 23:07 | Xác nhận adapter Claude và ghi lượt đo chính thức trên bản tích hợp `2567816`. | T012 và T017 cần usage thật và một mốc đánh giá trên 24 ca. [CSV lượt 1](eval/run-1.csv) · [Trace lượt 1](traces/run-1.jsonl). |
 | 27/11 · 23:37 | Tổng hợp khảo sát, P1–P4 và ghi impact ước tính vào §0–§2. | T016 chốt bằng chứng CP3 và giới hạn của dữ liệu hiện có. [Tổng hợp bằng chứng](evidence/summary.md). |
 | 28/11 | Gỡ duyệt, loại và chốt câu khỏi luồng học CLI. Mọi câu hợp lệ được hiển thị ngay để học, kèm đáp án và nguồn tham khảo. | Làm theo yêu cầu sản phẩm sau CP2; Lâm xác nhận các chủ file đồng ý. Giữ nguyên ngưỡng §7, benchmark, metric và kết quả các lượt đã chạy. |
+| 28/11 · 00:37 | Chạy lượt 2 trên cùng 24 câu với `claude-haiku-5-5`: 22/24 (91,7%), 0 lỗi kỹ thuật và 63/63 trích dẫn khớp trace khi đối chiếu. | T019/T021; kết quả, lỗi B05/B16 và metric phủ nhiều ngày 5/7 (71,4%) được ghi ở [báo cáo](eval/report.md). Chuẩn và metric CP2 không đổi. |
+| 28/11 · 01:01 | Chạy mô phỏng 50 phiên, seed 42; cập nhật số liệu token và chi phí ước tính vào §8. | T022; chi phí Haiku ở kịch bản cơ sở $7.42/tháng, khoảng $0.0158/người/tháng. Bảng cost-estimate của Phước Anh vẫn cần hoàn thiện. |
+| 28/11 | Tạo và rà bản nháp 8 trang slide CP4 trong Spaces từ nguồn có trong repo. | T024; nội dung và số liệu được đối chiếu với bằng chứng, report và summary. Nhóm chưa chốt quyết định, người trình bày và chưa xác nhận quyền chia sẻ công khai. |
 
 **Sau CP4 (đến 23:59 Thứ Bảy 28/11)** (sửa theo góp ý — không sửa chuẩn "đạt", câu thử, số bằng chứng, kết quả các lượt đã chạy)
 

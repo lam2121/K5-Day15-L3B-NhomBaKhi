@@ -43,12 +43,12 @@ Corpus hiện có 280 trích đoạn từ slide của 14 ngày học. Mỗi đo�
 | Lượt | Run ID | Model | Cấu hình (prompt / công cụ / thay đổi) | Đạt / tổng | % | Đạt chuẩn? |
 |---|---|---|---|---|---|---|
 | 1 | `run-1@20261127-230718` | `claude-haiku-5-5` | Commit `2567816`, 24 ca, 0 lỗi kỹ thuật | 21/24 | 87,5% | Đạt chuẩn tổng và hai điều kiện cứng ở §7. Độ phủ nhiều ngày 7/9, dưới ngưỡng 80%. |
-| 2 | | | | __/__ | | |
+| 2 | `run-2@20261128-003757` | `claude-haiku-5-5` | Commit `7727ad8` sau T019 và T028, cùng 24 ca, 0 lỗi kỹ thuật | 22/24 | 91,7% | Đạt chuẩn tổng và hai điều kiện cứng. Độ phủ nhiều ngày 5/7 (71,4%), dưới ngưỡng 80%. |
 
 Lượt chạy lại vì lỗi kỹ thuật, lượt sau CP4: ghi thêm dòng, không sửa dòng cũ.
 
-Lượt 1 có 4/4 ca từ chối qua và 62/62 trích dẫn khớp nguồn truy hồi. Nhóm đã xác nhận kết quả chấm. [CSV lượt 1](run-1.csv) · [Trace lượt 1](../traces/run-1.jsonl).
+Lượt 1 có 4/4 ca từ chối qua và 62/62 trích dẫn khớp nguồn truy hồi. Lượt 2 có 4/4 ca từ chối qua, 63/63 trích dẫn khớp đoạn truy hồi khi kiểm tra trace và 0 lỗi kỹ thuật. [CSV lượt 1](run-1.csv) · [Trace lượt 1](../traces/run-1.jsonl) · [CSV lượt 2](run-2.csv) · [Trace lượt 2](../traces/run-2.jsonl).
 
 ## 6. Lỗi chính
 
-Tóm 2–3 dòng từ `eval/report.md`: nhóm lỗi lớn nhất · đã sửa gì · còn lại gì.
+Lượt 1 trượt ở B05, B19 và B21 do thu hẹp đề mà không báo giới hạn. Sau một lần cải tiến, B19 và B21 đạt; B05 vẫn thiếu chủ đề Launch Economics, còn B16 chuyển sang trượt vì chỉ có câu từ ngày 6. Run 2 đạt 22/24 (91,7%) nhưng metric phủ nhiều ngày đạt 5/7 (71,4%), dưới ngưỡng 80%; xem [báo cáo chi tiết](report.md).
