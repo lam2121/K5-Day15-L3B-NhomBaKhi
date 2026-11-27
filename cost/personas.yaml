@@ -11,26 +11,27 @@ seed: 42            # giữ cố định để chạy lại ra cùng chuỗi phi
 users:              # số người dùng thật nếu đưa vào dùng — 3 kịch bản, ở quy mô thật của sản phẩm
                     # track A: khoá học · track B–F: người dùng của sản phẩm / nhóm nhắm tới, nguồn công khai có link
   low: 300
-  base: 700
-  high: 1000
-  source: "(ví dụ) track A — thay bằng số của nhóm. Cơ sở: lớp L3 hơn 700 học viên (README hackathon); thấp, cao: (tự ước tính)"
+  base: 470
+  high: 700
+  source: "Quy mô lớp L3 khoảng 700 học viên (README hackathon của BTC — chưa kiểm lại, cần link). Khảo sát 27/11 (evidence/survey/results.csv): 14/21 (67%) từng mở lại slide để ôn → cơ sở = 700 × 14/21 ≈ 470. Cao = toàn bộ 700 (tự ước tính: mọi học viên dùng trước kỳ thi). Thấp = 300 (tự ước tính)."
 
 personas:           # ≥3 kiểu người dùng; share cộng lại = 1
-  - name: dung_it
-    share: 0.5              # tỉ lệ người dùng kiểu này
-    uses_per_month: 4       # số phiên / người / tháng
-    turns_per_session: 1    # số lượt hỏi trong một phiên
-    source: "(ví dụ) phỏng vấn P1, P3 — thay bằng nguồn của nhóm"
-  - name: dung_vua
-    share: 0.3
-    uses_per_month: 10
-    turns_per_session: 3
-    source: "(ví dụ) khảo sát n = 24, câu 3"
-  - name: dung_nhieu
-    share: 0.2
-    uses_per_month: 20
-    turns_per_session: 5
-    source: "(ví dụ) data/preclass: đếm số lượt / người — cách đếm ở evidence/data-mining.md"
+                    # Nguồn chung: khảo sát 27/11, câu 3 "Trong 7 ngày qua mở lại slide để ôn mấy lần", 14 người từng ôn bằng slide.
+  - name: on_it
+    share: 0.14             # 2/14 người: 0 lần trong 7 ngày qua
+    uses_per_month: 2       # (tự ước tính) ôn dồn trước kỳ thi
+    turns_per_session: 1    # (tự ước tính)
+    source: "Khảo sát 27/11 câu 3: 2/14 trả lời 0 lần/7 ngày. Số lần/tháng và số lượt/phiên: (tự ước tính)."
+  - name: on_moi_tuan
+    share: 0.50             # 7/14 người: 1 lần trong 7 ngày qua
+    uses_per_month: 4       # 1 lần/tuần × ~4 tuần
+    turns_per_session: 2    # (tự ước tính) câu 4: 8/14 ôn 1 ngày học mỗi lần → 1–2 yêu cầu
+    source: "Khảo sát 27/11 câu 3: 7/14 trả lời 1 lần/7 ngày → ~4 lần/tháng. Số lượt/phiên: (tự ước tính) từ câu 4."
+  - name: on_thuong_xuyen
+    share: 0.36             # 5/14 người: 2 lần trong 7 ngày qua
+    uses_per_month: 8       # 2 lần/tuần × ~4 tuần
+    turns_per_session: 3    # (tự ước tính) câu 4: 5/14 ôn 2–3 ngày học mỗi lần → nhiều yêu cầu
+    source: "Khảo sát 27/11 câu 3: 5/14 trả lời 2 lần/7 ngày → ~8 lần/tháng. Số lượt/phiên: (tự ước tính) từ câu 4."
 # Mỗi lượt hỏi lấy ngẫu nhiên một đầu vào trong eval/benchmark.csv (type thuong và kho).
 # Persona hỏi kiểu riêng: thêm vào persona đó
 #     types: [thuong, kho, tu_choi]
