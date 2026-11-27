@@ -1,13 +1,19 @@
 """SQLite persistence and atomic submission transactions for CramAI backend."""
 
 import json
+import re
 import sqlite3
+from collections import defaultdict
 from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
+from uuid import uuid4
 
 from grading import GradingError, grade_submission, normalize_and_validate
+
+_DEFAULT_SEED = Path(__file__).resolve().parent.parent / "data" / "passages.jsonl"
+_DAY_RE = re.compile(r"day(\d+)")
 
 _SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS slide_slots (
@@ -49,19 +55,14 @@ def _parse_iso(ts: str) -> datetime:
     return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
 
 
-def connect(db_path: str | Path) -> sqlite3.Connection:
+@contextmanager
+def session(db_path: str | Path) -> Iterator[sqlite3.Connection]:
     path = Path(db_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(str(path), timeout=5.0, isolation_level=None)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA busy_timeout=5000;")
     conn.execute("PRAGMA foreign_keys=ON;")
-    return conn
-
-
-@contextmanager
-def session(db_path: str | Path) -> Iterator[sqlite3.Connection]:
-    conn = connect(db_path)
     try:
         yield conn
     finally:
@@ -79,6 +80,37 @@ def _tx(conn: sqlite3.Connection) -> Iterator[None]:
         raise
 
 
+def _seed_from_jsonl(conn: sqlite3.Connection) -> None:
+    grouped: dict[int, list[dict]] = defaultdict(list)
+    with _DEFAULT_SEED.open("r", encoding="utf-8") as fh:
+        for line in fh:
+            if not line.strip():
+                continue
+            item = json.loads(line)
+            if (m := _DAY_RE.search(item.get("source_id", ""))) and 1 <= (n := int(m.group(1))) <= 14:
+                grouped[n].append(item)
+
+    if not grouped:
+        return
+
+    ts = datetime.now(timezone.utc).isoformat()
+    with _tx(conn):
+        for slide_num, passages in grouped.items():
+            rev_id = str(uuid4())
+            fname = passages[0].get("file_name", f"slide-{slide_num:02d}.pdf")
+            title = re.sub(r"^(?:\d+\s*-\s*)?day\d+-|\.pdf$", "", fname).replace("-", " ").strip().title()
+            docs = [{"file_name": fname, "page_count": max(p.get("page", 1) for p in passages)}]
+            conn.execute(
+                "INSERT INTO slide_revisions (revision_id, slide_number, documents_json, passages_json, created_at) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (rev_id, slide_num, json.dumps(docs, ensure_ascii=False), json.dumps(passages, ensure_ascii=False), ts),
+            )
+            conn.execute(
+                "UPDATE slide_slots SET published_revision_id = ?, title = ? WHERE slide_number = ?",
+                (rev_id, title or f"Slide {slide_num:02d}", slide_num),
+            )
+
+
 def init_db(db_path: str | Path) -> None:
     with session(db_path) as conn:
         conn.execute("PRAGMA journal_mode=WAL;")
@@ -87,6 +119,11 @@ def init_db(db_path: str | Path) -> None:
             "INSERT OR IGNORE INTO slide_slots (slide_number, title) VALUES (?, ?)",
             [(n, f"Slide {n:02d}") for n in range(1, 15)],
         )
+        has_published = conn.execute(
+            "SELECT 1 FROM slide_slots WHERE published_revision_id IS NOT NULL LIMIT 1"
+        ).fetchone()
+        if not has_published and _DEFAULT_SEED.is_file():
+            _seed_from_jsonl(conn)
 
 
 def list_catalog(conn: sqlite3.Connection) -> list[dict]:
@@ -127,9 +164,8 @@ def publish_revision(
     slide_number: int,
     documents: list[dict],
     passages: list[dict],
-    now: datetime | None = None,
 ) -> None:
-    ts = (now or datetime.now(timezone.utc)).isoformat()
+    ts = datetime.now(timezone.utc).isoformat()
     with _tx(conn):
         conn.execute(
             "INSERT INTO slide_revisions (revision_id, slide_number, documents_json, passages_json, created_at) "
@@ -143,26 +179,17 @@ def publish_revision(
 
 
 def get_published_passages(conn: sqlite3.Connection, exam_id: str) -> dict[int, list[dict]]:
-    if exam_id == "midterm":
-        rows = conn.execute(
-            "SELECT s.slide_number, r.passages_json FROM slide_slots s "
-            "JOIN slide_revisions r ON s.published_revision_id = r.revision_id "
-            "ORDER BY s.slide_number"
-        ).fetchall()
-        if len(rows) != 14:
-            raise GradingError("exam_unavailable", 409, "Đề chưa mở vì thiếu bộ slide đã xuất bản.")
-        return {r["slide_number"]: json.loads(r["passages_json"]) for r in rows}
-
-    slide_num = int(exam_id.split("-")[1])
-    row = conn.execute(
+    target = None if exam_id == "midterm" else int(exam_id.split("-")[1])
+    rows = conn.execute(
         "SELECT s.slide_number, r.passages_json FROM slide_slots s "
         "JOIN slide_revisions r ON s.published_revision_id = r.revision_id "
-        "WHERE s.slide_number = ?",
-        (slide_num,),
-    ).fetchone()
-    if row is None:
+        "WHERE (? IS NULL OR s.slide_number = ?) ORDER BY s.slide_number",
+        (target, target),
+    ).fetchall()
+    expected = 14 if target is None else 1
+    if len(rows) != expected:
         raise GradingError("exam_unavailable", 409, "Đề chưa mở vì thiếu bộ slide đã xuất bản.")
-    return {row["slide_number"]: json.loads(row["passages_json"])}
+    return {r["slide_number"]: json.loads(r["passages_json"]) for r in rows}
 
 
 def create_attempt_record(
@@ -193,10 +220,9 @@ def submit_attempt_tx(
     *,
     attempt_id: str,
     raw_answers: list[dict],
-    now: datetime | None = None,
 ) -> dict:
     """Atomically validate, grade, and persist an attempt submission."""
-    current_time = now or datetime.now(timezone.utc)
+    current_time = datetime.now(timezone.utc)
     with _tx(conn):
         attempt = conn.execute(
             "SELECT questions_json, expires_at FROM attempts WHERE attempt_id = ?",
