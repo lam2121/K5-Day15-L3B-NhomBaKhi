@@ -104,7 +104,7 @@ Nhóm dùng stack khác (Node, Streamlit, notebook…): sửa hàm `run_app()` t
 
 2–3 dòng (bắt buộc): nhóm dùng công cụ AI nào để làm gì, người kiểm lại phần nào. Chi tiết: [docs/ai-usage.md](docs/ai-usage.md). Coding agent đọc [AGENTS.md](AGENTS.md).
 
-Codex được dùng để chuẩn bị Spec Kit, hợp đồng giữa các vai, adapter model và kiểm thử; đồng thời tạo bản nháp slide CP4 từ số liệu trong repo. Lâm đối chiếu usage, trace và số liệu đánh giá; nhóm cần review slide trước khi nộp.
+Codex được dùng để chuẩn bị Spec Kit, hợp đồng giữa các vai, adapter model và kiểm thử; đồng thời tạo slide CP4 từ số liệu trong repo. Lâm đối chiếu usage, trace, chi phí và kết quả đánh giá; PDF 8 trang đã được render và rà. Nhóm cần xác nhận quyết định và tập demo trước khi nộp.
 
 ### Video demo CP3
 
@@ -140,5 +140,5 @@ Link Drive (thư mục video): [mở thư mục](<https://drive.google.com/drive
 | 4 | Bản chạy thử làm trọn lát cắt | `codebase/` · lệnh ở mục "Lệnh" |
 | 5 | Định nghĩa "tốt" + bộ câu thử | `data/DATA_CARD.md` · `eval/` |
 | 6 | Mô phỏng chi phí khi dùng thật | `cost/` |
-| 7 | Slide + demo + video dự phòng | Bản nháp slide CP4 có 8 trang trong Spaces, chờ nhóm review và quyền chia sẻ để nộp. Video CP3 nằm trong [thư mục Drive](<https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing>); nội dung chưa được xác nhận có đủ hai ca CP4. |
+| 7 | Slide + demo + video dự phòng | PDF 8 trang CP4 đã xuất tại `demo-slides.pdf`; deck Spaces giữ bản chỉnh sửa. Nhóm còn xác nhận quyết định và tập demo. Video CP4 do Lâm tự quay; video CP3 trong [thư mục Drive](<https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing>) chưa được xác nhận có đủ hai ca CP4. |
 | + | *Bonus:* người dùng thử | `validation/log.md` |

@@ -37,6 +37,10 @@ TASK_SCOPE_OVERRIDES = {
     # One coordinated product change approved by the code owners after CP2.
     "lam": {
         "T028": {"codebase/app.py", "codebase/agent.py"},
+        # Group-approved CP4 integration: Lâm copies the measured simulation into
+        # Phước Anh's estimate and reconciles the shared slide checklist.
+        "T022": {"cost/cost-estimate.md"},
+        "T024": {"slides/outline.md", "demo-slides.pdf", ".gitattributes"},
     },
 }
 

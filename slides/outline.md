@@ -1,23 +1,32 @@
-# Dàn slide → lấy số từ file nào
+# Dàn slide CP4 → nguồn số liệu
 
-> Làm ở guide bước 5.1. Luật: **không có bằng chứng thì không có slide** — mỗi trang ≥1 con số / trích dẫn có nguồn / kết quả đo.
-> Xuất PDF thành `demo-slides.pdf` ở thư mục gốc repo, nộp tại CP4 14:30 Thứ Bảy 28/11. Định dạng nào cũng được (PDF, PPTX, HTML…); hoặc nộp link slide (Drive, Canva, Google Slides…) ở form CP4, để ai có link cũng xem được.
+> Deck 8 trang đã được tạo và rà trong Spaces: [CramAI — CP4 demo](https://chatgpt.com/space/page_0a48e81fdfdc819195402c350d1b024d). PDF nộp bài nằm ở `demo-slides.pdf`; đây là bản raster 8 trang 16:9 từ render của deck để giữ nguyên hình thức khi xuất, còn bản Spaces dùng để chỉnh sửa. Deck Spaces vẫn riêng tư, không cần link công khai nếu nộp PDF. Trang 7 nêu khuyến nghị **iterate** theo số liệu, chưa thay cho quyết định chính thức của nhóm.
 
-| # | Trang | Có gì | Số lấy từ | Xong |
+| # | Trang | Nội dung và bằng chứng | Nguồn | Trạng thái nội dung |
 |---|---|---|---|---|
-| 1 | Người dùng & pain | Ai · việc gì · chỗ đau + số và trích dẫn | `evidence/summary.md` | ☐ |
-| 2 | Vì sao chọn bài này | Bảng impact rút gọn + hướng bị loại | `spec.md` §2 | ☐ |
-| 3 | Giải pháp | Lát cắt một câu · sơ đồ · AI tự làm đến đâu, vì sao | `spec.md` §4 | ☐ |
-| 4 | Demo live | 1 trường hợp thường + 1 trường hợp khó (lấy từ bộ câu thử); mạng hỏng → video dự phòng | `eval/benchmark.csv` | ☐ |
-| 5 | **Đánh giá thế nào** | Dataset · bộ câu thử · metric · lượt 1 → lượt 2 so với chuẩn "đạt" (kèm run ID) · lỗi chính | `eval/README.md`, `eval/report.md` | ☐ |
-| 6 | **Chi phí khi dùng thật** | Chi phí / task thành công · 3 kịch bản · so với impact | `cost/cost-estimate.md` | ☐ |
-| 7 | Kết luận | Go / iterate / stop — dẫn số ở trang 1, 5, 6 | — | ☐ |
-| 8 | Nếu có thêm 1 tuần | 2–3 việc, trỏ về lỗi còn lại / phản hồi người dùng | `eval/report.md` mục 4 · `validation/log.md` | ☐ |
+| 1 | Người dùng và pain | P2 ~15 phút tìm nội dung; P3 ~10 phút rồi bỏ dở; P4 ước ôn ~30% sau hơn một giờ | `evidence/summary.md`, P1–P4 đã ẩn danh | ☑ |
+| 2 | Bằng chứng và tác động dự kiến | Khảo sát 21 người, 14/21 từng mở slide; impact ~77 phút/người/tháng được ghi là ước tính | `evidence/summary.md`, `spec.md` §2 | ☑ |
+| 3 | Luồng sản phẩm | Nhập phạm vi → tìm slide → AI tạo câu → kiểm nguồn → học với đáp án và trích dẫn | `spec.md` §4 | ☑ |
+| 4 | Demo: một câu thường, một giới hạn | B01 ca thường, B21 ca phạm vi quá lớn; trích dẫn B01 hiển thị ở deck | `eval/benchmark.csv`, `eval/run-2.csv` | ☑ |
+| 5 | Đánh giá trên cùng bộ 24 câu | 21/24 → 22/24; trace 62/62 → 63/63; phủ nhiều ngày 7/9 → 5/7, đều dưới ngưỡng 80% | `eval/README.md`, `eval/report.md` | ☑ |
+| 6 | Chi phí token 50 phiên | Haiku $0.0031/task thành công; $7.42/tháng ở kịch bản cơ sở; so với impact ước tính | `cost/cost-estimate.md`, `cost/simulate-1-summary.md` | ☑ |
+| 7 | Kết luận theo dữ liệu | Khuyến nghị iterate do độ phủ nhiều ngày 71,4%, đồng thời nêu điểm tổng đạt 91,7% | `eval/report.md`, `cost/cost-estimate.md` | ☑ |
+| 8 | Nếu có thêm một tuần | Xử lý lỗi B05/B16, đo phủ nhiều ngày, xác nhận impact bằng thử nghiệm | `eval/report.md` mục lỗi còn lại, `validation/log.md` | ☑ |
 
-**Trước khi lên:** tải repo về một máy khác (hoặc thư mục mới), chạy theo mục "Chạy trong 3 phút" của `README.md` · `.env` có trên máy demo, đã gọi thử 1 câu trong vòng 1 giờ trước giờ demo · video dự phòng mở được bằng cửa sổ ẩn danh · biết bản chạy thử sẽ làm gì với **1 câu thử lạ** của giám khảo.
+## Dự kiến người trình bày
 
-Ai nói trang nào (mỗi người ≥1 phần):
-
-| Trang | Người nói |
+| Trang | Người nói (kế hoạch) |
 |---|---|
-| | |
+| 1, 2 | Nguyễn Văn Lâm |
+| 3, 5 | Nguyễn Duy Hưng |
+| 4, 8 | Nguyễn Trọng Khiêm |
+| 6, 7 | Bùi Phước Anh |
+
+Đây là kế hoạch phân phần để mỗi thành viên có nội dung nói; chưa xác nhận buổi tập chung.
+
+## Còn phải kiểm trước khi nộp
+
+- Nhóm xác nhận khuyến nghị iterate và tập demo một ca thường, một ca khó, một input lạ.
+- Nộp `demo-slides.pdf` hoặc bật link deck Spaces nếu nhóm muốn dùng bản trực tuyến.
+- Xác nhận repo chạy được trên máy demo, `.env` có key riêng trên máy đó, và gọi thử model trong vòng một giờ trước demo.
+- Kiểm video dự phòng CP4 có cả hai tình huống thật, mở được ẩn danh. Video CP3 hiện có trong [Drive](https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing), nhưng chưa xác minh nội dung CP4.

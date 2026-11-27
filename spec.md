@@ -129,7 +129,7 @@ Mô phỏng `simulate-1@20261128-010157` có 50 phiên, seed 42, cùng model `cl
 | Claude Sonnet 5.5 (2,00 vào · 10,00 ra) | $0.0612 | $94.77 | $148.48 | $221.14 | $0.3159 |
 | Gemini 3.8 Flash (0,75 vào · 3,75 ra) | $0.0230 | $35.54 | $55.68 | $82.93 | $0.1185 |
 
-Số token đo trên Haiku; giá Sonnet và Gemini được tính từ cùng số token nên là ước tính. Kịch bản cơ sở Haiku có chi phí token khoảng $0.0158/người/tháng so với impact ước tính khoảng 77 phút/người/tháng; thời gian tiết kiệm 15 phút mỗi lượt chưa được đo thực tế. Chi tiết persona, giá và lượt mô phỏng ở [cấu hình](cost/personas.yaml), [summary](cost/simulate-1-summary.md), [CSV](cost/simulate-1.csv) và [bảng chi phí cần Phước Anh hoàn thiện](cost/cost-estimate.md). Nếu đo riêng web, cần phân biệt lượt tạo đề với lượt nộp để chấm điểm.
+Số token đo trên Haiku; giá Sonnet và Gemini được tính từ cùng số token nên là ước tính. Kịch bản cơ sở Haiku có chi phí token khoảng $0.0158/người/tháng so với impact ước tính khoảng 77 phút/người/tháng; thời gian tiết kiệm 15 phút mỗi lượt chưa được đo thực tế. Chi tiết persona, giá, giới hạn và lượt mô phỏng ở [cấu hình](cost/personas.yaml), [summary](cost/simulate-1-summary.md), [CSV](cost/simulate-1.csv) và [bảng chi phí](cost/cost-estimate.md). Nếu đo riêng web, cần phân biệt lượt tạo đề với lượt nộp để chấm điểm.
 
 ## §9. Rủi ro & an toàn
 
@@ -176,8 +176,8 @@ Mỗi người sửa file thuộc vai của mình và bàn giao thay đổi file
 | 27/11 · 23:37 | Tổng hợp khảo sát, P1–P4 và ghi impact ước tính vào §0–§2. | T016 chốt bằng chứng CP3 và giới hạn của dữ liệu hiện có. [Tổng hợp bằng chứng](evidence/summary.md). |
 | 28/11 | Gỡ duyệt, loại và chốt câu khỏi luồng học CLI. Mọi câu hợp lệ được hiển thị ngay để học, kèm đáp án và nguồn tham khảo. | Làm theo yêu cầu sản phẩm sau CP2; Lâm xác nhận các chủ file đồng ý. Giữ nguyên ngưỡng §7, benchmark, metric và kết quả các lượt đã chạy. |
 | 28/11 · 00:37 | Chạy lượt 2 trên cùng 24 câu với `claude-haiku-5-5`: 22/24 (91,7%), 0 lỗi kỹ thuật và 63/63 trích dẫn khớp trace khi đối chiếu. | T019/T021; kết quả, lỗi B05/B16 và metric phủ nhiều ngày 5/7 (71,4%) được ghi ở [báo cáo](eval/report.md). Chuẩn và metric CP2 không đổi. |
-| 28/11 · 01:01 | Chạy mô phỏng 50 phiên, seed 42; cập nhật số liệu token và chi phí ước tính vào §8. | T022; chi phí Haiku ở kịch bản cơ sở $7.42/tháng, khoảng $0.0158/người/tháng. Bảng cost-estimate của Phước Anh vẫn cần hoàn thiện. |
-| 28/11 | Tạo và rà bản nháp 8 trang slide CP4 trong Spaces từ nguồn có trong repo. | T024; nội dung và số liệu được đối chiếu với bằng chứng, report và summary. Nhóm chưa chốt quyết định, người trình bày và chưa xác nhận quyền chia sẻ công khai. |
+| 28/11 · 01:01 | Chạy mô phỏng 50 phiên và hoàn thiện bảng chi phí, gồm chi phí / task thành công cùng ba kịch bản. | T022; Haiku $7.42/tháng ở kịch bản cơ sở, $0.0158/người/tháng. Sonnet và Gemini là ước tính từ lượng token Haiku. |
+| 28/11 | Render, rà và xuất 8 trang thành `demo-slides.pdf`; ghi dàn nội dung và người nói dự kiến trong `slides/outline.md`. | T024; số liệu đã đối chiếu với bằng chứng, eval và cost. PDF là bản raster; khuyến nghị iterate dựa trên độ phủ nhiều ngày 71,4% cần nhóm xác nhận và tập demo. Lâm sẽ tự thực hiện video CP4. |
 
 **Sau CP4 (đến 23:59 Thứ Bảy 28/11)** (sửa theo góp ý — không sửa chuẩn "đạt", câu thử, số bằng chứng, kết quả các lượt đã chạy)
 
