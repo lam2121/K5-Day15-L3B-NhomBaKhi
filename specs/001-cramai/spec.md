@@ -10,11 +10,11 @@ Luồng này là cửa vào CLI và bộ chấm của hackathon. Phiên bản c�
 
 ### User Story 1 — Nhận đề ôn giữa kỳ có căn cứ (P1)
 
-Một học viên L3 nhập chủ đề hoặc yêu cầu ôn. AI chọn các câu có căn cứ trong bộ slide đã chốt. Học viên nhận một đề nháp có đáp án, độ khó và trang nguồn để kiểm tra và duyệt.
+Một học viên L3 nhập chủ đề hoặc yêu cầu ôn. AI chọn các câu có căn cứ trong bộ slide đã chốt. Học viên nhận tất cả câu hợp lệ cùng đáp án, độ khó và trang nguồn để học trực tiếp.
 
-**Kiểm độc lập.** Dùng dữ liệu mẫu được phép cùng model thật đã nối, chạy `python run.py`. Nhập một chủ đề có trong mẫu, đối chiếu câu hỏi và trang nguồn rồi thử một chủ đề thiếu căn cứ và một yêu cầu ngoài phạm vi.
+**Kiểm độc lập.** Dùng dữ liệu mẫu được phép cùng model thật đã nối, chạy `python run.py`. Nhập một chủ đề có trong mẫu, học câu hỏi cùng đáp án và mở trang nguồn để tham khảo. Thử thêm một chủ đề thiếu căn cứ và một yêu cầu ngoài phạm vi.
 
-1. Yêu cầu rõ và có đoạn phù hợp. Đề nháp có trích dẫn kiểm được, học viên loại được câu trước khi chốt.
+1. Yêu cầu rõ và có đoạn phù hợp. CLI hiển thị mọi câu hợp lệ cùng đáp án và trích dẫn; học viên có thể học ngay, không phải duyệt hay loại câu.
 2. Chủ đề mơ hồ. Học viên nhận câu hỏi làm rõ.
 3. Thiếu nguồn hoặc ngoài phạm vi. Học viên nhận thông báo giới hạn và bước tiếp theo.
 4. Model lỗi kỹ thuật. Bộ chạy ghi lỗi để phân biệt với phản hồi thiếu nguồn.
@@ -23,7 +23,7 @@ Một học viên L3 nhập chủ đề hoặc yêu cầu ôn. AI chọn các c�
 
 - **FR-001** Một quyết định AI dựa trên các đoạn đã truy hồi. Model giả phục vụ tích hợp CP2. Model thật bắt buộc từ CP3.
 - **FR-002** Mỗi câu có đáp án, độ khó và ít nhất một nguồn thuộc tập đoạn truy hồi. Trang trích dẫn lấy từ bản ghi nguồn.
-- **FR-003** Trạng thái thiếu nguồn, mơ hồ hoặc ngoài phạm vi có thông báo tiếp tục và danh sách câu rỗng. Duyệt hoặc loại câu là thao tác cục bộ của người dùng.
+- **FR-003** Trạng thái thiếu nguồn, mơ hồ hoặc ngoài phạm vi có thông báo tiếp tục và danh sách câu rỗng. Khi có câu hợp lệ, CLI hiển thị tất cả câu, đáp án và nguồn để học trực tiếp; không có thao tác duyệt, loại hoặc chốt câu.
 - **FR-004** CLI, eval và simulate dùng chung bộ xử lý. Eval lưu output dạng chuỗi, model, token và trace.
 - **FR-005** Prototype chạy riêng, dữ liệu công khai và dữ liệu gửi model được kiểm trước. Dữ liệu chạy thử được phân biệt với bằng chứng pain.
 - **FR-006** Chốt cách chấm tại CP2. Hai lượt đánh giá dùng cùng benchmark. Chi phí dùng tỉ lệ đạt thực của đúng model.

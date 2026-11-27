@@ -437,7 +437,7 @@ def _model_result(
         if questions:
             questions = _balance_days(_limit_questions(questions, requested_count or _MAX_DRAFT_QUESTIONS, spread_days))
             questions = [{**question, "question_id": f"q{index:02d}"} for index, question in enumerate(questions, 1)]
-            message = "Đề ôn nháp. Hãy đối chiếu trang nguồn và duyệt từng câu."
+            message = "Đề ôn tập đã sẵn sàng. Học các câu hỏi bên dưới và tham khảo trang nguồn."
             if requested_count and len(questions) < requested_count:
                 message += (
                     f" Đề hiện có {len(questions)}/{requested_count} câu có căn cứ."
@@ -459,7 +459,7 @@ def _model_result(
 
 
 def answer(text: str) -> AnswerResponse:
-    """Trả đề nháp hoặc hướng dẫn tiếp theo theo hợp đồng v1."""
+    """Trả câu hỏi ôn tập có nguồn hoặc hướng dẫn tiếp theo theo hợp đồng v1."""
     normalized = unicodedata.normalize("NFC", text).strip().casefold()
     if _EXTERNAL_ACTION.search(normalized):
         return _empty_response("out_of_scope")
@@ -520,5 +520,5 @@ def answer(text: str) -> AnswerResponse:
     if (model["model"] == "fake") != (demo_questions is not None):
         raise RuntimeError("Adapter trả về model không khớp với cấu hình.")
     if demo_questions is not None:
-        return _quiz_response(demo_questions, "Đề nháp từ câu mẫu CP2. Hãy đối chiếu trang nguồn và duyệt từng câu.")
+        return _quiz_response(demo_questions, "Đề ôn tập mẫu CP2 đã sẵn sàng. Học các câu hỏi bên dưới và tham khảo trang nguồn.")
     return _model_result(model["text"], passages, requested_days, requested_count, spread_days)
