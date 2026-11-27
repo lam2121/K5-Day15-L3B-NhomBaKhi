@@ -5,19 +5,19 @@
 
 ## 1. Dataset → xử lý
 
-CP2 dùng 12 đoạn slide tự dựng trên 6 ngày, có một đoạn chỉ chứa dàn ý. Mỗi đoạn JSONL có mã, tên file mẫu, số trang và nội dung. [Data card](../data/DATA_CARD.md).
+Corpus hiện có 280 trích đoạn từ slide của 14 ngày học. Mỗi đoạn JSONL có mã, tên file, số trang và nội dung. [Data card](../data/DATA_CARD.md).
 
 ## 2. Bộ câu thử dựng ra sao
 
 - [Benchmark CP2](benchmark.csv) có 12 câu (5 `thuong`, 5 `kho`, 2 `tu_choi` đều là câu tấn công).
-- Nguồn theo `python run.py check` gồm 12 `tu_viet`, 0 `nguoi_dung`, 0 `data_that`, 0 `sinh_seed`. Tỉ lệ có nguồn người dùng hoặc dữ liệu thật đang là 0/12, dưới ngưỡng ≥1/3. Khảo sát 21 người là bằng chứng pain được ghi riêng. [Tổng hợp khảo sát](../evidence/summary.md).
-- Theo [§5 của spec](../spec.md#5-chỗ-khó--4-lớp--6-kịch-bản--2-tấn-công-guide-23), lớp 1 có B07–B09 và B11, lớp 2 có B06, lớp 3 có B02 và B12, lớp 4 có B03–B04 và B10.
+- `python run.py check` đếm 5 `nguoi_dung` và 7 `tu_viet`. Đối chiếu phiếu khảo sát xác nhận 4 ca B01, B02, B04 và B06 có tình huống theo lời người dùng, đủ 4/12. B03 đang trỏ phiếu 2, trong khi ghi nhận ôn hơn 7 ngày và bỏ dở nằm ở phiếu 3. Phiếu 3 không ghi lý do bỏ dở là thiếu đề. [Khảo sát 21 người](../evidence/survey/results.csv).
+- Theo [§5 của spec](../spec.md#5-chỗ-khó--4-lớp--6-kịch-bản--2-tấn-công-guide-23), lớp 1 có B07–B09 và B11, lớp 2 có B06, lớp 3 có B12, lớp 4 có B02–B04 và B10.
 
 | Chiều input | Các giá trị đã thử |
 |---|---|
-| Phạm vi ôn | Một ngày (B01, B02, B07), tổng hợp (B03, B05, B10), khoảng ngày (B04, B09) |
+| Phạm vi ôn | Một ngày (B01, B02), tổng hợp (B03, B05, B10), khoảng ngày (B04, B09) |
 | Mức đầy đủ thông tin | Đủ phạm vi (B01), mơ hồ (B06), chỉ có dàn ý (B07), ngày thiếu nguồn (B08), chủ đề ngoài nguồn (B09) |
-| Đầu ra được yêu cầu | Trắc nghiệm (B01), tự luận (B02), bỏ nguồn và đáp án (B10), chấm và gửi đề (B12) |
+| Đầu ra được yêu cầu | Trắc nghiệm theo ngày (B01, B02), bỏ nguồn và đáp án (B10), chấm và gửi đề (B12) |
 | Chốt chặn | Giữ đúng khoảng ngày (B04), tránh suy diễn dàn ý (B07) và trích dẫn bịa (B11), dừng thao tác ngoài quyền (B12) |
 
 ## 3. Metric và cách chấm
@@ -34,7 +34,7 @@ CP2 dùng 12 đoạn slide tự dựng trên 6 ngày, có một đoạn chỉ ch
 
 ## 4. Lệnh
 
-- **Chấm thử CP2.** Đặt `MODEL_PROVIDER=fake` và chạy `python run.py eval`. Đọc cột `output` theo `id` ở `eval/run-mock.csv`, đối chiếu chi tiết đoạn truy hồi tại `traces/run-mock.jsonl` và tiêu chí từng ca trong [benchmark](benchmark.csv). Hai file giả lưu cục bộ, dùng để kiểm tra luồng và cách chấm.
+- **Chấm thử CP2.** Trên snapshot `3f473cd`, đặt `MODEL_PROVIDER=fake` và chạy `python run.py eval`. Đọc cột `output` theo `id` ở `eval/run-mock.csv`, đối chiếu đoạn truy hồi tại `traces/run-mock.jsonl` và tiêu chí cùng phiên bản. Trên corpus mới, có thể dùng `python run.py eval --try 12` với model thật để lấy output thử cho cùng năm mã câu. Mỗi người ghi điểm riêng rồi đối chiếu số ca khớp. [Snapshot demo CP2](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/tree/3f473cd58b9542ea496b86ef9a970caba656376d).
 - **Lượt chính thức.** Sau khi nối model thật, `python run.py eval` tạo `eval/run-N.csv` và `traces/run-N.jsonl`. Điền cột `pass` rồi chạy `python run.py score eval/run-N.csv`.
 
 ## 5. Đã chạy gì

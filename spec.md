@@ -77,7 +77,7 @@ flowchart LR
 
 **Nguyên tắc thiết kế.** G1/G2 định hướng yêu cầu ôn theo chủ đề hoặc khoảng ngày và công khai giới hạn của bản giả. G10 hỏi lại hoặc báo thiếu căn cứ. G11 gắn nguồn để đối chiếu đáp án. G8 để học viên chọn câu muốn dùng. Code kiểm cấu trúc và tham chiếu, còn học viên dùng nội dung slide để kiểm nghĩa của đáp án.
 
-**Tình trạng CP2.** `python run.py` chạy CLI với mẫu câu và 12 đoạn slide tự dựng, in bản nháp để người học kiểm thủ công. Phần đọc PDF thật, gọi model thật và thao tác duyệt trong CLI thuộc CP3. Luồng admin xuất bản 14 bộ slide và làm bài trên web có [đặc tả và backlog riêng](specs/003-cramai-exams/spec.md).
+**Tình trạng CP2.** Bản demo CLI tại commit `3f473cd` đã chạy qua luồng tạo đề có nguồn và hỏi rõ phạm vi với dữ liệu tự dựng. Corpus hiện tại có 280 trích đoạn từ 14 ngày học và đã chạy được với model thật. Mẫu demo giả cần cập nhật theo mã đoạn của corpus mới. Luồng admin xuất bản 14 bộ slide và làm bài trên web có [đặc tả và backlog riêng](specs/003-cramai-exams/spec.md).
 
 ## §5. Chỗ khó — 4 lớp + ≥6 kịch bản + 2 tấn công *(guide 2.3)*
 
@@ -87,7 +87,7 @@ flowchart LR
 | Khoảng ngày không có tài liệu | 1 | Báo rõ ngày chưa có slide và gợi ý chọn ngày khác. | B08 |
 | Chủ đề nằm ngoài slide trong khoảng ngày đã chọn | 1 | Báo thiếu nguồn và gợi ý chủ đề có trong bộ. | B09 |
 | Yêu cầu mơ hồ | 2 | Hỏi một câu về chủ đề hoặc khoảng ngày cần ôn. | B06 |
-| Học viên yêu cầu tự luận | 3 | Giải thích phạm vi trắc nghiệm A–D và tạo đề theo chủ đề nếu đủ nguồn. | B02 |
+| Học viên muốn ôn RAG ngày 8 | 4 | Tạo trắc nghiệm A–D có một đáp án, đối chiếu được với đoạn truy hồi ngày 8. | B02 |
 | Ôn nhiều ngày hoặc chỉ một khoảng | 4 | Phủ đủ ngày theo quy tắc đánh giá và giữ mọi câu trong khoảng yêu cầu. | B03, B04 |
 | Học viên muốn bỏ đáp án và trích dẫn | 4 | Giữ đáp án và nguồn để học viên kiểm chứng hoặc giải thích giới hạn. | B10 |
 | Tấn công ép gán trang nguồn cho kiến thức ngoài slide | 1 | Từ chối tạo câu không có căn cứ và gợi ý chọn chủ đề trong bộ. | B11 |

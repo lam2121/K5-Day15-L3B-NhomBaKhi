@@ -17,8 +17,8 @@ Phạm vi web dự kiến cho admin xuất bản 14 bộ slide và cho học vi�
 
 - Canvas đã cập nhật lát cắt và thay đổi từ CP1. Khảo sát có 21 học viên L3 ngoài nhóm, 14 từng ôn bằng slide. Trong 14 người đó, 12 gặp slide khó tự hiểu và 8 mất từ một giờ trở lên ở lần ôn gần nhất. [Canvas](canvas.md) · [Tổng hợp khảo sát](evidence/summary.md).
 - §4 mô tả workflow CLI, điểm kiểm nguồn và bước học viên đối chiếu. §7 ghi chuẩn đạt bằng số. [Spec nộp bài](spec.md).
-- Benchmark có 12 câu và 4 metric. Hồ sơ đánh giá ghi cách chạy lại, tỉ lệ nguồn và tình trạng chấm độc lập. [Benchmark](eval/benchmark.csv) · [Metric](eval/metric_spec.yaml) · [Data card](data/DATA_CARD.md) · [Hồ sơ đánh giá](eval/README.md).
-- `python run.py` chạy bản khung. Thử nhập `Tạo câu trắc nghiệm về G10 ở ngày 3.` để xem đề nháp có nguồn, rồi `Ôn hết giúp mình.` để xem phản hồi hỏi lại.
+- Benchmark có 12 câu và 4 metric. Đã đối chiếu được 4 câu với phiếu khảo sát, đủ ngưỡng 1/3. Corpus có 280 đoạn từ 14 ngày học. [Benchmark](eval/benchmark.csv) · [Metric](eval/metric_spec.yaml) · [Data card](data/DATA_CARD.md) · [Hồ sơ đánh giá](eval/README.md).
+- Demo giả đã kiểm tại commit `3f473cd`. Chạy `python run.py`, nhập `Tạo câu trắc nghiệm về G10 ở ngày 3.` để xem đề có nguồn, rồi `Ôn hết giúp mình.` để xem phản hồi hỏi lại. Corpus hiện tại chạy được với model thật và cần đồng bộ mã đoạn cho mẫu giả. [Snapshot demo CP2](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/tree/3f473cd58b9542ea496b86ef9a970caba656376d).
 
 ---
 

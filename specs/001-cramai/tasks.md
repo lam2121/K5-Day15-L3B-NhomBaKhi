@@ -20,7 +20,7 @@ Các cặp cùng chịu trách nhiệm theo từng chặng ở [§10 của spec 
 - [ ] T009 **Phước Anh** cùng Khiêm chạy tay 10–20 input bằng prompt nháp, nhóm lỗi rồi viết ít nhất ba metric trong `eval/metric_spec.yaml` với định nghĩa kiểm được, cách chấm và ngưỡng. Hưng review từ cặp còn lại, chấm độc lập cùng Phước Anh trên 5 output. Bàn giao mức khớp cho Lâm ghi vào `eval/README.md`, sửa định nghĩa nếu dưới 4/5.
 - [ ] T010 **Lâm** soát chéo T004–T009 và chạy `python run.py check`. Kiểm Phước Anh đã cập nhật `canvas.md` bằng số bằng chứng đầu, một trích dẫn, lát cắt đã chốt và 1–3 dòng thay đổi từ CP1. Commit chuẩn đạt ở `spec.md` §7 gồm tỉ lệ đạt và điều kiện cứng do nhóm chốt trước 19:30. Nộp CP2 với tiến độ thu bằng chứng, link spec và benchmark.
 
-Hồ sơ CP2 đã tập hợp tại [README](../../README.md#hồ-sơ-cp2). T008 còn thiếu tỉ lệ nguồn ≥1/3, T009 chờ kết quả chấm độc lập và T010 chờ xác nhận nộp. [Chi tiết kiểm tra](../../eval/README.md).
+Hồ sơ CP2 đã tập hợp tại [README](../../README.md#hồ-sơ-cp2). T008 đủ tỉ lệ nguồn ≥1/3 và còn một tham chiếu cần sửa ở B03. T009 chờ kết quả chấm độc lập. T010 chờ xác nhận nộp. [Chi tiết kiểm tra](../../eval/README.md).
 
 ### Phân công sau CP2
 
