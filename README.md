@@ -106,6 +106,11 @@ Nhóm dùng stack khác (Node, Streamlit, notebook…): sửa hàm `run_app()` t
 
 Codex được dùng để chuẩn bị Spec Kit, hợp đồng giữa các vai, adapter model và kiểm thử; đồng thời tạo slide CP4 từ số liệu trong repo. Lâm đối chiếu usage, trace, chi phí và kết quả đánh giá; PDF 8 trang đã được render và rà. Nhóm cần xác nhận quyết định và tập demo trước khi nộp.
 
+### Hồ sơ demo CP4
+
+- **Slide:** [demo-slides.pdf](demo-slides.pdf) — PDF 8 trang nằm ngay thư mục gốc repo.
+- **Video demo dự phòng:** [mở thư mục Google Drive](<https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing>). Nhóm đã xác nhận thư mục mở được khi xem ẩn danh. Hồ sơ hiện có tệp `Hackathon - NhomBaKhi.mp4`; cần xác nhận hoặc thay bằng bản quay CP4 trước khi dùng làm video dự phòng.
+
 ### Video demo CP3
 
 Link Drive (thư mục video): [mở thư mục](<https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing>). Truy cập ẩn danh: nhóm xác nhận đã kiểm tra và mở được.
