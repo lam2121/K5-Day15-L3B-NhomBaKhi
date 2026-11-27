@@ -148,7 +148,7 @@ Mỗi người sửa file thuộc vai của mình và bàn giao thay đổi file
 
 | Thời điểm | Đổi gì | Vì sao (trỏ về câu thử / lỗi / bằng chứng nào) |
 |---|---|---|
-|  |  |  |
+| 27/11 · 23:07 | Xác nhận adapter Claude và ghi lượt đo chính thức trên bản tích hợp `2567816`. | T012 và T017 cần usage thật và một mốc đánh giá trên 24 ca. [CSV lượt 1](eval/run-1.csv) · [Trace lượt 1](traces/run-1.jsonl). |
 
 **Sau CP4 (đến 23:59 Thứ Bảy 28/11)** (sửa theo góp ý — không sửa chuẩn "đạt", câu thử, số bằng chứng, kết quả các lượt đã chạy)
 
