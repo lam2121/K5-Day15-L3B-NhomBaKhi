@@ -6,35 +6,42 @@
 
 ## §0. Hiện tại việc này diễn ra thế nào *(guide 1.1)*
 
-Theo giả thuyết trong [Canvas](canvas.md), học viên mở slide theo buổi, tự tìm phần trọng tâm, tìm câu hỏi để tự kiểm rồi dò lại slide khi chưa chắc. Nhóm sẽ đối chiếu từng bước với người học và ghi công cụ họ đang dùng trong [tổng hợp bằng chứng](evidence/summary.md).
+Trong 14 học viên từng ôn bằng slide, 13 người đọc lại slide và 12 người dùng ChatGPT hoặc công cụ AI khác trong lúc ôn. Sau đó 7 người nhờ AI tạo câu hỏi, 5 làm câu hỏi có sẵn của khóa và 6 không tự kiểm tra. Đây là các lựa chọn có thể trùng nhau. Ở lần gần nhất, 8/14 chỉ làm xong một phần và 6/14 bỏ dở. [Tổng hợp bằng chứng CP3](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/blob/7520b52ee813c42e3e067c4673e35a4e7d6f8bd4/evidence/summary.md).
+
+P2 lướt slide để tìm kiến thức áp dụng vào lab rồi nhờ AI giải thích chỗ khó. P3 tra lại nội dung cần cho hackathon và bỏ dở khi chưa tìm thấy. P4 nhờ AI giải thích thuật ngữ trong lúc ôn lại bài nhưng vẫn thấy mơ hồ. [P2](evidence/interviews/P2.md) · [P3](evidence/interviews/P3.md) · [P4](evidence/interviews/P4.md).
 
 ## §1. Người dùng & bằng chứng *(guide 1.1, 1.2)*
 
 - **Người học chính** là học viên L3 đang ôn thi giữa kỳ. Họ muốn tự kiểm tra mức hiểu trước kỳ thi.
-- **Pain giả thuyết.** Khi kiến thức rải qua nhiều buổi, học viên khó chọn nội dung cần ôn, mất thời gian tìm câu tự kiểm và dò lại nguồn.
-- **Bằng chứng cần chốt.** Ghi số người gặp, thời gian và hành vi quan sát được vào [tổng hợp bằng chứng](evidence/summary.md). Dữ liệu pre-class nếu dùng chỉ bổ trợ tín hiệu hành vi trên pre-class. Kết luận về ôn giữa kỳ cần đối chiếu với lời kể hoặc khảo sát.
+- **Chỗ vướng.** Trong khảo sát 21 học viên ngoài nhóm, 14 từng mở lại slide để ôn. Trong 14 người đó, 12 gặp slide khó tự hiểu và 8 mất từ một giờ trở lên ở lần ôn gần nhất. [Kết quả khảo sát](evidence/survey/results.csv).
+- **Kiểm chéo.** Bốn người được phỏng vấn đều ngoài nhóm. Ba người kể lại một lần ôn slide và đều gặp khó khi tìm trọng tâm hoặc hiểu nội dung. P2 mất khoảng 15 phút tìm phần cần để làm lab. P3 tìm khoảng 10 phút rồi bỏ dở. P4 dành hơn một giờ cho một buổi và ước ôn được khoảng 30% nội dung. [Phỏng vấn P1–P4](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/tree/d41a9f0413420fa299fdacd2a8e93648e0775950/evidence/interviews).
+- **Kết luận CP3.** Giả thuyết đúng một phần. Có căn cứ cho khó khăn khi tìm, hiểu và tự kiểm sau khi ôn. Trong khảo sát, 8/14 chỉ ôn một ngày học ở lần gần nhất. Các ví dụ phỏng vấn là ôn để làm lab, làm hackathon hoặc ôn lại sau buổi học. Mức độ khó khi ôn giữa kỳ qua nhiều ngày học còn cần đo riêng. [Đối chiếu bằng chứng](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/blob/7520b52ee813c42e3e067c4673e35a4e7d6f8bd4/evidence/summary.md).
 
 ## §2. Impact & quyết định chọn *(guide 1.3)*
 
-| Hướng | Việc học viên hoàn thành | Căn cứ cần kiểm |
+| Hướng | Việc học viên hoàn thành | Căn cứ từ khảo sát hoặc phỏng vấn |
 |---|---|---|
-| Tóm tắt từng buổi | Tìm kiến thức trọng tâm | Thời gian đọc lại slide và mức thường gặp |
-| Tra nguồn theo chủ đề | Mở đúng phần cần ôn | Số lần dò trang và thời gian mỗi lần |
-| Làm đề có căn cứ | Tự kiểm theo một buổi hoặc cả kỳ | Số lượt tự ôn, số phút tạo/tìm câu hỏi và dò đáp án |
+| Tóm tắt từng buổi | Tìm kiến thức trọng tâm | 12/14 người từng ôn gặp slide khó tự hiểu. |
+| Tra nguồn theo chủ đề | Mở đúng phần cần ôn | P2 và P3 mất khoảng 10–15 phút tìm nội dung cần dùng. |
+| Làm đề có căn cứ | Tự kiểm theo một buổi hoặc nhiều ngày | 7/14 từng nhờ AI tạo câu hỏi và 6/14 không tự kiểm tra. |
 
-Nhóm chọn đề ôn có căn cứ vì 7/14 người từng ôn bằng slide đã nhờ công cụ AI tạo câu hỏi, còn 6/14 chưa tự kiểm tra sau khi ôn. Phạm vi theo chủ đề hoặc khoảng ngày phù hợp với ghi nhận 8/14 người chỉ ôn một ngày học ở lần gần nhất. Nhóm sẽ đo tiếp thời gian tiết kiệm được theo lượt để tính impact. [Số liệu khảo sát](evidence/summary.md).
+Nhóm chọn đề ôn có căn cứ để học viên tự kiểm và mở đúng trang nguồn khi cần đối chiếu. Phạm vi theo chủ đề hoặc khoảng ngày phù hợp với lần ôn ngắn và vẫn hỗ trợ ôn tổng hợp.
+
+**Impact ước tính.** Kịch bản cơ sở dùng khoảng 470 người, 5,16 lượt ôn mỗi người mỗi tháng và giả định tiết kiệm 15 phút mỗi lượt. Tích số là khoảng 77 phút/người/tháng hoặc 610 giờ/tháng cho cả kịch bản cơ sở. Số 470 lấy mốc gần đúng 700 học viên L3 nhân với 14/21 người từng ôn bằng slide rồi làm tròn. Số lượt lấy từ tần suất khảo sát, kết hợp giả định của persona. Mức tiết kiệm 15 phút là ước tính của nhóm, chờ đo bằng dùng thử. [Ước tính và nguồn từng thừa số](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/blob/7520b52ee813c42e3e067c4673e35a4e7d6f8bd4/evidence/summary.md).
 
 ## §3. Giải pháp tương tự *(guide 2.1)*
 
-Gemini Notebook gợi ý một cách tự kiểm tra bằng câu hỏi tạo từ tài liệu đã nạp. CramAI tập trung vào học viên L3, cho chọn một chủ đề hoặc khoảng ngày và kèm tên file, số trang ở từng câu để học viên kiểm tra trước khi dùng đề nháp. Thiếu đoạn giải thích, CramAI báo giới hạn và gợi ý đổi phạm vi. [Hướng dẫn quiz của Gemini Notebook](https://support.google.com/gemininotebook/answer/16958963?hl=en).
+Gemini Notebook gợi ý một cách tự kiểm tra bằng câu hỏi tạo từ tài liệu đã nạp. CramAI tập trung vào học viên L3, cho chọn một chủ đề hoặc khoảng ngày và kèm tên file, số trang ở từng câu để người học tham khảo trong lúc học. Thiếu đoạn giải thích, CramAI báo giới hạn và gợi ý đổi phạm vi. [Hướng dẫn quiz của Gemini Notebook](https://support.google.com/gemininotebook/answer/16958963?hl=en).
 
 ## §4. Thiết kế *(guide 2.2, 3.2)*
 
 **Lát cắt CP2.** Một học viên L3 yêu cầu ôn một chủ đề hoặc nhiều ngày. AI chọn nội dung đủ căn cứ từ slide trong phạm vi yêu cầu để tạo đề nháp trắc nghiệm A–D, kèm đáp án, tên file và số trang để học viên đối chiếu.
 
+**Hành vi hiện tại sau CP2.** Từ ngày 28/11, CLI hiển thị ngay mọi câu hợp lệ cùng đáp án để học viên học trực tiếp. Người học không duyệt, loại hoặc chốt từng câu. Đây là cập nhật hành vi sản phẩm; ngưỡng, benchmark, metric và kết quả CP2 giữ nguyên.
+
 **Hình dạng.** Workflow cố định vì các bước kiểm yêu cầu, tra nguồn, đề xuất câu và kiểm trích dẫn đã xác định trước. Lát cắt chỉ cần một lượt truy hồi và một lượt đề xuất. Agent tự chọn bước hoặc nhiều agent sẽ thêm lượt gọi và trạng thái cần kiểm mà không giúp hoàn thành thêm việc cho học viên.
 
-**Mức tự động.** AI đề xuất, người học quyết định dùng câu nào sau khi đối chiếu nguồn. Học sai trước kỳ thi là hậu quả cần chặn. Ngoài phạm vi CP2 có tự chấm bài hoặc điểm thi thật, gửi tin lên LMS hoặc Discord, và câu hỏi tự luận.
+**Mức tự động.** AI tạo câu, hệ thống tự kiểm cấu trúc và xác nhận mã nguồn từ đoạn đã truy hồi, rồi hiển thị mọi câu hợp lệ để học viên học trực tiếp. Không có bước duyệt, loại hoặc chốt câu. Trích dẫn giúp mở lại slide tham khảo; mã nguồn hợp lệ không đảm bảo đáp án đúng về mặt sư phạm. Ngoài phạm vi có tự chấm bài hoặc điểm thi thật, gửi tin lên LMS hoặc Discord, và câu hỏi tự luận.
 
 ```mermaid
 flowchart LR
@@ -48,8 +55,8 @@ flowchart LR
     filter{"Loại đoạn rỗng hoặc chỉ có dàn ý<br/>Còn đoạn phù hợp?"}
     core["call_model · Quyết định AI<br/>Chọn nội dung và đề xuất câu A–D,<br/>đáp án, độ khó và mã đoạn"]
     guard["Kiểm cấu trúc và mã nguồn<br/>Loại câu không hợp lệ<br/>Lấy file, trang từ đoạn đã tra"]
-    output["Đề nháp · G11<br/>Câu A–D, đáp án, file và trang"]
-    review["Học viên · G8<br/>Đối chiếu đáp án với slide<br/>và chọn câu dùng thủ công"]
+    output["Đề ôn tập · G11<br/>Câu A–D, đáp án, file và trang"]
+    study["Học viên · G8<br/>Học các câu được tạo<br/>và tham khảo trang nguồn"]
     fallback["G10 · Dừng tạo đề<br/>Hỏi rõ phạm vi hoặc báo thiếu căn cứ"]
 
     input --> scope
@@ -64,7 +71,7 @@ flowchart LR
     mode -->|Thật| filter
     filter -->|Có| core --> guard
     filter -->|Không| fallback
-    guard -->|Có câu hợp lệ| output --> review
+    guard -->|Có câu hợp lệ| output --> study
     guard -->|Cần làm rõ hoặc thiếu căn cứ| fallback
     guard -->|Ngoài phạm vi| refusal
 ```
@@ -73,9 +80,9 @@ flowchart LR
 |---|---|---|---|
 | `search_slides` | Yêu cầu ôn và giới hạn số đoạn | Đoạn có mã, nội dung, file và số trang | Chỉ đọc `data/passages.jsonl` |
 | `call_model` | Yêu cầu ôn cùng mã và nội dung đoạn làm căn cứ | Câu ứng viên với phương án, đáp án, độ khó và mã nguồn hoặc trạng thái cần dừng | Chế độ giả dùng câu mẫu và token bằng 0. Chế độ thật gửi prompt và đoạn đã xử lý đến API model đã cấu hình. |
-| Kiểm trích dẫn và tạo output | Câu ứng viên và các đoạn còn lại sau khi lọc | Đề nháp hoặc hướng dẫn khi cần dừng | Kiểm bốn phương án khác nhau, một khóa đáp án A–D, độ khó và mã đoạn. Lấy file, trang từ đoạn đã tra. |
+| Kiểm trích dẫn và tạo output | Câu ứng viên và các đoạn còn lại sau khi lọc | Đề ôn tập hoặc hướng dẫn khi cần dừng | Kiểm bốn phương án khác nhau, một khóa đáp án A–D, độ khó và mã đoạn. Lấy file, trang từ đoạn đã tra. |
 
-**Nguyên tắc thiết kế.** G1/G2 định hướng yêu cầu ôn theo chủ đề hoặc khoảng ngày và công khai giới hạn của bản giả. G10 hỏi lại hoặc báo thiếu căn cứ. G11 gắn nguồn để đối chiếu đáp án. G8 để học viên chọn câu muốn dùng. Code kiểm cấu trúc và tham chiếu, còn học viên dùng nội dung slide để kiểm nghĩa của đáp án.
+**Nguyên tắc thiết kế.** G1/G2 định hướng yêu cầu ôn theo chủ đề hoặc khoảng ngày và công khai giới hạn của bản giả. G10 hỏi lại hoặc báo thiếu căn cứ. G11 gắn nguồn để người học tham khảo. G8 hiển thị ngay mọi câu hợp lệ để học. Code kiểm cấu trúc và tham chiếu nguồn, nhưng không tuyên bố thay người học xác minh tính đúng đắn về mặt sư phạm.
 
 **Tình trạng CP2.** `python run.py` ở chế độ giả đã tạo đề nháp ba câu mẫu có đáp án và trang nguồn từ corpus 280 đoạn. Khi yêu cầu mơ hồ, CLI hỏi rõ phạm vi. Chế độ thật đã kiểm gọi model với cùng corpus. Luồng admin xuất bản 14 bộ slide và làm bài trên web có [đặc tả và backlog riêng](specs/003-cramai-exams/spec.md).
 
@@ -97,10 +104,11 @@ Ca nghiệm thu web nằm trong [đặc tả 003](specs/003-cramai-exams/spec.md
 
 ## §6. Bốn đường đi của trải nghiệm
 
-- **Suôn sẻ.** Nhập chủ đề hoặc khoảng ngày, nhận đề nháp A–D cùng đáp án, tên file và số trang.
+- **Suôn sẻ.** Nhập chủ đề hoặc khoảng ngày, nhận đề ôn tập A–D cùng đáp án, tên file và số trang để học ngay.
 - **Không chắc.** Trả một câu hỏi làm rõ để học viên bổ sung phạm vi.
 - **Thiếu căn cứ hoặc ngoài phạm vi.** Báo lý do và gợi ý chọn phạm vi có nguồn.
-- **Người dùng sửa.** Đối chiếu trang nguồn, bỏ câu chưa tin và nhập yêu cầu hẹp hơn nếu cần tạo lại.
+- **Học trực tiếp.** Học các câu hỏi và đáp án được tạo; mở trích dẫn khi cần xem lại nội dung slide.
+- **Muốn ôn tiếp.** Nhập chủ đề hoặc phạm vi khác để tạo bộ câu hỏi mới.
 
 ## §7. Đánh giá & chuẩn "đạt" *(guide 2.4, 4.1)*
 - [Data card](data/DATA_CARD.md) · [Benchmark lượt 1](eval/benchmark.csv) — 24 câu (`thuong` 11 · `kho` 9 · `tu_choi` 4), 10 câu có nguồn người dùng · [Metric spec](eval/metric_spec.yaml) — 4 metric.
@@ -150,6 +158,8 @@ Mỗi người sửa file thuộc vai của mình và bàn giao thay đổi file
 | Thời điểm | Đổi gì | Vì sao (trỏ về câu thử / lỗi / bằng chứng nào) |
 |---|---|---|
 | 27/11 · 23:07 | Xác nhận adapter Claude và ghi lượt đo chính thức trên bản tích hợp `2567816`. | T012 và T017 cần usage thật và một mốc đánh giá trên 24 ca. [CSV lượt 1](eval/run-1.csv) · [Trace lượt 1](traces/run-1.jsonl). |
+| 27/11 · 23:37 | Tổng hợp khảo sát, P1–P4 và ghi impact ước tính vào §0–§2. | T016 chốt bằng chứng CP3 và giới hạn của dữ liệu hiện có. [Tổng hợp bằng chứng CP3](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/blob/7520b52ee813c42e3e067c4673e35a4e7d6f8bd4/evidence/summary.md). |
+| 28/11 | Gỡ duyệt, loại và chốt câu khỏi luồng học CLI. Mọi câu hợp lệ được hiển thị ngay để học, kèm đáp án và nguồn tham khảo. | Làm theo yêu cầu sản phẩm sau CP2; Lâm xác nhận các chủ file đồng ý. Giữ nguyên ngưỡng §7, benchmark, metric và kết quả các lượt đã chạy. |
 
 **Sau CP4 (đến 23:59 Thứ Bảy 28/11)** (sửa theo góp ý — không sửa chuẩn "đạt", câu thử, số bằng chứng, kết quả các lượt đã chạy)
 

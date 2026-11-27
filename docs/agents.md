@@ -50,6 +50,6 @@ Khi nhận task web, đặt `SPECIFY_FEATURE_DIRECTORY=specs/003-cramai-exams` v
    git diff --check
    ```
 
-   Script phát hiện file ngoài phạm vi đã commit, staged, unstaged, untracked và cả hai đầu của đổi tên. GitHub Actions chạy lại kiểm phạm vi khi PR từ branch của vai vào `main`. Khi branch tích hợp gom nhiều vai, kiểm từng PR trước khi ghép. Nếu một file ngoài phạm vi xuất hiện, gửi yêu cầu cho chủ file và bỏ thay đổi đó khỏi PR.
+   Script phát hiện file ngoài phạm vi đã commit, staged, unstaged, untracked và cả hai đầu của đổi tên. GitHub Actions chạy lại kiểm phạm vi khi PR từ branch của vai vào `main`. Khi branch tích hợp gom nhiều vai, kiểm từng PR trước khi ghép. Ngoại lệ cross-role chỉ dùng khi chủ file đã đồng ý, ghi thành task riêng, gắn mã task vào subject của commit cuối và khai báo đúng danh sách file trong `scripts/check_agent_scope.py`. Ngoại lệ chỉ áp dụng cho task đó, không đổi chủ file hoặc nới phạm vi các vai khác.
 
 Mẫu nội dung PR gồm ID task, file đã đổi, lệnh kiểm và kết quả, đầu ra cần người khác dùng, rủi ro hoặc phụ thuộc còn lại. Việc phát sinh sau CP2 đưa cho Lâm ghi vào changelog.

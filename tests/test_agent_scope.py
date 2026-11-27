@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.check_agent_scope import changed_files, is_owned
+from scripts.check_agent_scope import changed_files, is_in_scope, is_owned
 
 
 class ScopeTests(unittest.TestCase):
@@ -57,3 +57,10 @@ class ScopeTests(unittest.TestCase):
             self.assertEqual(is_owned(role, "frontend/admin/index.html"), role == "phuoc-anh")
             self.assertEqual(is_owned(role, "eval/run-1.csv"), role == "lam")
             self.assertEqual(is_owned(role, "cost/simulate-1-summary.md"), role == "lam")
+
+    def test_lam_task_override_is_limited_to_approved_product_files(self):
+        self.assertTrue(is_in_scope("lam", "codebase/app.py", {"T028"}))
+        self.assertTrue(is_in_scope("lam", "codebase/agent.py", {"T028"}))
+        self.assertFalse(is_in_scope("lam", "codebase/tools.py", {"T028"}))
+        self.assertFalse(is_in_scope("lam", "codebase/app.py", {"T029"}))
+        self.assertFalse(is_in_scope("hung", "codebase/app.py", {"T028"}))

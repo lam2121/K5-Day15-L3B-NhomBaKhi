@@ -61,7 +61,7 @@ class ContractTests(unittest.TestCase):
             capture_output=True,
             check=True,
         )
-        self.assertIn("Đề nháp từ câu mẫu CP2", result.stdout)
+        self.assertIn("Đề ôn tập mẫu CP2 đã sẵn sàng", result.stdout)
         self.assertIn("Nguồn:", result.stdout)
         self.assertIn("day03-p", result.stdout)
         self.assertIn("model: fake", result.stdout)
