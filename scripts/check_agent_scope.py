@@ -40,7 +40,10 @@ TASK_SCOPE_OVERRIDES = {
         # Group-approved CP4 integration: Lâm copies the measured simulation into
         # Phước Anh's estimate and reconciles the shared slide checklist.
         "T022": {"cost/cost-estimate.md"},
-        "T024": {"slides/outline.md", "demo-slides.pdf", ".gitattributes"},
+        "T024": {
+            "slides/outline.md", "slides/content.md", "slides/demo-rehearsal.md",
+            "demo-slides.pdf", ".gitattributes",
+        },
     },
 }
 

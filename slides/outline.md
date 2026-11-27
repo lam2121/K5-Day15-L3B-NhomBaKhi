@@ -7,7 +7,7 @@
 | 1 | Người dùng và pain | P2 ~15 phút tìm nội dung; P3 ~10 phút rồi bỏ dở; P4 ước ôn ~30% sau hơn một giờ | `evidence/summary.md`, P1–P4 đã ẩn danh | ☑ |
 | 2 | Bằng chứng và tác động dự kiến | Khảo sát 21 người, 14/21 từng mở slide; impact ~77 phút/người/tháng được ghi là ước tính | `evidence/summary.md`, `spec.md` §2 | ☑ |
 | 3 | Luồng sản phẩm | Nhập phạm vi → tìm slide → AI tạo câu → kiểm nguồn → học với đáp án và trích dẫn | `spec.md` §4 | ☑ |
-| 4 | Demo: một câu thường, một giới hạn | B01 ca thường, B21 ca phạm vi quá lớn; trích dẫn B01 hiển thị ở deck | `eval/benchmark.csv`, `eval/run-2.csv` | ☑ |
+| 4 | Demo: ca thường, ca giới hạn và input lạ | B01 tạo đề ôn; B21 yêu cầu 120 câu vượt giới hạn; B12 yêu cầu chấm điểm và gửi đề ra ngoài | `eval/benchmark.csv`, `eval/run-2.csv` | ☑ |
 | 5 | Đánh giá trên cùng bộ 24 câu | 21/24 → 22/24; trace 62/62 → 63/63; phủ nhiều ngày 7/9 → 5/7, đều dưới ngưỡng 80% | `eval/README.md`, `eval/report.md` | ☑ |
 | 6 | Chi phí token 50 phiên | Haiku $0.0031/task thành công; $7.42/tháng ở kịch bản cơ sở; so với impact ước tính | `cost/cost-estimate.md`, `cost/simulate-1-summary.md` | ☑ |
 | 7 | Kết luận theo dữ liệu | Khuyến nghị iterate do độ phủ nhiều ngày 71,4%, đồng thời nêu điểm tổng đạt 91,7% | `eval/report.md`, `cost/cost-estimate.md` | ☑ |
@@ -26,7 +26,7 @@
 
 ## Còn phải kiểm trước khi nộp
 
-- Nhóm xác nhận khuyến nghị iterate và tập demo một ca thường, một ca khó, một input lạ.
-- Nộp `demo-slides.pdf` hoặc bật link deck Spaces nếu nhóm muốn dùng bản trực tuyến.
+- Nhóm xác nhận quyết định go / iterate / stop; deck hiện đề xuất iterate theo số liệu. Kịch bản tập ba tình huống có ở [demo-rehearsal.md](demo-rehearsal.md); nhóm cần tập thật trước khi đánh dấu xong.
+- Nộp [demo-slides.pdf](../demo-slides.pdf). Deck Spaces vẫn riêng tư; PDF đã sẵn sàng làm phương án nộp tệp.
 - Xác nhận repo chạy được trên máy demo, `.env` có key riêng trên máy đó, và gọi thử model trong vòng một giờ trước demo.
 - Kiểm video dự phòng CP4 có cả hai tình huống thật, mở được ẩn danh. Video CP3 hiện có trong [Drive](https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing), nhưng chưa xác minh nội dung CP4.
