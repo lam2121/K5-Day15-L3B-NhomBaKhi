@@ -31,3 +31,9 @@ Cả **3 ca trượt** thuộc nhóm **thu hẹp đề mà không báo giới h�
 
 - B05 vẫn cần thử lại với model thật. Kiểm cục bộ thấy ngữ cảnh của B05 có một đoạn ngày 13 về bảo vệ thông tin trong log, thiếu đoạn trực tiếp cho Launch Economics. Nếu lượt 2 vẫn thiếu chủ đề, ghi rõ kết quả và bàn giao Khiêm đối chiếu truy hồi với slide gốc.
 - Hưng hoàn tất bảng trước/sau và ví dụ còn lỗi sau khi Lâm công bố CSV, trace và điểm đã chấm của lượt 2.
+
+## 5. Phát hiện bổ sung về vị trí đáp án
+
+- **Lượt 1.** Đếm 62 câu trắc nghiệm từ 24 ca thử. Vị trí đáp án đúng là A 7, B 31, C 19, D 5. Chọn B cho mọi câu trong lượt này đúng 31/62. Riêng ba câu của B01 có đáp án B, C, B. [CSV lượt 1](run-1.csv)
+- **Bản sửa riêng sau T019.** Workflow trộn thứ tự bốn lựa chọn và gán lại chữ cái theo nội dung đáp án đúng. Thứ tự có thể tái lập với cùng đề bài và tập phương án. Prompt yêu cầu phương án tự đứng được khi đổi vị trí, và bộ kiểm lọc các mẫu tham chiếu vị trí phổ biến.
+- **Kiểm cục bộ trên đầu ra lượt 1.** Áp dụng bước trộn cho cùng 62 câu cho phân bố A 21, B 13, C 15, D 13. Cả 62 câu giữ đúng nội dung đáp án và mã nguồn. Số này đo bước trộn cục bộ. Bản sửa được giữ riêng để đánh giá sau lượt 2 của T019.

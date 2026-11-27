@@ -4,6 +4,7 @@ import json
 import re
 import unicodedata
 from collections import Counter
+from random import Random
 
 from ai import MODEL_PROVIDER, call_model
 from contracts import AnswerResponse, QuizQuestion, QuizStatus, SlidePassage, make_response, resolve_citations
@@ -27,6 +28,7 @@ Chỉ trả một đối tượng JSON có hai trường status và questions, k
 Khi có câu hợp lệ, status là ok. Mỗi câu có các trường sau.
 - prompt là đề bài trên một dòng.
 - options là mảng bốn chuỗi khác nhau theo thứ tự A, B, C, D. Mỗi chuỗi trên một dòng, không kèm nhãn.
+  Viết nội dung tự đứng được khi đổi thứ tự. Tránh tham chiếu chữ cái hoặc phương án ở trên/dưới.
 - answer là một ký tự A, B, C hoặc D.
 - difficulty là easy, medium hoặc hard.
 - source_ids là mảng mã đoạn có thật trong passages và trực tiếp hỗ trợ đáp án.
@@ -38,6 +40,12 @@ _GUIDANCE: dict[QuizStatus, str] = {
 }
 _OPTION_IDS = ("A", "B", "C", "D")
 _OPTION_PREFIX = re.compile(r"^[A-D][.)]\s+", re.IGNORECASE)
+_RELATIVE_OPTION = re.compile(
+    r"\b(?:phương án|đáp án|lựa chọn|ý)\s+(?:(?:ở|nêu)\s+)?(?:trên|dưới)\b"
+    r"|\b(?:all|none|both|neither) of the (?:above|below)\b"
+    r"|^(?:cả|chỉ|both|either|only)\s+[A-D]\s+(?:và|hoặc|and|or)\s+[A-D]\b",
+    re.IGNORECASE,
+)
 _OUTLINE = re.compile(r"^(?:\[[^\]\n]*\bdàn ý\b[^\]\n]*\]|dàn ý\b)", re.IGNORECASE)
 _DAY_REFERENCE = re.compile(
     r"\b(?:ngày|ngay|buổi|buoi|day)\s*(\d{1,2})\b"
@@ -330,7 +338,7 @@ def _model_questions(candidates: list[object], passages: list[SlidePassage]) -> 
         if not isinstance(raw_options, list) or len(raw_options) != len(_OPTION_IDS):
             continue
         options = [_single_line(option) for option in raw_options]
-        if any(not option or _OPTION_PREFIX.match(option) for option in options):
+        if any(not option or _OPTION_PREFIX.match(option) or _RELATIVE_OPTION.search(option) for option in options):
             continue
         normalized_options = {" ".join(unicodedata.normalize("NFKC", option).casefold().split()) for option in options}
         if len(normalized_options) != len(_OPTION_IDS):
@@ -342,11 +350,15 @@ def _model_questions(candidates: list[object], passages: list[SlidePassage]) -> 
         if any(not isinstance(source_id, str) or source_id not in available_ids for source_id in source_ids):
             continue
 
+        correct_option = options[_OPTION_IDS.index(answer_key)]
+        # Cùng đề bài và tập phương án cho cùng thứ tự, kể cả khi model đổi thứ tự ban đầu.
+        options.sort()
+        Random(prompt).shuffle(options)
         choices = [f"{label}. {option}" for label, option in zip(_OPTION_IDS, options)]
         questions.append({
             "question_id": f"q{len(questions) + 1:02d}",
             "prompt": "\n".join([prompt, *choices]),
-            "answer": answer_key,
+            "answer": _OPTION_IDS[options.index(correct_option)],
             "difficulty": difficulty,
             "citations": resolve_citations(source_ids, passages),
         })
