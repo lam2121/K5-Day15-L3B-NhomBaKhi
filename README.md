@@ -106,6 +106,10 @@ Nhóm dùng stack khác (Node, Streamlit, notebook…): sửa hàm `run_app()` t
 
 Codex được dùng để chuẩn bị Spec Kit, hợp đồng giữa các vai, adapter model và kiểm thử. Lâm phụ trách review cấu hình, cách lấy usage và trace trước lượt chạy chính thức.
 
+### Video demo CP3
+
+Link Drive (thư mục video): [mở thư mục](<https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing>). Truy cập ẩn danh: nhóm xác nhận đã kiểm tra và mở được.
+
 ## File mẫu — điền ở bước nào
 
 | File | Điền ở bước guide | Mốc |

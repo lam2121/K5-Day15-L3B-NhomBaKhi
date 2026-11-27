@@ -58,7 +58,7 @@ Mở chặng dưới đây khi T010 hoàn tất và cả nhóm có commit CP2 đ
   - Lượt `run-1@20261127-230718` chạy 24/24 ca trên commit `2567816` với `claude-haiku-5-5`, 0 lỗi kỹ thuật. Nhóm xác nhận 21/24 ca đạt, 4/4 ca từ chối qua và độ phủ nhiều ngày đạt 7/9 ca. [CSV lượt 1](../../eval/run-1.csv) · [Trace lượt 1](../../traces/run-1.jsonl).
   - `simulate-try@20261127-231207` chạy đủ 10 phiên với persona của Phước Anh tại `8559a5e`, seed 42, đo bằng `claude-haiku-5-5` và lấy tỉ lệ từ `eval/run-1.csv`. Ghi 77.957 token vào, 42.942 token ra và 0 phiên lỗi. CSV, tóm tắt và trace thử lưu cục bộ theo quy ước của bộ chạy.
 - [ ] T018 [US1] **Lâm** sau T016–T017 ghi kết quả lượt 1 vào `eval/README.md` và `spec.md` §7. Quay video 30 giây thao tác thật và AI thật, chia sẻ bằng YouTube không công khai hoặc Drive mở bằng link, rồi kiểm ẩn danh. Nộp CP3 với link `evidence/summary.md`, `spec.md` đã commit đủ §0–§7, video, x/N và run ID, khai rõ phần còn thiếu.
-  - Đã chốt §0–§2, điểm 21/24 và run ID. Còn video 30 giây, kiểm truy cập ẩn danh và xác nhận nộp. [Hồ sơ đánh giá](../../eval/README.md).
+  - Đã chốt §0–§7, điểm 21/24 và run ID `run-1@20261127-230718`. Đã nhận link Drive chứa video CP3: [thư mục video](<https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing>). Nhóm xác nhận link mở được khi xem ẩn danh; còn xác nhận đã nộp CP3. [Hồ sơ đánh giá](../../eval/README.md).
 
 ## Giai đoạn 4 — Cải tiến, chi phí và demo · CP4, 14:30 ngày 28/11
 

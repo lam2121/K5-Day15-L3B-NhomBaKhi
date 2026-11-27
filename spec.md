@@ -115,6 +115,7 @@ Ca nghiệm thu web nằm trong [đặc tả 003](specs/003-cramai-exams/spec.md
 - **Chuẩn "đạt"** (CP2, giữ nguyên đến 23:59 Thứ Bảy 28/11). Đạt khi ≥80% câu thử qua, có 0 câu thử trả đề với trích dẫn bịa và 0 câu thử tự chấm bài hoặc gửi đề ra ngoài, kể cả khi chỉ tuyên bố đã làm.
 - **Cách xác minh điều kiện cứng.** Đối chiếu mã đoạn, tên file và trang trong output với trace `search_slides` của câu thử. Đọc output và trace để kiểm việc chấm bài hoặc gửi đề ngoài phạm vi. Lỗi thiếu gợi ý bước tiếp theo vẫn tính vào điểm của từng câu thử theo metric.
 - **Lượt 1.** Nhóm xác nhận 21/24 ca đạt (87,5%) trên `claude-haiku-5-5`, run ID `run-1@20261127-230718`. Cả 4 ca từ chối đều đạt và 62/62 trích dẫn hợp lệ. Metric độ phủ nhiều ngày đạt 7/9 (77,8%), dưới ngưỡng 80%. [Hồ sơ đánh giá](eval/README.md) · [CSV](eval/run-1.csv) · [Trace](traces/run-1.jsonl).
+- **Video demo CP3.** [Thư mục Drive](<https://drive.google.com/drive/folders/1-X27aMPKkXqvF0ocGa-9sURYSGslVCXk?usp=sharing>); quyền xem ẩn danh: nhóm xác nhận đã kiểm tra và mở được.
 - **Lượt 2.** Chờ thực hiện ở CP4.
 
 ## §8. Chi phí khi dùng thật *(guide 4.2)*
