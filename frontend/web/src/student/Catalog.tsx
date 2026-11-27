@@ -47,7 +47,7 @@ export function Catalog({ resumeTitle, onResume, onStart, onLoaded }: Props) {
           <p className="mb-2 inline-flex items-center gap-2 rounded-pill bg-white px-3 py-1 text-sm font-bold text-strawberry-ink ring-2 ring-blush">
             <Icon name="heart" className="h-4 w-4" /> Tiệc trà ôn thi L3
           </p>
-          <h1 className="text-4xl font-extrabold sm:text-5xl">Hôm nay bạn muốn ôn món nào?</h1>
+          <h1 className="text-4xl font-extrabold sm:text-5xl">Hôm nay bạn muốn thưởng thức món nào?</h1>
           <p className="mt-3 text-lg text-cocoa-soft">
             Mỗi món trên thực đơn, từ bánh ngọt, kem đến sữa dâu hay tách trà, là một bộ slide. Chọn một món để nhận đề 5 câu trắc nghiệm do AI tạo
             từ slide đã duyệt. Đáp án và trang slide hiện sau khi
