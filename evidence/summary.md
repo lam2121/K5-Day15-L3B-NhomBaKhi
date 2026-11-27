@@ -9,7 +9,7 @@
 |---|---|---|
 | Đào data (x/N, %, cách đếm chạy lại được, ≥5 ví dụ) | ☐ | `evidence/data-mining.md` |
 | Phỏng vấn (≥3 người ngoài nhóm, đúng người dùng) | ☐ | `evidence/interviews/P1.md`… |
-| Khảo sát (≥20 người ngoài nhóm, đúng người dùng) | ☑ n = 21 học viên L3A/L3B ngoài nhóm (thành viên NhomBaKhi không điền form — Phước Anh xác nhận 27/11) | `evidence/survey/` (chờ Khiêm lưu CSV kết quả) |
+| Khảo sát (≥20 người ngoài nhóm, đúng người dùng) | ☑ n = 21 học viên L3A/L3B ngoài nhóm (thành viên NhomBaKhi không điền form — Phước Anh xác nhận 27/11) | `evidence/survey/results.csv` (số phiếu 1–21 = thứ tự dòng theo dấu thời gian) |
 
 ## 2. Số chính
 
