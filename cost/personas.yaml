@@ -13,7 +13,7 @@ users:              # số người dùng thật nếu đưa vào dùng — 3 k�
   low: 300
   base: 470
   high: 700
-  source: "Quy mô lớp L3 khoảng 700 học viên (README hackathon của BTC — chưa kiểm lại, cần link). Khảo sát 27/11 (evidence/survey/results.csv): 14/21 (67%) từng mở lại slide để ôn → cơ sở = 700 × 14/21 ≈ 470. Cao = toàn bộ 700 (tự ước tính: mọi học viên dùng trước kỳ thi). Thấp = 300 (tự ước tính)."
+  source: "Nhóm L3 hơn 700 học viên, lấy mốc gần đúng 700 (đề hackathon Track A: https://github.com/VinUni-AI20k/K5-L3-Day15-AI-Product-Hackathon/blob/main/tracks/track-a-edtech.md#L73). Khảo sát 27/11 (evidence/survey/results.csv): 14/21 (67%) từng mở lại slide để ôn → cơ sở = 700 × 14/21 ≈ 470. Cao = toàn bộ 700 (tự ước tính: mọi học viên dùng trước kỳ thi). Thấp = 300 (tự ước tính)."
 
 personas:           # ≥3 kiểu người dùng; share cộng lại = 1
                     # Nguồn chung: khảo sát 27/11, câu 3 "Trong 7 ngày qua mở lại slide để ôn mấy lần", 14 người từng ôn bằng slide.

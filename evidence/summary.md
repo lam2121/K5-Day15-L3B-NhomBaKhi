@@ -5,16 +5,13 @@
 
 ## 1. Nguồn đã dùng
 
-| Nguồn | Đạt ngưỡng? | File |
-|---|---|---|
-| Đào data (x/N, %, cách đếm chạy lại được, ≥5 ví dụ) | ☐ | `evidence/data-mining.md` |
-| Phỏng vấn (≥3 người ngoài nhóm, đúng người dùng) | ☐ | `evidence/interviews/P1.md`… |
-| Khảo sát (≥20 người ngoài nhóm, đúng người dùng) | ☑ n = 21 học viên L3A/L3B ngoài nhóm (thành viên NhomBaKhi không điền form — Phước Anh xác nhận 27/11) | `evidence/survey/results.csv` (số phiếu 1–21 = thứ tự dòng theo dấu thời gian) |
+- [x] **Khảo sát.** 21 học viên L3A/L3B ngoài nhóm. Phước Anh xác nhận ngày 27/11 rằng thành viên NhomBaKhi không điền form. Số phiếu 1–21 theo thứ tự dấu thời gian. [Kết quả khảo sát](survey/results.csv).
+- [x] **Phỏng vấn.** Nhóm xác nhận cả 4 người P1–P4 đều ngoài nhóm. P2–P4 kể lại trải nghiệm ôn bằng slide. [Bốn bản ghi phỏng vấn](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/tree/d41a9f0413420fa299fdacd2a8e93648e0775950/evidence/interviews).
+- [ ] **Đào data.** Nhóm chưa dùng log pre-class để kết luận về việc ôn slide. [Ghi chú đào dữ liệu](data-mining.md).
 
 ## 2. Số chính
 
-- Đào data: __/__ (__%) …
-- Phỏng vấn: __/3 người gặp *(n nhỏ không ghi %)* · số lần / tháng: P1 __, P2 __, P3 __ · mỗi lần mất __–__ phút
+- **Phỏng vấn.** 3/4 người kể lại một lần ôn bằng slide. Cả 3 người từng ôn đều gặp khó khi tìm trọng tâm hoặc hiểu nội dung. P1 chưa từng mở lại slide để ôn. Các mốc 10–15 phút ở P2–P3 là thời gian tìm thông tin, còn hơn một giờ ở P4 là thời lượng cả buổi ôn.
 - Khảo sát (Google Form, 27/11 15:14–17:26, n = 21: 14 học viên L3B, 7 học viên L3A). Phiếu đánh số 1–21 theo thứ tự dấu thời gian:
   - 7/21 (33%) chưa bao giờ mở lại slide để ôn → bỏ qua các câu sau. Các số dưới tính trên **14 người đã từng ôn bằng slide**.
   - Kết quả lần ôn gần nhất: 0/14 xong hẳn · 8/14 (57%) xong một phần · 6/14 (43%) bỏ dở.
@@ -25,13 +22,12 @@
   - Tự kiểm tra sau khi ôn: 6/14 (43%) không kiểm tra · 7/14 (50%) nhờ công cụ AI ra câu hỏi · 5/14 làm câu hỏi có sẵn của khoá (chọn nhiều).
   - Số lần mở slide ôn trong 7 ngày qua: 0 lần: 2 · 1 lần: 7 · 2 lần: 5.
 
-Phỏng vấn nhiều vai thì đếm theo từng vai, không cộng chung.
-
-| | Vai | Gặp pain? | Số lần / 1 tháng qua | Lần gần nhất mất | Đang xoay xở bằng |
-|---|---|---|---|---|---|
-| P1 | | | | | |
-| P2 | | | | | |
-| P3 | | | | | |
+| Người | Tình huống gần nhất | Chỗ vướng và kết quả | Tần suất theo lời kể |
+|---|---|---|---|
+| [P1](interviews/P1.md) | Chưa từng mở lại slide để ôn | Chưa có lần ôn bằng slide để đối chiếu | 0 lần |
+| [P2](interviews/P2.md) | Xem lại lý thuyết trước lab khoảng 2–3 tuần trước | Mất khoảng 15 phút để tìm nội dung cần dùng. AI giúp áp dụng ngay, P2 chỉ nhớ sơ lược và không tự kiểm tra. | Hầu như trước các bài lab, chưa rõ số lần |
+| [P3](interviews/P3.md) | Tra lại phần xác định bài toán AI để làm hackathon ngày 27/11 | Mất khoảng 10 phút rồi bỏ dở vì chưa tìm được thông tin cần. Việc tra lại khi đang nghe giảng còn làm P3 bỏ lỡ nội dung hiện tại. | Khoảng 2–3 lần, chưa rõ kỳ đếm |
+| [P4](interviews/P4.md) | Ôn lý thuyết buổi tối trong tuần đầu | Mỗi chỗ khó mất khoảng 10 phút. Lời giải thích của AI vẫn mơ hồ. Buổi ôn kéo dài hơn một giờ và P4 ước ôn được khoảng 30% bài. | Chỉ ôn trong tuần đầu, chưa rõ số buổi |
 
 ## 3. ≥5 trích dẫn hoặc ví dụ nguyên văn (có nguồn, bỏ tên)
 
@@ -44,16 +40,21 @@ Phỏng vấn nhiều vai thì đếm theo từng vai, không cộng chung.
 
 7/14 người ôn có trả lời câu mở; 1 câu trả lời không liên quan đến việc ôn nên không trích.
 
+**Trích từ phỏng vấn**
+
+- “chưa bao giờ mở lại slide để ôn” [P1](interviews/P1.md).
+- “ôn lướt lướt các slide mơ hồ không biết nên tập trung vào đâu” [P2](interviews/P2.md).
+- “mất rất nhiều thời gian khoảng 10 phút xong lại bỏ ngang vì không tìm được thông tin cần thiết” [P3](interviews/P3.md).
+- “AI trợ giúp nhưng vẫn quá mơ hồ” [P4](interviews/P4.md).
+
 ## 4. Các nguồn có khớp nhau không
 
-Hiện mới có khảo sát; chưa có phỏng vấn và đào data để kiểm chéo. Data nói __; người dùng nói __. Khớp / lệch ở đâu, vì sao: __
+- **Điểm khớp.** Khảo sát ghi 12/14 người gặp slide khó tự hiểu và 6/14 bỏ dở. P2 không biết nên tập trung vào đâu, P3 bỏ tra sau khoảng 10 phút và P4 chỉ xem được khoảng 30% bài. P2 và P4 mô tả việc nhờ AI giải thích để xử lý chỗ vướng trong lúc ôn.
+- **Giới hạn kết luận.** 8/14 người từng ôn chỉ xem lại một ngày học trong lần gần nhất. P2 và P3 tra bài để làm lab hoặc hackathon, còn P4 ôn sau buổi học. Các nguồn này chưa đo riêng một buổi ôn giữa kỳ kéo dài nhiều ngày học. Nhóm chưa dùng log pre-class để kết luận về việc ôn slide.
 
-## 5. Kết luận (tạm, CP2 — chỉ từ khảo sát)
+## 5. Kết luận CP3
 
-Giả thuyết ở `evidence/hypothesis.md`: **đúng một phần, có thể phải đổi**.
-- Khớp: ôn bằng slide tốn thời gian (8/14 ≥1 giờ), slide khó tự hiểu (12/14), không ai ôn xong hẳn (0/14), và nhiều người đã nhờ AI ra câu hỏi tự kiểm tra (7/14) — đúng việc CramAI làm.
-- Lệch: 7/21 chưa bao giờ mở lại slide; lần ôn gần nhất phần lớn chỉ 1 ngày học (8/14), nên pain "trọng tâm trải dài nhiều buổi" chưa được chứng minh.
-- Vẫn chưa biết: người dùng ChatGPT ra câu hỏi gặp lỗi gì (bịa, lệch slide); cần phỏng vấn ≥3 người ngoài nhóm để hỏi tiếp.
+[Giả thuyết ban đầu](hypothesis.md) **đúng một phần**. Học viên có khó khăn khi tìm trọng tâm, hiểu slide và tự kiểm tra sau khi ôn. 7/14 người từng ôn bằng slide đã nhờ AI ra câu hỏi và 6/14 không tự kiểm tra. Giữ lát cắt đề nháp theo chủ đề hoặc khoảng ngày, có đáp án và trang nguồn để học viên tự kiểm. Cần dùng thử để đo đề có giảm thời gian ôn và giúp kiểm đáp án dễ hơn hay không.
 
 ## 6. Hệ thống hiện tại (cách học viên đang ôn)
 
@@ -64,13 +65,13 @@ Nguồn: khảo sát 27/11, 14 người từng ôn bằng slide (chọn nhiều)
 3. Tự kiểm tra sau khi ôn: 7/14 nhờ AI ra câu hỏi · 5/14 làm câu hỏi có sẵn của khoá · 6/14 không kiểm tra.
 4. Kết quả: 0/14 ôn xong hẳn việc định ôn.
 
-Câu hỏi do ChatGPT tạo có bám đúng slide không, sai ở đâu, mất bao lâu dò lại: **chưa kiểm** (cần phỏng vấn).
+P4 chưa biết lời giải thích của AI có đúng không. Các cuộc phỏng vấn hiện chưa có ví dụ câu hỏi do AI tạo đã được dò lại với slide, nên chất lượng các câu hỏi đó và thời gian dò đáp án vẫn chưa được đo.
 
 ## 7. Impact tháng (cho `spec.md` §2 và `cost/personas.yaml`)
 
 | Thừa số | Giá trị | Nguồn |
 |---|---|---|
-| Người dùng (cơ sở) | 470 (thấp 300 · cao 700) | `cost/personas.yaml` › `users`: 700 học viên L3 × 14/21 từng ôn bằng slide. Quy mô 700 chưa có link. |
+| Người dùng (cơ sở) | 470 (thấp 300 · cao 700) | Lấy mốc gần đúng 700 cho nhóm L3 hơn 700 học viên. Kịch bản cơ sở lấy 700 × 14/21 người từng ôn bằng slide rồi làm tròn. Ba kịch bản là giả định về quy mô sử dụng. [Đề hackathon Track A](https://github.com/VinUni-AI20k/K5-L3-Day15-AI-Product-Hackathon/blob/main/tracks/track-a-edtech.md#L73) · [Persona](../cost/personas.yaml). |
 | Số lần ôn / người / tháng | 5,16 = 0,14 × 2 + 0,50 × 4 + 0,36 × 8 | Khảo sát câu 3 (số lần mở slide ôn trong 7 ngày) × ~4 tuần. Tỉ trọng ở `cost/personas.yaml`. |
 | Thời gian một lần ôn hiện nay | 12/14 ≥30 phút · 8/14 ≥1 giờ | Khảo sát câu 6 |
 | Phút tiết kiệm mỗi lần nhờ có đề kèm trang slide | 15 phút | *(tự ước tính)*: bớt bước tự nghĩ/nhờ AI ra câu hỏi và dò lại slide để kiểm đáp án. Chưa đo. |
@@ -78,9 +79,3 @@ Câu hỏi do ChatGPT tạo có bám đúng slide không, sai ở đâu, mất b
 - **Mỗi người:** 5,16 × 15 ≈ 77 phút/tháng (≈1,3 giờ) *(tự ước tính theo thừa số trên)*.
 - **Toàn khoá:** thấp 300 × 77 ≈ 390 giờ · cơ sở 470 × 77 ≈ 610 giờ · cao 700 × 77 ≈ 900 giờ/tháng.
 - Thừa số yếu nhất là 15 phút tiết kiệm. Cần đo bằng phỏng vấn hoặc buổi dùng thử (`validation/log.md`) trước CP4.
-
-## Lịch hẹn (dùng cho CP2 — chỉ ghi vai và giờ, không tên)
-
-| Vai | Giờ hẹn | Đã xong? |
-|---|---|---|
-| | | |

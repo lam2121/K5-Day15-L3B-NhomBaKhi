@@ -1,0 +1,94 @@
+/*
+  CramAI design tokens. Plain CSS reimplementation of two references:
+  - Astryx (Meta): radius inner/element/container 8/12/16, 4px spacing scale,
+    control heights 28/32/36 (here 32/40/48 for a learning surface), 2px focus
+    outline in the accent, status hues info/success/error/warning.
+  - Kumo (Cloudflare): brand blue, surface roles canvas/elevated/recessed,
+    "hairline" border for flat surfaces vs "line" for elevated, light-dark().
+  World: lecture-hall slate shell over a projector-screen ground.
+  Keep this file identical in frontend/student/ and frontend/admin/.
+*/
+:root {
+  color-scheme: light dark;
+
+  /* Surfaces (Kumo roles) */
+  --color-canvas: light-dark(#f7f8fa, #12161f);
+  --color-elevated: light-dark(#ffffff, #1a2030);
+  --color-recessed: light-dark(#eef1f5, #0d1118);
+  --color-shell: light-dark(#1d2a44, #22304f);
+  --color-shell-raised: light-dark(#26365a, #2b3a5e);
+  --color-shell-edge: light-dark(#1d2a44, #3a4a70);
+
+  /* Text */
+  --color-text: light-dark(#14171f, #e9ecf2);
+  --color-text-muted: light-dark(#4a5162, #a3abbd);
+  --color-text-on-shell: #ffffff;
+  --color-text-on-shell-muted: #b9c3d8;
+
+  /* Lines (Kumo hairline / line) */
+  --color-hairline: light-dark(#dfe3ea, #2a3245);
+  --color-line: light-dark(#c5ccd8, #3a445b);
+  --color-line-shell: #55658a;
+
+  /* Accent (Kumo brand blue) and the laser-pointer marker */
+  --color-brand: light-dark(#3b5bdb, #7d95ff);
+  --color-brand-strong: light-dark(#2f4cc4, #9aadff);
+  --color-brand-tint: light-dark(#e9eeff, #222c52);
+  --color-on-brand: light-dark(#ffffff, #0d1118);
+  --color-laser: #f59f00;
+
+  /* Status (Astryx hues, AA on their grounds) */
+  --color-success: light-dark(#1b7a0c, #64af4c);
+  --color-success-tint: light-dark(#e8f5e4, #18301a);
+  --color-error: light-dark(#c9303a, #ff7a6b);
+  --color-error-tint: light-dark(#fdecec, #3a1c1e);
+  --color-error-on-shell: #ff9a90;
+  --color-warning: light-dark(#8a5a00, #ffce2f);
+  --color-warning-tint: light-dark(#fff4d6, #3a2f10);
+
+  /* Type */
+  --font-sans: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --text-xs: 0.8125rem;  /* 13 */
+  --text-sm: 0.875rem;   /* 14 */
+  --text-md: 1rem;       /* 16 */
+  --text-lg: 1.0625rem;  /* 17 */
+  --text-xl: 1.25rem;    /* 20 */
+  --text-2xl: 1.5rem;    /* 24 */
+  --text-3xl: 1.75rem;   /* 28 */
+  --text-4xl: 2.25rem;   /* 36 */
+
+  /* Spacing (Astryx 4px scale) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radius (Astryx) */
+  --radius-frame: 4px;    /* slide frames stay nearly square, like a projected slide */
+  --radius-inner: 8px;
+  --radius-element: 12px;
+  --radius-container: 16px;
+  --radius-full: 9999px;
+
+  /* Controls */
+  --size-control-sm: 32px;
+  --size-control-md: 40px;
+  --size-control-lg: 48px;
+  --focus-width: 2px;
+  --focus-color: var(--color-brand);
+
+  /* Depth and motion */
+  --shadow-elevated: 0 1px 2px rgb(20 23 31 / 0.06), 0 4px 12px rgb(20 23 31 / 0.06);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+}
+
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }

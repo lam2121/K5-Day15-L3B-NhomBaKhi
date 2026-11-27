@@ -1,0 +1,579 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-27T16:53:16+00:00",
+  "title": "Design System: CramAI",
+  "extensions": {
+    "colorMeta": {
+      "projector-canvas": {
+        "role": "neutral",
+        "displayName": "Projector Canvas",
+        "canonical": "light-dark(#f7f8fa, #12161f)",
+        "tonalRamp": [
+          "oklch(15% 0.000 265)",
+          "oklch(26% 0.001 265)",
+          "oklch(38% 0.002 265)",
+          "oklch(49% 0.003 265)",
+          "oklch(61% 0.003 265)",
+          "oklch(72% 0.002 265)",
+          "oklch(84% 0.001 265)",
+          "oklch(95% 0.000 265)"
+        ]
+      },
+      "elevated-sheet": {
+        "role": "neutral",
+        "displayName": "Elevated Sheet",
+        "canonical": "light-dark(#ffffff, #1a2030)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "recessed-well": {
+        "role": "neutral",
+        "displayName": "Recessed Well",
+        "canonical": "light-dark(#eef1f5, #0d1118)",
+        "tonalRamp": [
+          "oklch(15% 0.001 255)",
+          "oklch(26% 0.002 255)",
+          "oklch(38% 0.004 255)",
+          "oklch(49% 0.005 255)",
+          "oklch(61% 0.005 255)",
+          "oklch(72% 0.004 255)",
+          "oklch(84% 0.002 255)",
+          "oklch(95% 0.001 255)"
+        ]
+      },
+      "lecture-slate": {
+        "role": "secondary",
+        "displayName": "Lecture Slate",
+        "canonical": "light-dark(#1d2a44, #0f1626)",
+        "tonalRamp": [
+          "oklch(15% 0.008 263)",
+          "oklch(26% 0.019 263)",
+          "oklch(38% 0.032 263)",
+          "oklch(49% 0.045 263)",
+          "oklch(61% 0.045 263)",
+          "oklch(72% 0.032 263)",
+          "oklch(84% 0.019 263)",
+          "oklch(95% 0.008 263)"
+        ]
+      },
+      "slate-raised": {
+        "role": "secondary",
+        "displayName": "Raised Slate",
+        "canonical": "light-dark(#26365a, #1a2540)",
+        "tonalRamp": [
+          "oklch(15% 0.010 265)",
+          "oklch(26% 0.025 265)",
+          "oklch(38% 0.042 265)",
+          "oklch(49% 0.059 265)",
+          "oklch(61% 0.059 265)",
+          "oklch(72% 0.042 265)",
+          "oklch(84% 0.025 265)",
+          "oklch(95% 0.010 265)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "light-dark(#14171f, #e9ecf2)",
+        "tonalRamp": [
+          "oklch(15% 0.002 269)",
+          "oklch(26% 0.006 269)",
+          "oklch(38% 0.010 269)",
+          "oklch(49% 0.015 269)",
+          "oklch(61% 0.015 269)",
+          "oklch(72% 0.010 269)",
+          "oklch(84% 0.006 269)",
+          "oklch(95% 0.002 269)"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "light-dark(#4a5162, #a3abbd)",
+        "tonalRamp": [
+          "oklch(15% 0.004 268)",
+          "oklch(26% 0.011 268)",
+          "oklch(38% 0.018 268)",
+          "oklch(49% 0.026 268)",
+          "oklch(61% 0.026 268)",
+          "oklch(72% 0.018 268)",
+          "oklch(84% 0.011 268)",
+          "oklch(95% 0.004 268)"
+        ]
+      },
+      "on-slate": {
+        "role": "neutral",
+        "displayName": "On-Slate",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "on-slate-muted": {
+        "role": "neutral",
+        "displayName": "On-Slate Muted",
+        "canonical": "#b9c3d8",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(26% 0.012 265)",
+          "oklch(38% 0.020 265)",
+          "oklch(49% 0.028 265)",
+          "oklch(61% 0.028 265)",
+          "oklch(72% 0.020 265)",
+          "oklch(84% 0.012 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "light-dark(#dfe3ea, #2a3245)",
+        "tonalRamp": [
+          "oklch(15% 0.002 262)",
+          "oklch(26% 0.004 262)",
+          "oklch(38% 0.006 262)",
+          "oklch(49% 0.009 262)",
+          "oklch(61% 0.009 262)",
+          "oklch(72% 0.006 262)",
+          "oklch(84% 0.004 262)",
+          "oklch(95% 0.002 262)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "canonical": "light-dark(#c5ccd8, #3a445b)",
+        "tonalRamp": [
+          "oklch(15% 0.003 261)",
+          "oklch(26% 0.007 261)",
+          "oklch(38% 0.011 261)",
+          "oklch(49% 0.016 261)",
+          "oklch(61% 0.016 261)",
+          "oklch(72% 0.011 261)",
+          "oklch(84% 0.007 261)",
+          "oklch(95% 0.003 261)"
+        ]
+      },
+      "slate-line": {
+        "role": "secondary",
+        "displayName": "Slate Rule",
+        "canonical": "#55658a",
+        "tonalRamp": [
+          "oklch(15% 0.009 266)",
+          "oklch(26% 0.023 266)",
+          "oklch(38% 0.039 266)",
+          "oklch(49% 0.054 266)",
+          "oklch(61% 0.054 266)",
+          "oklch(72% 0.039 266)",
+          "oklch(84% 0.023 266)",
+          "oklch(95% 0.009 266)"
+        ]
+      },
+      "brand-blue": {
+        "role": "primary",
+        "displayName": "Projector Blue",
+        "canonical": "light-dark(#3b5bdb, #7d95ff)",
+        "tonalRamp": [
+          "oklch(15% 0.030 268)",
+          "oklch(26% 0.073 268)",
+          "oklch(38% 0.123 268)",
+          "oklch(49% 0.174 268)",
+          "oklch(61% 0.174 268)",
+          "oklch(72% 0.123 268)",
+          "oklch(84% 0.073 268)",
+          "oklch(95% 0.030 268)"
+        ]
+      },
+      "brand-blue-strong": {
+        "role": "primary",
+        "displayName": "Pressed Projector Blue",
+        "canonical": "light-dark(#2f4cc4, #9aadff)",
+        "tonalRamp": [
+          "oklch(15% 0.028 268)",
+          "oklch(26% 0.069 268)",
+          "oklch(38% 0.117 268)",
+          "oklch(49% 0.166 268)",
+          "oklch(61% 0.166 268)",
+          "oklch(72% 0.117 268)",
+          "oklch(84% 0.069 268)",
+          "oklch(95% 0.028 268)"
+        ]
+      },
+      "brand-tint": {
+        "role": "primary",
+        "displayName": "Projector Wash",
+        "canonical": "light-dark(#e9eeff, #222c52)",
+        "tonalRamp": [
+          "oklch(15% 0.004 273)",
+          "oklch(26% 0.009 273)",
+          "oklch(38% 0.015 273)",
+          "oklch(49% 0.021 273)",
+          "oklch(61% 0.021 273)",
+          "oklch(72% 0.015 273)",
+          "oklch(84% 0.009 273)",
+          "oklch(95% 0.004 273)"
+        ]
+      },
+      "on-brand": {
+        "role": "primary",
+        "displayName": "On Projector Blue",
+        "canonical": "light-dark(#ffffff, #0d1118)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "laser-amber": {
+        "role": "tertiary",
+        "displayName": "Laser Amber",
+        "canonical": "#f59f00",
+        "tonalRamp": [
+          "oklch(15% 0.025 71)",
+          "oklch(26% 0.061 71)",
+          "oklch(38% 0.103 71)",
+          "oklch(49% 0.145 71)",
+          "oklch(61% 0.145 71)",
+          "oklch(72% 0.103 71)",
+          "oklch(84% 0.061 71)",
+          "oklch(95% 0.025 71)"
+        ]
+      },
+      "success": {
+        "role": "status",
+        "displayName": "Success",
+        "canonical": "light-dark(#1b7a0c, #64af4c)",
+        "tonalRamp": [
+          "oklch(15% 0.024 141)",
+          "oklch(26% 0.059 141)",
+          "oklch(38% 0.100 141)",
+          "oklch(49% 0.141 141)",
+          "oklch(61% 0.141 141)",
+          "oklch(72% 0.100 141)",
+          "oklch(84% 0.059 141)",
+          "oklch(95% 0.024 141)"
+        ]
+      },
+      "success-tint": {
+        "role": "status",
+        "displayName": "Success Tint",
+        "canonical": "light-dark(#e8f5e4, #18301a)",
+        "tonalRamp": [
+          "oklch(15% 0.004 138)",
+          "oklch(26% 0.010 138)",
+          "oklch(38% 0.016 138)",
+          "oklch(49% 0.023 138)",
+          "oklch(61% 0.023 138)",
+          "oklch(72% 0.016 138)",
+          "oklch(84% 0.010 138)",
+          "oklch(95% 0.004 138)"
+        ]
+      },
+      "error": {
+        "role": "status",
+        "displayName": "Error",
+        "canonical": "light-dark(#c9303a, #ff7a6b)",
+        "tonalRamp": [
+          "oklch(15% 0.028 23)",
+          "oklch(26% 0.069 23)",
+          "oklch(38% 0.117 23)",
+          "oklch(49% 0.165 23)",
+          "oklch(61% 0.165 23)",
+          "oklch(72% 0.117 23)",
+          "oklch(84% 0.069 23)",
+          "oklch(95% 0.028 23)"
+        ]
+      },
+      "error-tint": {
+        "role": "status",
+        "displayName": "Error Tint",
+        "canonical": "light-dark(#fdecec, #3a1c1e)",
+        "tonalRamp": [
+          "oklch(15% 0.003 17)",
+          "oklch(26% 0.007 17)",
+          "oklch(38% 0.011 17)",
+          "oklch(49% 0.016 17)",
+          "oklch(61% 0.016 17)",
+          "oklch(72% 0.011 17)",
+          "oklch(84% 0.007 17)",
+          "oklch(95% 0.003 17)"
+        ]
+      },
+      "warning": {
+        "role": "status",
+        "displayName": "Warning",
+        "canonical": "light-dark(#8a5a00, #ffce2f)",
+        "tonalRamp": [
+          "oklch(15% 0.016 73)",
+          "oklch(26% 0.039 73)",
+          "oklch(38% 0.067 73)",
+          "oklch(49% 0.094 73)",
+          "oklch(61% 0.094 73)",
+          "oklch(72% 0.067 73)",
+          "oklch(84% 0.039 73)",
+          "oklch(95% 0.016 73)"
+        ]
+      },
+      "warning-tint": {
+        "role": "status",
+        "displayName": "Warning Tint",
+        "canonical": "light-dark(#fff4d6, #3a2f10)",
+        "tonalRamp": [
+          "oklch(15% 0.006 90)",
+          "oklch(26% 0.015 90)",
+          "oklch(38% 0.025 90)",
+          "oklch(49% 0.036 90)",
+          "oklch(61% 0.036 90)",
+          "oklch(72% 0.025 90)",
+          "oklch(84% 0.015 90)",
+          "oklch(95% 0.006 90)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Result score figure only; 3rem on phones."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page headings on catalog and admin."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Question prompt, max 34ch."
+      },
+      "frame-number": {
+        "displayName": "Frame Number",
+        "purpose": "Two-digit slide number inside a 16:9 frame."
+      },
+      "body-lg": {
+        "displayName": "Body Large",
+        "purpose": "Answer options and page leads."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default reading text, 52–72ch measure."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Question position, verdict, table headers, source file names."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Frame corner meta, stamps, tags, keyboard keys, passage IDs."
+      }
+    },
+    "shadows": [
+      {
+        "name": "hover-lift",
+        "value": "0 1px 2px rgb(20 23 31 / 0.06), 0 4px 12px rgb(20 23 31 / 0.06)",
+        "purpose": "Available catalog frame on hover or focus, with translateY(-2px)."
+      },
+      {
+        "name": "selection-ring",
+        "value": "0 0 0 1px var(--color-brand)",
+        "purpose": "Thickens the selected answer border without layout shift."
+      },
+      {
+        "name": "laser-ring",
+        "value": "0 0 0 2px var(--color-shell), 0 0 0 4px var(--color-laser)",
+        "purpose": "Current question thumbnail in the deck strip."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "All state transitions."
+      },
+      {
+        "name": "duration-fast",
+        "value": "120ms",
+        "purpose": "Colour and border changes."
+      },
+      {
+        "name": "duration-base",
+        "value": "220ms",
+        "purpose": "Frame lift and shadow on hover."
+      },
+      {
+        "name": "laser-travel",
+        "value": "2.4s ease-out, once, forwards",
+        "purpose": "Generating state: the laser dot crosses the projected frame once, then rests. Disabled under reduced motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "720px"
+      },
+      {
+        "name": "quiz-stack",
+        "value": "1024px"
+      },
+      {
+        "name": "admin-stack",
+        "value": "1080px"
+      },
+      {
+        "name": "container-max",
+        "value": "1440px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one 'press this next' action per region: start a set, submit, publish.",
+      "html": "<button class=\"ds-btn-primary\">Nộp bài</button>",
+      "css": ".ds-btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:40px; padding:0 20px; border-radius:8px; border:1px solid transparent; background:var(--color-brand, #3b5bdb); color:var(--color-on-brand, #fff); font-family:var(--font-sans, 'Be Vietnam Pro', system-ui, sans-serif); font-weight:600; font-size:1rem; cursor:pointer; transition:background-color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background:var(--color-brand-strong, #2f4cc4); } .ds-btn-primary:focus-visible { outline:2px solid var(--color-brand, #3b5bdb); outline-offset:2px; } .ds-btn-primary:disabled { opacity:.55; cursor:not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Navigation and alternatives: previous/next question, choose another set.",
+      "html": "<button class=\"ds-btn-secondary\">Câu tiếp</button>",
+      "css": ".ds-btn-secondary { display:inline-flex; align-items:center; min-height:40px; padding:0 20px; border-radius:8px; border:1px solid var(--color-line, #c5ccd8); background:var(--color-elevated, #fff); color:var(--color-text, #14171f); font-family:var(--font-sans, 'Be Vietnam Pro', system-ui, sans-serif); font-weight:600; font-size:1rem; cursor:pointer; transition:border-color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-secondary:hover { border-color:var(--color-text-muted, #4a5162); } .ds-btn-secondary:focus-visible { outline:2px solid var(--color-brand, #3b5bdb); outline-offset:2px; }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Low-stakes actions such as cancel or keep answering.",
+      "html": "<button class=\"ds-btn-quiet\">Tiếp tục làm</button>",
+      "css": ".ds-btn-quiet { display:inline-flex; align-items:center; min-height:40px; padding:0 12px; border-radius:8px; border:1px solid transparent; background:transparent; color:var(--color-text, #14171f); font-family:var(--font-sans, 'Be Vietnam Pro', system-ui, sans-serif); font-weight:600; font-size:1rem; cursor:pointer; } .ds-btn-quiet:hover { background:var(--color-recessed, #eef1f5); } .ds-btn-quiet:focus-visible { outline:2px solid var(--color-brand, #3b5bdb); outline-offset:2px; }"
+    },
+    {
+      "name": "Answer Option",
+      "kind": "input",
+      "refersTo": "answer-option",
+      "description": "One of four A–D rows; the native radio covers the row invisibly.",
+      "html": "<div class=\"ds-options\"><label class=\"ds-option\"><input type=\"radio\" name=\"q\"><span class=\"ds-option-body\"><span class=\"ds-key\">A</span>Chặn yêu cầu ngoài phạm vi</span></label><label class=\"ds-option\"><input type=\"radio\" name=\"q\" checked><span class=\"ds-option-body\"><span class=\"ds-key\">B</span>Kiểm chứng vấn đề với người dùng</span></label></div>",
+      "css": ".ds-options { display:grid; gap:12px; font-family:var(--font-sans, 'Be Vietnam Pro', system-ui, sans-serif); } .ds-option { position:relative; display:block; } .ds-option input { position:absolute; opacity:0; inset:0; margin:0; cursor:pointer; } .ds-option-body { display:flex; gap:16px; align-items:center; min-height:64px; padding:12px 20px; border:1px solid var(--color-hairline, #dfe3ea); border-radius:12px; background:var(--color-elevated, #fff); color:var(--color-text, #14171f); font-size:1.0625rem; line-height:1.45; transition:border-color 120ms, background-color 120ms; } .ds-key { flex:none; width:32px; height:32px; border-radius:50%; border:2px solid var(--color-text-muted, #4a5162); display:grid; place-items:center; font-weight:700; font-size:.875rem; } .ds-option:hover .ds-option-body { border-color:var(--color-line, #c5ccd8); } .ds-option input:checked + .ds-option-body { border-color:var(--color-brand, #3b5bdb); box-shadow:0 0 0 1px var(--color-brand, #3b5bdb); background:var(--color-brand-tint, #e9eeff); } .ds-option input:checked + .ds-option-body .ds-key { background:var(--color-brand, #3b5bdb); border-color:var(--color-brand, #3b5bdb); color:var(--color-on-brand, #fff); } .ds-option input:focus-visible + .ds-option-body { outline:2px solid var(--color-brand, #3b5bdb); outline-offset:2px; }"
+    },
+    {
+      "name": "Slide Card",
+      "kind": "card",
+      "refersTo": "slide-frame",
+      "description": "Catalog entry: a 16:9 frame with the two-digit number; unavailable entries stay, dashed and stamped.",
+      "html": "<div class=\"ds-deck\"><button class=\"ds-slide\"><span class=\"ds-frame\"><span class=\"ds-num\">03</span><span class=\"ds-corner\">5 câu</span></span><span class=\"ds-title\">Tư duy sản phẩm AI</span></button><button class=\"ds-slide\" disabled><span class=\"ds-frame\"><span class=\"ds-num\">09</span></span><span class=\"ds-title\">Slide 09</span><span class=\"ds-stamp\">Chưa xuất bản</span></button></div>",
+      "css": ".ds-deck { display:grid; grid-template-columns:repeat(2, 208px); gap:20px; font-family:var(--font-sans, 'Be Vietnam Pro', system-ui, sans-serif); font-variant-numeric:tabular-nums; } .ds-slide { display:flex; flex-direction:column; gap:12px; padding:0; border:0; background:none; text-align:left; cursor:pointer; border-radius:8px; color:var(--color-text, #14171f); font:inherit; } .ds-slide:disabled { cursor:default; } .ds-frame { position:relative; aspect-ratio:16/9; width:100%; border:1.5px solid var(--color-line, #c5ccd8); border-radius:4px; background:var(--color-elevated, #fff); display:flex; align-items:flex-start; padding:12px 16px; transition:border-color 120ms, box-shadow 220ms cubic-bezier(0.16,1,0.3,1), transform 220ms cubic-bezier(0.16,1,0.3,1); } .ds-num { font-size:1.75rem; font-weight:700; line-height:1; letter-spacing:-0.02em; } .ds-corner { position:absolute; right:12px; bottom:8px; font-size:.8125rem; font-weight:600; color:var(--color-text-muted, #4a5162); } .ds-title { font-weight:600; } .ds-slide:not(:disabled):hover .ds-frame, .ds-slide:not(:disabled):focus-visible .ds-frame { border-color:var(--color-shell, #1d2a44); box-shadow:0 1px 2px rgb(20 23 31 / .06), 0 4px 12px rgb(20 23 31 / .06); transform:translateY(-2px); } .ds-slide:focus-visible { outline:2px solid var(--color-brand, #3b5bdb); outline-offset:4px; } .ds-slide:disabled .ds-frame { background:var(--color-recessed, #eef1f5); border-style:dashed; } .ds-slide:disabled .ds-num, .ds-slide:disabled .ds-title { color:var(--color-text-muted, #4a5162); } .ds-stamp { align-self:flex-start; font-size:.8125rem; font-weight:700; color:var(--color-warning, #8a5a00); border:1.5px solid currentColor; border-radius:4px; padding:1px 8px; transform:rotate(-3deg); }"
+    },
+    {
+      "name": "Source Card",
+      "kind": "custom",
+      "refersTo": "source-card",
+      "description": "Citation drawn as a slide frame with page number in the corner and a laser dot; file name and passage ID below.",
+      "html": "<div class=\"ds-source\"><div class=\"ds-sframe\"><span class=\"ds-snum\">03</span><span class=\"ds-laser\"></span><span class=\"ds-page\">tr. 24</span></div><p class=\"ds-sname\">Slide 03, trang 24</p><p class=\"ds-sid\">ai-product-thinking-requirements.pdf</p></div>",
+      "css": ".ds-source { width:300px; padding:16px; border:1px solid var(--color-hairline, #dfe3ea); border-radius:12px; background:var(--color-elevated, #fff); font-family:var(--font-sans, 'Be Vietnam Pro', system-ui, sans-serif); color:var(--color-text, #14171f); font-variant-numeric:tabular-nums; } .ds-sframe { position:relative; aspect-ratio:16/9; max-width:240px; border-radius:4px; border:1.5px solid var(--color-shell, #1d2a44); background:var(--color-canvas, #f7f8fa); padding:12px 16px; margin-bottom:12px; } .ds-snum { font-size:1.5rem; font-weight:700; line-height:1; } .ds-laser { position:absolute; right:14px; top:14px; width:10px; height:10px; border-radius:50%; background:var(--color-laser, #f59f00); } .ds-page { position:absolute; right:8px; bottom:4px; font-size:.875rem; font-weight:700; color:var(--color-shell, #1d2a44); background:var(--color-elevated, #fff); padding:0 8px; border-radius:3px; } .ds-sname { margin:0; font-weight:600; font-size:.875rem; } .ds-sid { margin:2px 0 0; font-size:.8125rem; color:var(--color-text-muted, #4a5162); word-break:break-all; }"
+    },
+    {
+      "name": "Shell with Deck Strip",
+      "kind": "nav",
+      "refersTo": "shell-bar",
+      "description": "Slate top bar: brand mark, exam title, one 16:9 thumbnail per question (filled answered, hollow not yet, laser ring current), timer.",
+      "html": "<header class=\"ds-shell\"><span class=\"ds-brand\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\"><rect x=\"2\" y=\"5\" width=\"20\" height=\"14\" rx=\"2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\"/><circle cx=\"17\" cy=\"14\" r=\"2\" fill=\"#f59f00\"/></svg>CramAI</span><span class=\"ds-stitle\">Slide 03 · Tư duy sản phẩm AI</span><span class=\"ds-strip\"><button class=\"ds-thumb is-answered\"><span>1</span></button><button class=\"ds-thumb is-answered is-current\"><span>2</span></button><button class=\"ds-thumb\"><span>3</span></button></span><span class=\"ds-timer\">còn 58:12</span></header>",
+      "css": ".ds-shell { display:flex; align-items:center; gap:24px; min-height:64px; padding:8px 32px; background:var(--color-shell, #1d2a44); color:#fff; font-family:var(--font-sans, 'Be Vietnam Pro', system-ui, sans-serif); font-variant-numeric:tabular-nums; } .ds-brand { display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:1.0625rem; } .ds-stitle { color:#b9c3d8; font-size:.875rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .ds-strip { display:flex; gap:8px; } .ds-thumb { position:relative; width:48px; height:28px; padding:0; border-radius:4px; border:1.5px solid #55658a; background:transparent; color:#b9c3d8; cursor:pointer; transition:background-color 120ms, border-color 120ms; } .ds-thumb span { position:absolute; right:4px; bottom:1px; font-size:11px; font-weight:600; } .ds-thumb:hover { border-color:#b9c3d8; } .ds-thumb.is-answered { background:#fff; border-color:#fff; color:var(--color-shell, #1d2a44); } .ds-thumb.is-current { box-shadow:0 0 0 2px var(--color-shell, #1d2a44), 0 0 0 4px #f59f00; } .ds-thumb:focus-visible { outline:2px solid #f59f00; outline-offset:2px; } .ds-timer { margin-left:auto; font-weight:600; }"
+    },
+    {
+      "name": "Error Notice",
+      "kind": "card",
+      "refersTo": "notice-error",
+      "description": "Blocking failure with its cause and a next step; never an automatic retry.",
+      "html": "<div class=\"ds-notice\"><svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v6M12 16.5v.5\"/></svg><div><h2>Chưa đủ nguồn để tạo đề</h2><p>Slide này chưa có đủ đoạn để sinh 5 câu. Thử bộ slide khác.</p></div></div>",
+      "css": ".ds-notice { display:flex; gap:16px; align-items:flex-start; max-width:72ch; padding:20px 24px; border-radius:12px; border:1px solid var(--color-error, #c9303a); background:var(--color-error-tint, #fdecec); font-family:var(--font-sans, 'Be Vietnam Pro', system-ui, sans-serif); color:var(--color-text, #14171f); } .ds-notice > svg { flex:none; margin-top:2px; color:var(--color-error, #c9303a); } .ds-notice h2 { margin:0 0 4px; font-size:1.0625rem; font-weight:600; } .ds-notice p { margin:0; color:var(--color-text-muted, #4a5162); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Lecture-Hall Projector",
+    "overview": "CramAI looks like the room the slides were first shown in: a dark slate band across the top where the lecturer's controls live, a pale projector-screen ground below, and everything that stands for a slide drawn as a small 16:9 frame with its number in the corner. The learner is never shown an abstract card; they are shown a slide, a page, a deck. The frame is the unit of the whole system: catalog entries, quiz progress, citations, admin slot rows and draft excerpts are all the same nearly-square 16:9 outline at different sizes.\n\nDensity is calm and work-like. One question at a time, one primary action, generous 4px-based spacing, and a single blue for anything the learner chose or should press next. Status is carried by shape before colour: answered thumbnails are filled, unanswered are hollow, missing or unavailable things are dashed, and states that end something (an expired attempt, an unpublished slot) are stamped on, never removed. Light and dark themes share every role through `light-dark()` pairs in `tokens.css`; the slate shell stays dark in both.\n\nThe token vocabulary is a plain-CSS reimplementation of two references, kept as a binding product constraint: Astryx (Meta) for radius steps, the 4px spacing scale, control heights, the 2px focus outline and status hues; Kumo (Cloudflare) for the brand blue, the canvas / elevated / recessed surface roles, and the hairline-versus-line border split. Neither library is a dependency.",
+    "keyCharacteristics": [
+      "Slate shell (dark in both themes) over a projector-screen canvas.",
+      "The 16:9 slide frame with a corner number is the recurring signature at every scale.",
+      "One accent: brand blue for selection and the primary action; laser amber only as a \"here\" marker.",
+      "State by fill shape and border style (filled, hollow, dashed, stamped) before hue.",
+      "Be Vietnam Pro throughout with tabular figures; numbers 01–14 are primary identity.",
+      "Flat surfaces separated by hairlines; one soft shadow, only as a hover lift."
+    ],
+    "rules": [
+      {
+        "name": "The One Blue Rule",
+        "body": "Brand blue means \"chosen\" or \"press this next\". It is never a heading colour, a decorative fill or a status.",
+        "section": "colors"
+      },
+      {
+        "name": "The Laser Dot Rule",
+        "body": "Amber is a pointer, not a paint. It appears as a dot, a ring or a short run of text on the slate shell, and nowhere as a surface.",
+        "section": "colors"
+      },
+      {
+        "name": "The Hairline-or-Line Rule",
+        "body": "Flat surfaces get a hairline; objects you can pick or that represent a slide get a line. Never stack both on one element.",
+        "section": "colors"
+      },
+      {
+        "name": "The Numbers Lead Rule",
+        "body": "Slide numbers are written as two digits (01–14) and set heavier than the title beside them; the number is the identity, the title is the description.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "Figures are always tabular. A timer or score that shifts width while it changes is a bug.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-At-Rest Rule",
+        "body": "Nothing casts a shadow while still. The one ambient shadow is a response to hover or focus on a pickable slide; the selection and laser rings are outlines drawn with box-shadow, not depth.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Frame Rule",
+        "body": "A slide is always 16:9, 4px corners, 1.5px outline, with its number in a corner. Never round a frame to the 12px container radius.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** draw anything that stands for a slide or a page as a 16:9 frame with 4px corners, 1.5px outline and its number in a corner.",
+      "**Do** write slide numbers as two digits (01–14) with tabular figures, heavier than the title next to them.",
+      "**Do** show state by fill and border style first (filled / hollow / dashed / stamped), then reinforce with colour and an icon or word.",
+      "**Do** keep unavailable and expired things visible and stamped with their reason.",
+      "**Do** reserve brand blue for the selected answer, the primary action, focus and links.",
+      "**Do** keep laser amber to dots, rings and short shell text that say \"here\".",
+      "**Do** use hairline borders for flat surfaces and line borders for pickable objects.",
+      "**Do** pull every colour, radius, space and duration from `tokens.css`, and keep the student and admin copies identical.",
+      "**Do** respect reduced motion: transitions and the laser animation drop to zero."
+    ],
+    "donts": [
+      "**Don't** add a second accent hue or use blue for headings, decoration or status.",
+      "**Don't** fill panels or body text on the light canvas with laser amber.",
+      "**Don't** round slide frames to container radii or give them shadows at rest.",
+      "**Don't** remove an entry, a question or a citation to signal that it is unavailable, missing or expired.",
+      "**Don't** distinguish answered from unanswered by colour alone.",
+      "**Don't** import Astryx or Kumo packages; tokens are reimplemented in plain CSS."
+    ]
+  }
+}
