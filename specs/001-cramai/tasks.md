@@ -6,7 +6,7 @@ Các cặp cùng chịu trách nhiệm theo từng chặng ở [§10 của spec 
 
 ## Giai đoạn 1 — Khám phá và chuẩn bị · CP1, 17:00 ngày 27/11
 
-- [ ] T001 [P] **Lâm** kiểm đúng format `TEAMS.md`, đội trưởng ở dòng 1 và repo GitHub mở được trong cửa sổ ẩn danh. Chạy `python run.py check` và xem phần kiểm `TEAMS.md`.
+- [x] T001 [P] **Lâm** kiểm đúng format `TEAMS.md`, đội trưởng ở dòng 1 và repo GitHub công khai khi kiểm tra không đăng nhập. `python run.py check` xác nhận 4 thành viên.
 - [ ] T002 [P] **Khiêm** cùng nhóm ghi và commit giả thuyết, dấu hiệu kiểm chứng và nguồn dự kiến trong `evidence/hypothesis.md` trước khi thu thập. Mỗi thành viên phỏng vấn ít nhất một học viên hoặc tự đào một câu hỏi trên dữ liệu. Theo Canvas, hẹn ít nhất ba học viên L3 ngoài nhóm từ hai nhóm khác, hỏi lần ôn thật trong một tháng qua (10–15 phút), ghi từng bản ẩn danh ở `evidence/interviews/P1.md`, `P2.md`, `P3.md`. Lấy số và một trích dẫn đầu để soát trước CP2, hoàn tất thu thập trước CP3.
 - [ ] T003 **Phước Anh** cùng cả nhóm hoàn thiện bảy dòng `canvas.md` sau khi T002 đã ghi giả thuyết và nguồn dự kiến. Lâm nộp CP1 với Track A, mô tả pain 1–2 câu không dùng chữ AI, lát cắt dự kiến một câu và link repo công khai.
 
@@ -45,6 +45,10 @@ Các cặp cùng chịu trách nhiệm theo từng chặng ở [§10 của spec 
 - [ ] T024 **Phước Anh** cùng Hưng sau T022 hoàn thiện tám trang theo `slides/outline.md` và xuất `demo-slides.pdf`, mỗi trang có ít nhất một số, trích dẫn có nguồn hoặc kết quả đo. Cả nhóm chốt go, iterate hoặc stop, tập một ca thường, một ca khó và một input lạ. Mỗi người trình bày ít nhất một phần.
 - [ ] T025 **Lâm** sau T022–T024 soát bảy hạng mục và commit hồ sơ CP4. Hưng và Khiêm bàn giao dữ liệu, giới hạn hành vi, người có thể bị hại và cách chặn để Lâm ghi `spec.md` §9. Cả nhóm ghi 2–3 dòng về cách dùng AI và phần người kiểm trong `docs/ai-usage.md` và §10. Nộp phòng demo, link repo, kết quả lượt 1 → lượt 2, chi phí mỗi task thành công ở kịch bản cơ sở kèm model, slide, video và phần còn thiếu.
 - [ ] T026 **Lâm** rà commit cuối trước 23:59 ngày 28/11. Mỗi người viết `reflection/<ten-khong-dau>.md` về phần mình làm, AI hỗ trợ thế nào và bài học từ một câu trượt. Mỗi người gửi giờ, nội dung và lý do cho mọi sửa sau CP4 để Lâm ghi `spec.md` §10. Giữ nguyên chuẩn đạt, bộ câu thử, số bằng chứng và kết quả các lượt đã chạy. Chạy thêm thì tạo lượt mới.
+
+## Hạ tầng tích hợp
+
+- [ ] T027 [P] **Lâm** thiết lập `.github/workflows/ci.yml` để kiểm thử PR, kiểm phạm vi vai và đóng gói commit trên `main`. Xác minh lượt GitHub Actions đầu tiên và tài liệu tải bản bàn giao trong `docs/ci-cd.md`. Làm song song với chuẩn bị CP2.
 
 ## Thứ tự và điểm bàn giao
 
