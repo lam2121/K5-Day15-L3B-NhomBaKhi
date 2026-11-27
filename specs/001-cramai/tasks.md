@@ -40,13 +40,14 @@ Mở chặng dưới đây khi T010 hoàn tất và cả nhóm có commit CP2 đ
 
 **P1 · MVP theo Canvas chốt tại CP2.** Học viên L3 đang ôn giữa kỳ nhận đề luyện tập nháp với câu hỏi AI chọn từ slide, kèm đáp án, nhãn độ khó và trích dẫn tên file, số trang. Corpus bám các ngày học trong phạm vi chốt, mỗi ngày có thể gồm nhiều file. Chỉ dùng đoạn đủ nội dung làm căn cứ.
 
-**Kiểm tra độc lập.** Chạy `python run.py` với bộ slide được phép dùng. Đối chiếu độ phủ của đề, xác minh đáp án và trích dẫn trên PDF gốc, rồi thử bỏ một câu trước khi chốt. Chạy thêm một input thiếu căn cứ và kiểm tra hệ thống yêu cầu bổ sung hoặc thu hẹp kết quả.
+**Kiểm tra độc lập.** Chạy `python run.py` với bộ slide được phép dùng. Học trực tiếp các câu được tạo và mở trang nguồn để tham khảo. Chạy thêm một input thiếu căn cứ và kiểm tra hệ thống yêu cầu bổ sung hoặc thu hẹp kết quả.
 
 - [x] T011 [P] [US1] **Khiêm** xử lý các slide trong phạm vi T004. Giữ PDF gốc trong `data-private/` cục bộ, đưa vào `data/passages.jsonl` phần trích được phép để người ngoài chạy lại. Triển khai `search_slides` dùng kiểu `SlidePassage` theo [mô hình dữ liệu](data-model.md), giữ `@tool` trong `codebase/tools.py`, bàn giao ví dụ và cập nhật `data/DATA_CARD.md`.
   - Đã bàn giao 280 đoạn trên 14 ngày và kiểm truy hồi trong lượt 1. [PR #9](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/pull/9) · [Data card](../../data/DATA_CARD.md).
 - [x] T012 [P] [US1] **Lâm** xác minh adapter `ModelResponse` đã có trong `codebase/ai.py` bằng cấu hình `.env` cục bộ và một cuộc gọi thật theo `docs/connect-model.md`. Bàn giao tên model, token vào và ra cho Hưng.
   - Xác nhận ngày 27/11 trên bản tích hợp `2567816` với `claude-haiku-5-5`, 22 token vào và 37 token ra cho prompt kiểm tra adapter. Ba ca thử T017 tiếp theo đều ghi nhận usage dương.
 - [x] T013 [P] [US1] **Phước Anh** dùng giao diện dòng lệnh hiện có ở `codebase/app.py` để học viên xem đáp án, độ khó, trích dẫn, chỗ thiếu căn cứ và duyệt hoặc bỏ câu theo T004 và T007. Đọc `QuizResult` và các `question_id` theo [mô hình dữ liệu](data-model.md), kiểm độc lập bằng fixture. Bàn giao cách chạy `python run.py` để Lâm cập nhật `README.md`.
+  - Thay đổi hành vi sau CP2 ngày 28/11 theo yêu cầu của Lâm: bỏ duyệt/loại/chốt khỏi luồng CLI và hiển thị ngay các câu hợp lệ để học. Ngưỡng, benchmark, metric và kết quả CP2 giữ nguyên. Các chủ file đã đồng ý theo xác nhận của Lâm; PR dùng ngoại lệ phạm vi hẹp tại T028.
 - [x] T014 [US1] **Hưng** tích hợp công cụ và adapter T011–T012 trong `codebase/agent.py`. AI thật chọn câu từ trích đoạn đủ căn cứ và theo độ phủ trong phạm vi học viên yêu cầu. Dựng `QuizQuestion` có nhãn độ khó và `AnswerResponse` theo [mô hình dữ liệu](data-model.md). Giải mã nguồn bằng `resolve_citations`, xử lý thiếu căn cứ theo G10. Token và lỗi kỹ thuật do adapter T012 và runner ghi. Chạy bản thử riêng, không kết nối LMS, Discord hoặc pre-class.
   - Workflow đã merge và chạy hết 24 ca với Claude thật. Độ phủ nhiều ngày đạt 7/9 ở lượt 1, dưới ngưỡng 80%. [PR #12](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/pull/12) · [Lượt 1](../../eval/run-1.csv).
 - [x] T015 [P] [US1] **Khiêm** sau T011 bổ sung `eval/benchmark.csv` lên 20–30 câu, giữ tỉ lệ nguồn thật và các loại câu theo T008. Đối chiếu các đáp án và trang trích dẫn với PDF gốc. Giữ nguyên các câu đã chốt và chỉ thêm câu mới trước lượt 1.
@@ -75,6 +76,7 @@ Mở chặng dưới đây khi T010 hoàn tất và cả nhóm có commit CP2 đ
 
 - [x] T027 [P] **Lâm** thiết lập `.github/workflows/ci.yml` để kiểm thử PR, kiểm phạm vi vai và đóng gói commit trên `main`. Xác minh lượt GitHub Actions đầu tiên và tài liệu tải bản bàn giao trong `docs/ci-cd.md`. Làm song song với chuẩn bị CP2.
   - Đã kiểm job `Role scope` trên PR và gói ZIP kèm checksum do CI tạo trên `main`. [CI PR #11](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/actions/runs/46030109366) · [Gói bàn giao trên `main`](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/actions/runs/46033324155) · [Hướng dẫn tải](../../docs/ci-cd.md).
+- [ ] T028 [US1] **Lâm** tích hợp thay đổi sản phẩm được các chủ file đồng ý sau CP2: gỡ duyệt, loại và chốt câu khỏi `codebase/app.py`, cập nhật phản hồi trong `codebase/agent.py`, đồng bộ đặc tả và kiểm tra hồi quy. Chỉ giữ ngoại lệ phạm vi cho đúng hai file này khi commit cuối mang mã `[T028]`; không thay đổi quyền sở hữu file cho các PR khác.
 
 ## Thứ tự và điểm bàn giao
 

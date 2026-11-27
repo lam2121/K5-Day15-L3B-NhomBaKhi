@@ -4,7 +4,7 @@
 
 ## Summary
 
-Dùng workflow cố định gồm tra đoạn slide, model đề xuất các câu đủ căn cứ, kiểm mã đoạn và trả đề nháp để học viên duyệt. Giữ CLI và runner của đề. Bốn vai triển khai trên branch riêng theo API Python và fixture dùng chung.
+Dùng workflow cố định gồm tra đoạn slide, model đề xuất các câu đủ căn cứ, kiểm mã đoạn và hiển thị ngay mọi câu hợp lệ để học viên học. Giữ CLI và runner của đề. Bốn vai triển khai trên branch riêng theo API Python và fixture dùng chung.
 
 ## Technical Context
 
@@ -21,7 +21,7 @@ Dùng workflow cố định gồm tra đoạn slide, model đề xuất các câ
 
 - **Một lát cắt.** Feature có một user story và một quyết định AI. Bằng chứng, phạm vi và chuẩn đạt cần xác nhận bởi nhóm đúng thời hạn.
 - **Hợp đồng runner.** `output: str` giữ cho harness, `result` làm giao diện đọc được cấu trúc. Giữ nguyên các file khung.
-- **Nguồn an toàn.** `source_id` chỉ tham chiếu đoạn truy hồi. Cột metadata lấy từ công cụ, người học duyệt. Fixture công khai được gắn nhãn dữ liệu tự dựng.
+- **Nguồn an toàn.** `source_id` chỉ tham chiếu đoạn truy hồi. Cột metadata lấy từ công cụ; các câu thiếu hoặc sai nguồn bị loại tự động trước khi hiển thị. Fixture công khai được gắn nhãn dữ liệu tự dựng.
 - **Một đầu mối mỗi file.** Bảng vai và script kiểm phạm vi PR có cùng ranh giới. Chỉ Lâm cập nhật spec/task chung hoặc tạo run chính thức.
 - **Lịch sử đánh giá.** CP2 đóng chuẩn/metric. CP3 hoàn thành benchmark trước lượt 1. CP4 dùng nguyên benchmark và tỉ lệ đạt lượt 2 cùng model.
 
@@ -33,7 +33,7 @@ codebase/
   ai.py          # Lâm: adapter và usage
   tools.py       # Khiêm: truy hồi slide
   agent.py       # Hưng: luồng quyết định
-  app.py         # Phước Anh: CLI và duyệt
+  app.py         # Phước Anh: CLI học trực tiếp từ đề đã tạo
 tests/
   fixtures/      # Dữ liệu tự dựng chung để phát triển độc lập
 scripts/

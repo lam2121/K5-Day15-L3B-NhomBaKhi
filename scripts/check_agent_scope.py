@@ -33,6 +33,12 @@ ROLE_DIRS = {
     "phuoc-anh": ("slides/", "validation/", "frontend/"),
 }
 RUN_FILE = re.compile(r"(?:eval/run-[0-9]+\.csv|cost/simulate-[0-9]+(?:\.csv|-summary\.md))")
+TASK_SCOPE_OVERRIDES = {
+    # One coordinated product change approved by the code owners after CP2.
+    "lam": {
+        "T028": {"codebase/app.py", "codebase/agent.py"},
+    },
+}
 
 
 def is_owned(role: str, path: str) -> bool:
@@ -41,6 +47,16 @@ def is_owned(role: str, path: str) -> bool:
         or path.startswith(ROLE_DIRS[role])
         or (role == "lam" and RUN_FILE.fullmatch(path) is not None)
     )
+
+
+def is_in_scope(role: str, path: str, task_ids: set[str] | None = None) -> bool:
+    """Allow only paths explicitly approved for a task-scoped integration change."""
+    if is_owned(role, path):
+        return True
+    for task_id in task_ids or set():
+        if path in TASK_SCOPE_OVERRIDES.get(role, {}).get(task_id, set()):
+            return True
+    return False
 
 
 def git(root: Path, *args: str) -> str:
@@ -75,7 +91,13 @@ def main() -> int:
         print(f"Cannot check scope against {options.base!r}: {error}", file=sys.stderr)
         return 2
 
-    rejected = sorted(path for path in paths if not is_owned(options.role, path))
+    try:
+        subject = git(ROOT, "log", "-1", "--format=%s").strip()
+    except (OSError, RuntimeError) as error:
+        print(f"Cannot read the current commit subject: {error}", file=sys.stderr)
+        return 2
+    task_ids = set(re.findall(r"\[(T\d{3})\]", subject))
+    rejected = sorted(path for path in paths if not is_in_scope(options.role, path, task_ids))
     if rejected:
         print(f"Outside scope for {options.role}:", file=sys.stderr)
         for path in rejected:

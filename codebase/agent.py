@@ -396,7 +396,7 @@ def _model_result(text: str, passages: list[SlidePassage]) -> AnswerResponse:
     if status == "ok":
         questions = _model_questions(candidates, passages)
         if questions:
-            return _quiz_response(_balance_days(questions), "Đề ôn nháp. Hãy đối chiếu trang nguồn và duyệt từng câu.")
+            return _quiz_response(_balance_days(questions), "Đề ôn tập đã sẵn sàng. Học các câu hỏi bên dưới và tham khảo trang nguồn.")
         return _empty_response("no_evidence")
     if isinstance(status, str) and status in _GUIDANCE and not candidates:
         return _empty_response(status)
@@ -404,7 +404,7 @@ def _model_result(text: str, passages: list[SlidePassage]) -> AnswerResponse:
 
 
 def answer(text: str) -> AnswerResponse:
-    """Trả đề nháp hoặc hướng dẫn tiếp theo theo hợp đồng v1."""
+    """Trả câu hỏi ôn tập có nguồn hoặc hướng dẫn tiếp theo theo hợp đồng v1."""
     normalized = unicodedata.normalize("NFC", text).strip().casefold()
     if _EXTERNAL_ACTION.search(normalized):
         return _empty_response("out_of_scope")
@@ -436,5 +436,5 @@ def answer(text: str) -> AnswerResponse:
     if (model["model"] == "fake") != (demo_questions is not None):
         raise RuntimeError("Adapter trả về model không khớp với cấu hình.")
     if demo_questions is not None:
-        return _quiz_response(demo_questions, "Đề nháp từ câu mẫu CP2. Hãy đối chiếu trang nguồn và duyệt từng câu.")
+        return _quiz_response(demo_questions, "Đề ôn tập mẫu CP2 đã sẵn sàng. Học các câu hỏi bên dưới và tham khảo trang nguồn.")
     return _model_result(model["text"], passages)

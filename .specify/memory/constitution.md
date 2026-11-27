@@ -1,4 +1,4 @@
-<!-- Sync Impact Report: initial version 1.0.0; spec, plan, tasks and role guide aligned. -->
+<!-- Sync Impact Report: v2.0.0 removes learner approval from the CLI study flow; aligned spec, plan, data model, contracts, quickstart, tasks, and app behavior. CP2 threshold, benchmark, and completed evaluation artifacts are unchanged. Group consent confirmed by Lam on 2026-11-28. -->
 # Hiến chương CramAI
 
 ## Nguyên tắc
@@ -11,9 +11,9 @@ Nhóm chốt một học viên, một việc, một quyết định AI và một
 
 CLI, eval và simulate dùng `answer(text)`. Kết quả có `output` là chuỗi. Adapter dùng `@model_call` và token từ `usage`. Công cụ dùng `@tool`. Giữ nguyên `run.py`, `codebase/tracing.py`, `eval/run_eval.py` và `cost/simulate.py`.
 
-### III. Kiểm chứng nguồn và bảo vệ dữ liệu
+### III. Tự động kiểm nguồn và bảo vệ dữ liệu
 
-Chỉ đưa vào đề câu có căn cứ tra được trong tập đoạn đã cung cấp. Thiếu căn cứ thì thu hẹp kết quả hoặc yêu cầu bổ sung. Người học duyệt bản nháp. Prompt, phản hồi và công cụ có thể xuất hiện trong trace nộp bài. Chỉ truyền dữ liệu được phép và đã xử lý phù hợp. API key, PDF nguyên bản và thông tin cá nhân nằm ngoài artefact công khai.
+Chỉ đưa vào đề câu có căn cứ tra được trong tập đoạn đã cung cấp. Tự động loại câu sai định dạng, thiếu nguồn hoặc có mã nguồn không hợp lệ; nếu không còn câu phù hợp thì thu hẹp kết quả hoặc yêu cầu bổ sung. Hiển thị tất cả câu hợp lệ để người học học ngay, không yêu cầu duyệt hoặc loại từng câu. Mã nguồn kiểm được không đảm bảo nội dung sư phạm đúng; giữ trích dẫn để người học mở slide tham khảo. Prompt, phản hồi và công cụ có thể xuất hiện trong trace nộp bài. Chỉ truyền dữ liệu được phép và đã xử lý phù hợp. API key, PDF nguyên bản và thông tin cá nhân nằm ngoài artefact công khai.
 
 ### IV. Mỗi file có một đầu mối sửa
 
@@ -35,4 +35,4 @@ Trước PR, chạy kiểm phạm vi file và các kiểm tra liên quan tới p
 
 Nhóm duyệt thay đổi về phạm vi, cách chấm và hợp đồng trước khi Lâm hợp nhất. Mọi thay đổi sau CP2 vào changelog theo đề. Thay đổi tương thích nâng phiên bản phụ hoặc vá. Thay đổi phá vỡ nguyên tắc nâng phiên bản chính và có phương án chuyển đổi. Luật BTC và `AGENTS.md` được áp dụng cùng hiến chương.
 
-**Phiên bản** 1.0.0 · **Cập nhật** 2026-11-27 · **Phê duyệt** chờ nhóm xác nhận
+**Phiên bản** 2.0.0 · **Cập nhật** 2026-11-28 · **Phê duyệt** nhóm đồng ý theo xác nhận của Lâm ngày 28/11
