@@ -16,7 +16,7 @@
 
 ## 3. Giải pháp
 
-- **Lát cắt:** học viên nhập chủ đề hoặc khoảng ngày, AI chọn đoạn slide đủ căn cứ và tạo đề nháp A–D kèm đáp án, file và trang. Học viên duyệt từng câu.
+- **Lát cắt:** học viên nhập chủ đề hoặc khoảng ngày, AI chọn đoạn slide đủ căn cứ và tạo đề A–D kèm đáp án, file và trang. Các câu hợp lệ hiện ngay để học; học viên tự đối chiếu trang nguồn (luồng duyệt từng câu đã bỏ ở T028).
 - **Hình dạng:** workflow cố định: kiểm phạm vi → `search_slides` → `call_model` → kiểm mã nguồn ([sơ đồ spec §4](../spec.md)).
 - **Mức tự động:** AI đề xuất, người học quyết định. Không tự chấm điểm thi thật, không gửi lên LMS hoặc Discord.
 
@@ -47,4 +47,4 @@ CHỜ số trang 5 và 6. Dự kiến dạng: go hoặc iterate, dẫn tỉ lệ
 
 1. Ghép web CramAI (frontend 003 đã có, chờ backend) để học viên làm đề và nộp trên trình duyệt.
 2. Đo thời gian tiết kiệm thật bằng 2–3 học viên dùng thử ([validation](../validation/log.md)), thay số 15 phút tự ước tính.
-3. Sửa lỗi lượt 1 còn lại và cân lại vị trí đáp án: ở lượt 1 đáp án B chiếm 31/62 câu.
+3. Sửa lỗi lượt 1 còn lại. Vị trí đáp án đã được trộn bằng code (`78a019d`) sau khi lượt 1 có đáp án B chiếm 31/62 câu; lượt 2 sẽ cho biết phân bố mới.

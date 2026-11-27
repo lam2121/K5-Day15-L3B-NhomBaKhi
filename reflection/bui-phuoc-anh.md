@@ -6,7 +6,7 @@ Tôi giữ vai trải nghiệm và sản phẩm (`phuoc-anh`, nhánh `cramai/phu
 
 - **Bằng chứng và sản phẩm.** Tôi hoàn thiện bảy dòng [canvas.md](../canvas.md) (T003), rồi cập nhật bằng số liệu đầu tiên và lát cắt đã chốt ở CP2. Tôi tổng hợp khảo sát 21 học viên L3A/L3B ngoài nhóm vào [summary.md](../evidence/summary.md) (T016): 14/21 người từng ôn bằng slide, trong đó 12/14 gặp slide không tự hiểu hết, 6/14 bỏ dở và 7/14 đã nhờ AI ra câu hỏi. Tôi cũng viết phần cách học viên đang ôn, impact tháng và đoạn soạn sẵn cho `spec.md` §0–§2.
 - **Đánh giá.** Cùng Khiêm, tôi viết bốn metric trong [metric_spec.yaml](../eval/metric_spec.yaml) và mô tả các lớp lỗi cùng kịch bản (T007, T009). Tôi chấm độc lập cùng Hưng trên 5 ca B01, B03, B07, B11, B12 và hai người khớp 5/5.
-- **CLI.** Tôi làm [app.py](../codebase/app.py) (T013): đọc `result` theo hợp đồng v1, hiện từng câu A–D với độ khó, đáp án, file và trang, cho duyệt hoặc bỏ theo `question_id`. Sau khi xem demo, tôi thêm nhãn "Ngày N" vào dòng nguồn, vì corpus xếp file `day04-prompt-engineering…` vào ngày học 3 và người xem dễ tưởng AI lấy nhầm ngày.
+- **CLI.** Tôi làm [app.py](../codebase/app.py) (T013): đọc `result` theo hợp đồng v1, hiện từng câu A–D với độ khó, đáp án, file và trang, cho duyệt hoặc bỏ theo `question_id`. Sau CP2 nhóm bỏ luồng duyệt để hiện câu học ngay (T028). Sau khi xem demo, tôi thêm nhãn "Ngày N" vào dòng nguồn, vì corpus xếp file `day04-prompt-engineering…` vào ngày học 3 và người xem dễ tưởng AI lấy nhầm ngày.
 - **Chi phí.** Tôi lập [personas.yaml](../cost/personas.yaml) (T017, T020): ba kiểu người dùng có tỉ trọng lấy từ câu 3 của khảo sát, quy mô 300/470/700 người có nguồn từ đề Track A, và giá ba model có link cùng ngày xem.
 - **Web.** Tôi dựng [frontend](../frontend/README.md) cho học viên và admin bằng HTML/CSS/JS thuần theo hợp đồng OpenAPI (003 T006, T008, commit `1d7b0c2`). Trang có chế độ `?mock=1` với dữ liệu mẫu để làm song song khi chưa có backend. Khi Lâm đưa backend lên, tôi ghép thử trang học viên và chạy trọn luồng catalog → tạo đề → nộp bài.
 - **Slide.** Tôi soạn [nội dung 8 trang](../slides/content.md) (T024, bản nháp), mỗi trang có số liệu kèm nguồn. Các trang chi phí và kết luận để trống chờ lượt 2.
@@ -31,7 +31,7 @@ Ca `B19` ở lượt 1 (`run-1@20261127-230718`, `claude-haiku-5-5`) yêu cầu 
 
 Điều tôi để ý là ca này qua mọi kiểm tra về "đúng": không có trích dẫn bịa, đáp án khớp slide, định dạng đúng. Cái sai nằm ở phần đề không nói ra. Người học cầm 2 câu đó sẽ tưởng mình đã ôn xong 9 ngày. Với một công cụ học tập, im lặng về giới hạn cũng gây hại gần như trả lời sai.
 
-Lỗi đáp án dồn vào B tôi thấy khi xem demo cũng vậy: B chiếm 31/62 câu ở lượt 1 và bộ metric hiện tại không đo điều này. Tôi rút ra hai điều:
+Lỗi đáp án dồn vào B tôi thấy khi xem demo cũng vậy: B chiếm 31/62 câu ở lượt 1 và bộ metric hiện tại không đo điều này. Tôi bàn giao cho Hưng và Hưng đã trộn vị trí đáp án bằng code. Tôi rút ra hai điều:
 
 - Khi viết metric, ngoài "câu trả lời có đúng không" cần hỏi thêm "người học có bị dẫn sai mà không biết không".
 - Xem output thật bằng mắt, như lúc tôi xem demo, vẫn bắt được những lỗi mà con số chấm điểm bỏ qua.
