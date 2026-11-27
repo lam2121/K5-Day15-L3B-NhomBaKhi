@@ -65,6 +65,62 @@ export function Berry({ x, y, s = 1, leaves = true }: { x: number; y: number; s?
   );
 }
 
+/** Sugar flower: five petals around a centre. */
+export function SugarFlower({ x, y, s = 1, fill = F.blush, edge = L.pink, center = F.apricot, dashed = false }: { x: number; y: number; s?: number; fill?: string; edge?: string; center?: string; dashed?: boolean }) {
+  const petals = Array.from({ length: 5 }, (_, i) => {
+    const a = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+    return [Math.cos(a) * 4.2, Math.sin(a) * 4.2];
+  });
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`} strokeDasharray={dashed ? '2 2' : undefined}>
+      {petals.map(([px, py], i) => (
+        <circle key={i} cx={px} cy={py} r="3.6" fill={fill} {...line(edge, 1.2)} />
+      ))}
+      <circle r="2.4" fill={dashed ? F.white : center} {...line(edge, 1)} />
+    </g>
+  );
+}
+
+/** Piped cream rosette. */
+function Rosette({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      <path d="M-10 4c-2-6 2-10 6-9 0-5 7-7 9-2 5-1 8 4 5 8 2 3 0 6-3 6H-7c-3 0-4-1-3-3z" fill={F.white} {...line(L.soft, 1.8)} />
+      <path d="M-5 0c3 2 7 2 10-1" fill="none" {...line(L.soft, 1.4)} />
+    </g>
+  );
+}
+
+/** Cherry with stem. */
+function Cherry({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      <path d="M0-4c1-6 4-9 8-10" fill="none" {...line(L.mint, 1.8)} />
+      <circle r="6" fill={F.berry} {...line(L.berry, 1.8)} />
+      <ellipse cx="-2.2" cy="-2" rx="1.6" ry="2.4" fill={F.white} opacity=".75" transform="rotate(30 -2.2 -2)" />
+    </g>
+  );
+}
+
+/** Mint leaf. */
+function Leaf({ x, y, s = 1, r = 0 }: { x: number; y: number; s?: number; r?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}>
+      <path d="M0 0c2-7 9-10 14-8-1 6-7 10-14 8z" fill={F.mint} {...line(L.mint, 1.5)} />
+      <path d="M2-1c3-2 6-4 9-5" fill="none" stroke={F.mintSoft} strokeWidth="1.2" strokeLinecap="round" />
+    </g>
+  );
+}
+
+/** Small heart. */
+export function Heart({ x, y, s = 1, fill = F.berry, edge = L.berry }: { x: number; y: number; s?: number; fill?: string; edge?: string }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      <path d="M0 6C-4 3-8 0-8-4c0-3 2-5 4.5-5C-2-9-.6-7.6 0-6.5.6-7.6 2-9 3.5-9 6-9 8-7 8-4c0 4-4 7-8 10z" fill={fill} {...line(edge, 1.6)} />
+    </g>
+  );
+}
+
 function Plate({ y = 86, rx = 40 }: { y?: number; rx?: number }) {
   return <ellipse cx="60" cy={y} rx={rx} ry="5" fill={F.blushSoft} />;
 }
@@ -127,7 +183,10 @@ function Parfait() {
       <path d="M38 40h44v38c0 5-4 8-9 8H47c-5 0-9-3-9-8z" fill="none" {...line(L.soft)} />
       <path d="M44 46v30" stroke={F.white} strokeWidth="3" strokeLinecap="round" opacity=".9" />
       <path d="M36 40c0-6 6-8 10-6 2-6 10-7 14-3 4-4 12-3 14 3 4-2 10 0 10 6z" fill={F.white} {...line(L.soft)} />
-      <Berry x={60} y={26} s={0.8} />
+      <Leaf x={58} y={34} s={0.9} r={-30} />
+      <Leaf x={62} y={34} s={0.9} r={-150} />
+      <path d="M68 36 78 20" {...line(L.crust, 4)} />
+      <path d="M68 36 78 20" stroke={F.apricot} strokeWidth="2" strokeLinecap="round" />
       <Spark x={92} y={44} r={4} />
     </g>
   );
@@ -141,8 +200,7 @@ function MilkCarton() {
       <path d="M38 38 46 24h28l8 14z" fill={F.white} {...line(L.pink)} />
       <path d="M46 24 50 16h20l4 8" fill={F.blush} {...line(L.pink)} />
       <rect x="44" y="48" width="32" height="18" rx="6" fill={F.white} {...line(L.pink, 1.8)} />
-      <Berry x={52} y={57} s={0.45} />
-      <Berry x={66} y={58} s={0.45} />
+      <Heart x={60} y={57} s={0.75} />
       <path d="M44 74h22" {...line(L.pink, 2)} />
       <circle cx="74" cy="31" r="3" fill={F.berry} />
       <Spark x={94} y={30} r={4} />
@@ -161,7 +219,7 @@ function Cupcake() {
       <circle cx="44" cy="48" r="1.6" fill={F.berry} />
       <circle cx="72" cy="46" r="1.6" fill={F.apricot} />
       <circle cx="58" cy="52" r="1.6" fill={F.mint} />
-      <Berry x={60} y={26} s={0.75} />
+      <SugarFlower x={60} y={30} s={1.1} />
       <Spark x={94} y={40} r={4} />
     </g>
   );
@@ -193,8 +251,9 @@ function RollCake() {
       <path d="M30 62c0-4 6-4 6 0 0 6-10 7-11 0-1-8 13-10 15-1 2 10-14 14-18 4" fill="none" {...line(L.soft, 1.4)} />
       <circle cx="31" cy="62" r="3.2" fill={F.berry} {...line(L.berry, 1.2)} />
       <path d="M38 44c2-5 7-5 9-1 2-5 8-5 10 0 2-5 8-5 10 0 2-4 7-4 9 1" fill={F.white} {...line(L.soft, 2)} />
-      <Berry x={52} y={36} s={0.55} />
-      <Berry x={72} y={37} s={0.5} />
+      <Rosette x={50} y={40} s={0.7} />
+      <Rosette x={68} y={40} s={0.7} />
+      <Leaf x={58} y={36} s={0.6} r={-40} />
       <Spark x={104} y={34} r={4} />
     </g>
   );
@@ -208,7 +267,8 @@ function Pudding() {
       <path d="M40 40h40l3 11c-3 5-6 0-9 4-3 5-7-1-10 3-4 4-7-2-10 2-3 3-6-2-9 0-3 1-5-2-6-5z" fill="#C98C66" {...line(L.crust)} />
       <path d="M46 58c-1 8-2 16-3 22" stroke={F.white} strokeWidth="3.5" strokeLinecap="round" opacity=".7" />
       <path d="M44 38c0-5 6-7 9-4 2-5 10-6 13-1 4-3 10-1 10 5z" fill={F.white} {...line(L.soft, 2)} />
-      <Berry x={60} y={26} s={0.7} />
+      <Rosette x={60} y={32} s={0.75} />
+      <Leaf x={62} y={26} s={0.6} r={-50} />
       <Spark x={98} y={44} r={4} />
       <Spark x={20} y={50} r={3} color={F.blush} />
     </g>
@@ -224,7 +284,7 @@ function IceCream() {
       <path d="M42 50c-4 0-5-5-2-7-2-6 3-11 9-9 1-6 9-9 14-5 5-3 12 0 12 6 6 0 8 6 5 10 2 3 0 6-3 5z" fill={F.blush} {...line(L.pink)} />
       <path d="M48 46c4 2 9 2 14 0" fill="none" {...line(L.pink, 1.6)} />
       <ellipse cx="52" cy="36" rx="4" ry="2" fill={F.white} opacity=".75" transform="rotate(-20 52 36)" />
-      <Berry x={62} y={22} s={0.65} />
+      <Cherry x={60} y={26} s={0.9} />
       <path d="M76 34l12-14" {...line(L.mint, 3)} />
       <Spark x={92} y={44} r={4} />
       <Spark x={28} y={30} r={3} color={F.apricot} />
@@ -238,7 +298,7 @@ function Daifuku() {
       <Plate rx={36} />
       <path d="M24 74c0-22 16-36 36-36s36 14 36 36c0 6-16 9-36 9s-36-3-36-9z" fill={F.white} {...line(L.soft)} />
       <path d="M60 46c10 0 18 8 18 18 0 6-8 10-18 10s-18-4-18-10c0-10 8-18 18-18z" fill={F.blushSoft} opacity=".9" />
-      <Berry x={60} y={60} s={0.95} />
+      <SugarFlower x={60} y={60} s={1.5} fill={F.blush} />
       <path d="M38 54c2-6 6-10 12-12" stroke={F.blushSoft} strokeWidth="4" strokeLinecap="round" fill="none" />
       <circle cx="36" cy="70" r="3" fill={F.blush} opacity=".8" />
       <circle cx="84" cy="70" r="3" fill={F.blush} opacity=".8" />
@@ -254,9 +314,10 @@ function Tart() {
       <path d="M18 58h84l-6 22c-1 3-3 4-6 4H30c-3 0-5-1-6-4z" fill={F.apricot} {...line(L.crust)} />
       <path d="M26 60l3 20M38 60l2 22M50 60l1 22M62 60v22M74 60l-1 22M86 60l-2 22M98 60l-3 18" {...line(L.crust, 1.2)} opacity=".6" />
       <ellipse cx="60" cy="58" rx="42" ry="9" fill={F.creamSoft} {...line(L.crust)} />
-      <Berry x={40} y={50} s={0.6} leaves={false} />
-      <Berry x={60} y={47} s={0.65} />
-      <Berry x={80} y={50} s={0.6} leaves={false} />
+      <path d="M32 54c0-7 6-11 12-11 0 6-5 11-12 11z" fill={F.apricot} {...line(L.crust, 1.6)} />
+      <path d="M76 54c0-7 6-11 12-11 0 6-5 11-12 11z" fill={F.apricot} {...line(L.crust, 1.6)} />
+      <circle cx="60" cy="52" r="7" fill={F.mint} {...line(L.mint, 1.6)} />
+      <circle cx="60" cy="52" r="3.2" fill={F.mintSoft} />
       <circle cx="50" cy="58" r="3.2" fill={F.mint} {...line(L.mint, 1.2)} />
       <circle cx="70" cy="58" r="3.2" fill={F.blush} {...line(L.pink, 1.2)} />
       <Spark x={104} y={34} r={4} />
@@ -272,7 +333,7 @@ function Teacup() {
       <path d="M82 52h5c7 0 7 13 0 13h-6" fill="none" {...line(L.pink)} />
       <ellipse cx="56" cy="48" rx="26" ry="5" fill={F.apricot} {...line(L.pink, 2)} />
       <path d="M36 62c4 2 6-2 10 0s6-2 10 0 6-2 10 0 6-2 10 0" fill="none" {...line(L.mint, 1.6)} />
-      <Berry x={56} y={72} s={0.42} leaves={false} />
+      <Heart x={56} y={73} s={0.6} />
       <path d="M48 38c-3-5 3-7 0-12M62 38c-3-5 3-7 0-12" fill="none" stroke={F.mint} strokeWidth="2.4" strokeLinecap="round" />
       <Spark x={96} y={34} r={4} />
       <Spark x={22} y={40} r={3} color={F.blush} />
@@ -291,7 +352,7 @@ function CookieStack() {
         <ellipse key={`${x}${y}`} cx={x} cy={y} rx="2.4" ry="1.6" fill="#A86A48" />
       ))}
       <path d="M38 50c4-3 8-4 12-4" stroke={F.white} strokeWidth="2.5" strokeLinecap="round" opacity=".7" />
-      <Berry x={74} y={40} s={0.6} />
+      <Heart x={70} y={44} s={0.8} fill={F.blush} edge={L.pink} />
       <Spark x={100} y={36} r={4} />
       <Spark x={22} y={44} r={3} color={F.apricot} />
     </g>
@@ -338,7 +399,7 @@ export function Pastry({ index, covered = false, className = '' }: { index: numb
   );
 }
 
-/** Slender three-tier cake on a stand; each of the 14 strawberries is one slide deck. */
+/** Slender three-tier cake on a stand; each of the 14 sugar flowers is one slide deck. */
 export function TieredCake({ ready, className = '' }: { ready: boolean[]; className?: string }) {
   const cx = 120;
   const tiers = [
@@ -367,7 +428,7 @@ export function TieredCake({ ready, className = '' }: { ready: boolean[]; classN
             return `Q${x1 - step / 2} ${t.y + depth} ${x1} ${t.y + 3}`;
           }).join('') +
           `V${t.y}H${x}z`;
-        const spots = Array.from({ length: t.berries }, (_, i) => x + 10 + ((i + 0.5) * (t.w - 20)) / t.berries);
+        const spots = Array.from({ length: t.berries }, (_, i) => x + 9 + (i * (t.w - 18)) / Math.max(t.berries - 1, 1));
         return (
           <g key={ti}>
             <rect x={x} y={t.y} width={t.w} height={t.h} rx="6" fill={t.fill} {...line(L.soft, 1.8)} />
@@ -377,14 +438,21 @@ export function TieredCake({ ready, className = '' }: { ready: boolean[]; classN
               <circle key={i} cx={x + 5 + i * 9} cy={t.y + t.h - 1} r="2.3" fill={F.white} {...line(L.soft, 1)} />
             ))}
             <path d={`M${x + 5} ${t.y + 14}v${t.h - 22}`} stroke={F.white} strokeWidth="2.5" strokeLinecap="round" opacity=".8" />
-            {/* one berry per deck, set on the front of the tier so none hide */}
+            {/* draped piping with one sugar flower per deck at each join */}
+            <path
+              d={`M${spots[0]} ${t.y + 14}` + spots.slice(1).map((sx, i) => `Q${(spots[i] + sx) / 2} ${t.y + 24} ${sx} ${t.y + 14}`).join('')}
+              fill="none"
+              stroke={F.white}
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
             {spots.map((sx) => {
               const on = ready[k++] ?? false;
-              const sy = t.y + t.h / 2 + 3;
+              const tone = k % 3;
               return on ? (
-                <Berry key={sx} x={sx} y={sy} s={0.42} />
+                <SugarFlower key={sx} x={sx} y={t.y + 14} s={0.62} fill={tone === 0 ? F.mint : tone === 1 ? F.blush : F.apricot} edge={tone === 0 ? L.mint : tone === 1 ? L.pink : L.crust} center={tone === 0 ? F.white : F.apricot} />
               ) : (
-                <circle key={sx} cx={sx} cy={sy + 1} r="4.6" fill={F.white} {...line(L.pink, 1.4)} strokeDasharray="2.4 2.4" />
+                <SugarFlower key={sx} x={sx} y={t.y + 14} s={0.62} fill={F.white} edge={L.pink} dashed />
               );
             })}
           </g>
@@ -414,7 +482,7 @@ export function TeaPour({ className = '' }: { className?: string }) {
           <rect x="112" y="108" width="76" height="46" fill={F.apricot} className="animate-fill origin-bottom [transform-box:fill-box]" />
         </g>
         <path d="M184 116h6a10 10 0 0 1 0 20h-8" fill="none" {...line(L.pink)} />
-        <Berry x={150} y={134} s={0.5} leaves={false} />
+        <Heart x={150} y={134} s={0.7} />
         <path d="M140 98c-3-6 3-9 0-15M156 98c-3-6 3-9 0-15" fill="none" stroke={F.mint} strokeWidth="3" strokeLinecap="round" className="animate-steam" />
       </g>
       <path d="M118 84c-2 10-2 18 0 24" stroke={F.apricot} strokeWidth="5" strokeLinecap="round" fill="none" opacity=".9" />
@@ -426,7 +494,9 @@ export function TeaPour({ className = '' }: { className?: string }) {
         <path d="M44 38c4-8 48-8 52 0" fill={F.creamSoft} {...line(L.pink)} />
         <circle cx="70" cy="28" r="6" fill={F.mint} {...line(L.mint, 2)} />
         <ellipse cx="46" cy="60" rx="4" ry="7" fill={F.white} opacity=".7" transform="rotate(25 46 60)" />
-        <Berry x={70} y={76} s={0.6} />
+        <circle cx="54" cy="78" r="3" fill={F.white} />
+        <circle cx="70" cy="84" r="3" fill={F.white} />
+        <circle cx="86" cy="78" r="3" fill={F.white} />
       </g>
       <Spark x={30} y={26} r={6} />
       <Spark x={198} y={70} r={5} color={F.apricot} />
@@ -482,7 +552,7 @@ export function ScoreCake({ results, className = '' }: { results: boolean[]; cla
               <path d={`M${cx} ${cy}L${x0} ${y0}A${r} ${r} 0 ${large} 1 ${x1} ${y1}z`} fill={fill} {...line(ok ? L.pink : L.soft)} strokeDasharray={ok ? undefined : '5 4'} />
             )}
             {ok ? (
-              <Berry x={bx} y={by} s={0.7} />
+              <Rosette x={bx} y={by} s={0.75} />
             ) : (
               <g transform={`translate(${bx} ${by})`} fill={F.apricot}>
                 <circle cx="-4" cy="0" r="1.8" />
@@ -507,7 +577,7 @@ export function TeacupMark({ className = '' }: { className?: string }) {
       <path d="M28 16h3a4 4 0 0 1 0 8h-4" fill="none" {...line(L.pink, 2)} />
       <path d="M3 32h30" {...line(L.pink, 2)} />
       <path d="M13 3c-2 3 2 4 0 8M20 3c-2 3 2 4 0 8" stroke={F.mint} strokeWidth="2" fill="none" strokeLinecap="round" />
-      <Berry x={17} y={21} s={0.32} leaves={false} />
+      <Heart x={17} y={21} s={0.45} fill={F.white} edge={L.pink} />
     </svg>
   );
 }
@@ -534,9 +604,9 @@ export function Backdrop() {
         <Spark x={1330} y={620} r={8} />
         <Spark x={110} y={720} r={10} color={F.apricot} />
         <Spark x={720} y={860} r={7} />
-        <Berry x={40} y={420} s={1.1} />
-        <Berry x={1405} y={380} s={1.2} />
-        <Berry x={1390} y={840} s={0.9} />
+        <Heart x={40} y={420} s={1.4} fill={F.blush} edge={L.pink} />
+        <SugarFlower x={1405} y={380} s={1.6} />
+        <Cherry x={1390} y={840} s={1.3} />
       </g>
     </svg>
   );

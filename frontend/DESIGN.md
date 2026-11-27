@@ -35,8 +35,8 @@ Soft sticker style, inspired by kawaii strawberry-dessert sticker sheets (refere
 
 - Outlines are a deeper shade of the shape they surround (berry red, crust brown, mint, pink), never black or cocoa.
 - A light SVG turbulence filter (`Sheet` in `art.tsx`) makes lines wobble like a hand drawing.
-- Strawberries carry seeds, mint leaves and a white highlight. Cream is white with a soft pink outline. Sparkles (`Spark`) sit around each drawing.
-- The page ground is pink grid paper, with a few faint sparkles and berries fixed behind the content (`Backdrop`).
+- Strawberries (with seeds, leaves and a highlight) appear only where the dessert is about strawberries: the shortcake slice and the single berry. Other drawings use their own toppings: sugar flowers, piped cream, cherries, mint leaves, hearts, peach and kiwi. Sparkles (`Spark`) sit around each drawing.
+- The page ground is pink grid paper, with a few faint sparkles, a heart, a flower and a cherry fixed behind the content (`Backdrop`).
 
 ## Shapes and motion
 
@@ -51,9 +51,9 @@ Soft sticker style, inspired by kawaii strawberry-dessert sticker sheets (refere
 |---|---|---|
 | Slide deck (exam) | Pastry card, a different drawing for each of the 14 decks | "Slide NN", title, "5 câu" |
 | Unpublished deck | Its pastry faded and desaturated, with a small lock sticker | "Chưa mở" plus the backend's reason |
-| Midterm | Slender three-tier cake on a stand, 14 strawberries on the tier fronts; an empty dashed circle means that deck is missing | "Đề giữa kỳ", count N/14 |
+| Midterm | Slender three-tier cake on a stand, draped piping with 14 sugar flowers; a dashed white flower means that deck is missing | "Đề giữa kỳ", count N/14 |
 | Generating | Teapot pouring into a cup | "Đang pha đề N câu…" |
 | Question progress | Row of macarons: outlined = unanswered, strawberry = answered, apricot = skipped at submit, mint = correct, crossed = wrong | aria-label per question |
-| Score | Top view of a cake cut into one slice per question; strawberry slices are correct | "N/M", "X% câu đúng" |
+| Score | Top view of a cake cut into one slice per question; slices topped with cream are correct | "N/M", "X% câu đúng" |
 | Citation | Tea-bag tag with the page number | Slide, page, file name, source id |
 | Admin | "Bếp bánh" (bakery kitchen) | Plain state labels: Đã xuất bản, Chờ xuất bản, Chưa có nguồn |

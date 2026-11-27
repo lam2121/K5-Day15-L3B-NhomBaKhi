@@ -40,7 +40,7 @@ export function Result({ session, onRetake, onHome }: Props) {
             <p className="mt-2 max-w-xl text-lg text-cocoa-soft">
               {wrong === 0
                 ? `Trọn chiếc bánh! Bạn đúng cả ${result.total_questions} câu. Mỗi câu vẫn kèm trang slide để bạn đọc lại.`
-                : `Mỗi miếng bánh có dâu là một câu đúng. ${wrong} câu sai được đánh dấu bên dưới, kèm đáp án đúng và trang slide để đọc lại.`}
+                : `Mỗi miếng bánh có kem là một câu đúng. ${wrong} câu sai được đánh dấu bên dưới, kèm đáp án đúng và trang slide để đọc lại.`}
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <button type="button" className="btn btn-primary btn-lg" onClick={onRetake}>

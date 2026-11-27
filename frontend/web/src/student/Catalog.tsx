@@ -169,12 +169,12 @@ function Midterm({ exam, slides, onStart }: { exam: CatalogExam; slides: Catalog
         <div>
           <p className="font-display text-lg font-bold text-mint-deep">Tổng hợp cả khoá</p>
           <h2 id="midterm-title" className="text-3xl font-extrabold sm:text-4xl">
-            {exam.title}: bánh 14 quả dâu
+            {exam.title}: bánh 14 bông hoa
           </h2>
           <p className="mt-2 max-w-xl text-lg text-cocoa-soft">
             {exam.available
               ? `${exam.question_count} câu, mỗi bộ slide góp một câu. Làm trong 60 phút.`
-              : `${exam.reason || 'Cần đủ 14 bộ slide đã xuất bản.'} Mỗi quả dâu trên bánh là một bộ đã sẵn sàng: ${readyCount}/14.`}
+              : `${exam.reason || 'Cần đủ 14 bộ slide đã xuất bản.'} Mỗi bông hoa đường trên bánh là một bộ đã sẵn sàng: ${readyCount}/14.`}
           </p>
           <div className="mt-5">
             {exam.available ? (
