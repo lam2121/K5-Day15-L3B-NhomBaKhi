@@ -32,35 +32,50 @@ Gemini Notebook gợi ý một cách tự kiểm tra bằng câu hỏi tạo t�
 
 **Lát cắt CP2.** Một học viên L3 yêu cầu ôn một chủ đề hoặc nhiều ngày. AI chọn nội dung đủ căn cứ từ slide trong phạm vi yêu cầu để tạo đề nháp trắc nghiệm A–D, kèm đáp án, tên file và số trang để học viên đối chiếu.
 
-**Hình dạng.** Workflow cố định vì mỗi yêu cầu có cùng các bước tra nguồn, đề xuất câu và kiểm trích dẫn. Một lượt truy hồi và một lượt đề xuất đủ cho lát cắt, nên dễ đo chi phí và truy vết lỗi.
+**Hình dạng.** Workflow cố định vì các bước kiểm yêu cầu, tra nguồn, đề xuất câu và kiểm trích dẫn đã xác định trước. Lát cắt chỉ cần một lượt truy hồi và một lượt đề xuất. Agent tự chọn bước hoặc nhiều agent sẽ thêm lượt gọi và trạng thái cần kiểm mà không giúp hoàn thành thêm việc cho học viên.
 
 **Mức tự động.** AI đề xuất, người học quyết định dùng câu nào sau khi đối chiếu nguồn. Học sai trước kỳ thi là hậu quả cần chặn. Ngoài phạm vi CP2 có tự chấm bài hoặc điểm thi thật, gửi tin lên LMS hoặc Discord, và câu hỏi tự luận.
 
 ```mermaid
 flowchart LR
     input["CLI · G1 / G2<br/>Học viên nhập chủ đề hoặc khoảng ngày"]
+    scope{"Kiểm phạm vi yêu cầu"}
+    refusal["Từ chối · out_of_scope<br/>Hướng học viên về ôn từ slide"]
+    corpus[("data/passages.jsonl<br/>Mã đoạn, nội dung, file, trang")]
     retrieve["search_slides<br/>Truy hồi đoạn slide theo phạm vi"]
-    core["AI Core<br/>Đề xuất câu trắc nghiệm A–D,<br/>đáp án và mã đoạn nguồn"]
-    guard{"Kiểm mã đoạn đã tra<br/>và lấy file, trang từ dữ liệu"}
+    mode{"Chế độ chạy"}
+    demo["CP2 · Chọn câu mẫu khớp nguồn<br/>Adapter giả, token bằng 0"]
+    filter{"Loại đoạn rỗng hoặc chỉ có dàn ý<br/>Còn đoạn phù hợp?"}
+    core["call_model · Quyết định AI<br/>Chọn nội dung và đề xuất câu A–D,<br/>đáp án, độ khó và mã đoạn"]
+    guard["Kiểm cấu trúc và mã nguồn<br/>Loại câu không hợp lệ<br/>Lấy file, trang từ đoạn đã tra"]
     output["Đề nháp · G11<br/>Câu A–D, đáp án, file và trang"]
-    review["Học viên · G8<br/>Đối chiếu nguồn và quyết định câu nào dùng"]
-    fallback["G10<br/>Hỏi rõ phạm vi hoặc báo thiếu căn cứ"]
+    review["Học viên · G8<br/>Đối chiếu đáp án với slide<br/>và chọn câu dùng thủ công"]
+    fallback["G10 · Dừng tạo đề<br/>Hỏi rõ phạm vi hoặc báo thiếu căn cứ"]
 
-    input -->|Có phạm vi| retrieve
-    input -->|Mơ hồ| fallback
-    retrieve -->|Có đoạn phù hợp| core --> guard
-    retrieve -->|Thiếu đoạn| fallback
+    input --> scope
+    scope -->|Chấm bài hoặc gửi ra ngoài| refusal
+    scope -->|Mơ hồ| fallback
+    scope -->|Có phạm vi ôn| retrieve
+    corpus --> retrieve
+    retrieve --> mode
+    mode -->|Giả| demo
+    demo -->|Có câu mẫu| output
+    demo -->|Thiếu câu mẫu| fallback
+    mode -->|Thật| filter
+    filter -->|Có| core --> guard
+    filter -->|Không| fallback
     guard -->|Có câu hợp lệ| output --> review
-    guard -->|Thiếu căn cứ| fallback
+    guard -->|Cần làm rõ hoặc thiếu căn cứ| fallback
+    guard -->|Ngoài phạm vi| refusal
 ```
 
 | Công cụ hoặc bước | Input | Output | Tác động |
 |---|---|---|---|
-| `search_slides` | Yêu cầu ôn và giới hạn số đoạn | Đoạn có mã, file và số trang | Đọc `data/passages.jsonl` |
-| `call_model` | Phạm vi ôn và đoạn đã tra | Câu ứng viên cùng đáp án, mã nguồn | Ở CP2 dùng adapter giả và câu mẫu, token bằng 0 |
-| Kiểm trích dẫn và tạo output | Câu ứng viên và các đoạn trả về | Đề nháp hoặc phản hồi thiếu căn cứ | Chặn mã nguồn lạ, gắn file và số trang từ đoạn đã tra |
+| `search_slides` | Yêu cầu ôn và giới hạn số đoạn | Đoạn có mã, nội dung, file và số trang | Chỉ đọc `data/passages.jsonl` |
+| `call_model` | Yêu cầu ôn cùng mã và nội dung đoạn làm căn cứ | Câu ứng viên với phương án, đáp án, độ khó và mã nguồn hoặc trạng thái cần dừng | Chế độ giả dùng câu mẫu và token bằng 0. Chế độ thật gửi prompt và đoạn đã xử lý đến API model đã cấu hình. |
+| Kiểm trích dẫn và tạo output | Câu ứng viên và các đoạn còn lại sau khi lọc | Đề nháp hoặc hướng dẫn khi cần dừng | Kiểm bốn phương án khác nhau, một khóa đáp án A–D, độ khó và mã đoạn. Lấy file, trang từ đoạn đã tra. |
 
-**Nguyên tắc thiết kế.** G1/G2 định hướng yêu cầu ôn theo chủ đề hoặc khoảng ngày và công khai giới hạn của bản giả. G10 hỏi lại hoặc báo thiếu căn cứ. G11 đưa trang để kiểm đáp án. G8 để học viên chọn câu muốn dùng.
+**Nguyên tắc thiết kế.** G1/G2 định hướng yêu cầu ôn theo chủ đề hoặc khoảng ngày và công khai giới hạn của bản giả. G10 hỏi lại hoặc báo thiếu căn cứ. G11 gắn nguồn để đối chiếu đáp án. G8 để học viên chọn câu muốn dùng. Code kiểm cấu trúc và tham chiếu, còn học viên dùng nội dung slide để kiểm nghĩa của đáp án.
 
 **Tình trạng CP2.** `python run.py` chạy CLI với mẫu câu và 12 đoạn slide tự dựng, in bản nháp để người học kiểm thủ công. Phần đọc PDF thật, gọi model thật và thao tác duyệt trong CLI thuộc CP3. Luồng admin xuất bản 14 bộ slide và làm bài trên web có [đặc tả và backlog riêng](specs/003-cramai-exams/spec.md).
 
