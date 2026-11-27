@@ -77,7 +77,7 @@ flowchart LR
 
 **Nguyên tắc thiết kế.** G1/G2 định hướng yêu cầu ôn theo chủ đề hoặc khoảng ngày và công khai giới hạn của bản giả. G10 hỏi lại hoặc báo thiếu căn cứ. G11 gắn nguồn để đối chiếu đáp án. G8 để học viên chọn câu muốn dùng. Code kiểm cấu trúc và tham chiếu, còn học viên dùng nội dung slide để kiểm nghĩa của đáp án.
 
-**Tình trạng CP2.** Bản demo CLI tại commit `3f473cd` đã chạy qua luồng tạo đề có nguồn và hỏi rõ phạm vi với dữ liệu tự dựng. Corpus hiện tại có 280 trích đoạn từ 14 ngày học và đã chạy được với model thật. Mẫu demo giả cần cập nhật theo mã đoạn của corpus mới. Luồng admin xuất bản 14 bộ slide và làm bài trên web có [đặc tả và backlog riêng](specs/003-cramai-exams/spec.md).
+**Tình trạng CP2.** `python run.py` ở chế độ giả đã tạo đề nháp ba câu mẫu có đáp án và trang nguồn từ corpus 280 đoạn. Khi yêu cầu mơ hồ, CLI hỏi rõ phạm vi. Chế độ thật đã kiểm gọi model với cùng corpus. Luồng admin xuất bản 14 bộ slide và làm bài trên web có [đặc tả và backlog riêng](specs/003-cramai-exams/spec.md).
 
 ## §5. Chỗ khó — 4 lớp + ≥6 kịch bản + 2 tấn công *(guide 2.3)*
 

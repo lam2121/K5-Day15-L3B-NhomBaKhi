@@ -164,6 +164,46 @@ _DEMO_QUESTIONS = {
     ),
 }
 
+# Mẫu trình diễn chỉ dùng khi đoạn hiện tại vẫn chứa phần làm căn cứ.
+_COURSE_DEMO_QUESTIONS = {
+    "day03-p008-s01": (
+        "Bắt đầu với Task + Format.",
+        (
+            "prompt engineering thành phần định dạng nhiệm vụ",
+            "Nên xác định hai thành phần nào khi bắt đầu viết prompt?\n"
+            "A. Vai trò và bối cảnh.\n"
+            "B. Nhiệm vụ và định dạng đầu ra.\n"
+            "C. Bối cảnh và độ dài tối đa.\n"
+            "D. Vai trò và giọng điệu.",
+            "B",
+        ),
+    ),
+    "day03-p074-s01": (
+        "02 LLM trả về JSON tool_calls",
+        (
+            "tool calling vòng lặp gọi công cụ đầu ra",
+            "LLM trả về gì để ứng dụng biết cần thực thi công cụ trong vòng lặp Tool Calling?\n"
+            "A. Nội dung của công cụ sau thực thi.\n"
+            "B. Một điểm độ tin cậy.\n"
+            "C. Danh sách lời gọi công cụ ở dạng JSON.\n"
+            "D. Trang tài liệu để người dùng tự thực thi.",
+            "C",
+        ),
+    ),
+    "day03-p060-s01": (
+        "Tôi cần thêm thông tin về X",
+        (
+            "prompt tool calling agent hỏi lại thiếu thông tin",
+            "Khi chưa có đủ thông tin, agent có thể phản hồi trực tiếp bằng cách nào?\n"
+            "A. Nêu rõ thông tin còn cần bổ sung.\n"
+            "B. Chọn dữ liệu giả có vẻ hợp lý.\n"
+            "C. Coi thông tin bị thiếu là đã xác nhận.\n"
+            "D. Chốt đáp án rồi bỏ qua phần còn thiếu.",
+            "A",
+        ),
+    ),
+}
+
 
 def _empty_response(status: QuizStatus) -> AnswerResponse:
     return make_response({"schema_version": 1, "status": status, "message": _GUIDANCE[status], "questions": []})
@@ -183,10 +223,14 @@ def _demo_questions(passages: list[SlidePassage], topics: set[str]) -> list[Quiz
     questions: list[QuizQuestion] = []
     for passage in passages:
         source_id = passage["source_id"]
-        template = _DEMO_QUESTIONS.get(source_id)
+        if source_id == _FIXTURE_SOURCE or passage["text"].startswith(_SYNTHETIC_LABEL):
+            template = _DEMO_QUESTIONS.get(source_id)
+        else:
+            course_sample = _COURSE_DEMO_QUESTIONS.get(source_id)
+            if course_sample is None or course_sample[0] not in passage["text"]:
+                continue
+            template = course_sample[1]
         if template is None:
-            continue
-        if source_id != _FIXTURE_SOURCE and not passage["text"].startswith(_SYNTHETIC_LABEL):
             continue
         keywords, prompt, answer_key = template
         if topics and topics.isdisjoint(_words(keywords)):
@@ -296,5 +340,5 @@ def answer(text: str) -> AnswerResponse:
     if (model["model"] == "fake") != (demo_questions is not None):
         raise RuntimeError("Adapter trả về model không khớp với cấu hình.")
     if demo_questions is not None:
-        return _quiz_response(demo_questions, "Đề nháp CP2 từ dữ liệu tự dựng. Hãy đối chiếu trang nguồn và duyệt từng câu.")
+        return _quiz_response(demo_questions, "Đề nháp từ câu mẫu CP2. Hãy đối chiếu trang nguồn và duyệt từng câu.")
     return _model_result(model["text"], passages)

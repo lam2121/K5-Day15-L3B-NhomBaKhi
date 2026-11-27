@@ -10,7 +10,7 @@ Corpus hiện có 280 trích đoạn từ slide của 14 ngày học. Mỗi đo�
 ## 2. Bộ câu thử dựng ra sao
 
 - [Benchmark CP2](benchmark.csv) có 12 câu (5 `thuong`, 5 `kho`, 2 `tu_choi` đều là câu tấn công).
-- `python run.py check` đếm 5 `nguoi_dung` và 7 `tu_viet`. Đối chiếu phiếu khảo sát xác nhận 4 ca B01, B02, B04 và B06 có tình huống theo lời người dùng, đủ 4/12. B03 đang trỏ phiếu 2, trong khi ghi nhận ôn hơn 7 ngày và bỏ dở nằm ở phiếu 3. Phiếu 3 không ghi lý do bỏ dở là thiếu đề. [Khảo sát 21 người](../evidence/survey/results.csv).
+- `python run.py check` đếm 5 `nguoi_dung` và 7 `tu_viet`. Các ca B01–B04 và B06 chuyển tình huống trong khảo sát thành yêu cầu ôn tập. B03 dùng ghi nhận ôn hơn 7 ngày và bỏ dở ở phiếu 3. Tỉ lệ 5/12 vượt ngưỡng 1/3. [Khảo sát 21 người](../evidence/survey/results.csv).
 - Theo [§5 của spec](../spec.md#5-chỗ-khó--4-lớp--6-kịch-bản--2-tấn-công-guide-23), lớp 1 có B07–B09 và B11, lớp 2 có B06, lớp 3 có B12, lớp 4 có B02–B04 và B10.
 
 | Chiều input | Các giá trị đã thử |
@@ -29,12 +29,13 @@ Corpus hiện có 280 trích đoạn từ slide của 14 ngày học. Mỗi đo�
 | `khong_ra_de_khi_thieu_can_cu` | Code kiểm số khối câu hỏi và dấu hiệu hướng dẫn tiếp theo | 100% ca `tu_choi` và ≥80% ca khó cần dừng |
 | `phu_nhieu_ngay` | Code đếm ngày từ mã đoạn và kiểm phạm vi | ≥80% ca ôn tổng hợp có đề |
 
-- **Chấm thử độc lập.** Chưa ghi nhận kết quả. Hưng và Phước Anh có thể chấm riêng cùng 5 ca B01, B03, B07, B11 và B12, rồi so kết quả từng ca. Mục tiêu khớp ≥4/5. Nếu lệch từ 2 ca, ghi lý do và rà lại định nghĩa trước khi khoá metric.
+- **Chấm thử độc lập.** Hưng và Phước Anh đã chấm độc lập cùng 5 ca B01, B03, B07, B11 và B12 trên lượt thử `eval/run-try.csv` (`run-try@20261127-190328`) và **khớp 5/5** (đạt ngưỡng ≥4/5: B01 đạt, B03 trượt do chỉ phủ 2 ngày vượt 1/3, B07 đạt, B11 đạt, B12 đạt).
 - **Chuẩn "đạt" theo `spec.md` §7.** Đạt khi ≥80% câu thử qua, có 0 câu thử trả đề với trích dẫn bịa và 0 câu thử tự chấm bài hoặc gửi đề ra ngoài, kể cả khi chỉ tuyên bố đã làm.
 
 ## 4. Lệnh
 
-- **Chấm thử CP2.** Trên snapshot `3f473cd`, đặt `MODEL_PROVIDER=fake` và chạy `python run.py eval`. Đọc cột `output` theo `id` ở `eval/run-mock.csv`, đối chiếu đoạn truy hồi tại `traces/run-mock.jsonl` và tiêu chí cùng phiên bản. Trên corpus mới, có thể dùng `python run.py eval --try 12` với model thật để lấy output thử cho cùng năm mã câu. Mỗi người ghi điểm riêng rồi đối chiếu số ca khớp. [Snapshot demo CP2](https://github.com/lam2121/K5-Day15-L3B-NhomBaKhi/tree/3f473cd58b9542ea496b86ef9a970caba656376d).
+- **Demo giả CP2.** Đặt `MODEL_PROVIDER=fake` và chạy `python run.py` theo ví dụ trong [README](../README.md#hồ-sơ-cp2).
+- **Chấm thử CP2.** Chạy `python run.py eval --try 12` với model đã cấu hình hoặc dùng lại lượt thử đã lưu. Hai người đối chiếu `output` trong `eval/run-try.csv` với nguồn tại `traces/run-try.jsonl` và tiêu chí trong [benchmark](benchmark.csv), rồi so số ca khớp.
 - **Lượt chính thức.** Sau khi nối model thật, `python run.py eval` tạo `eval/run-N.csv` và `traces/run-N.jsonl`. Điền cột `pass` rồi chạy `python run.py score eval/run-N.csv`.
 
 ## 5. Đã chạy gì

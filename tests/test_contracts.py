@@ -1,4 +1,6 @@
 import json
+import os
+import subprocess
 import sys
 import unittest
 from pathlib import Path
@@ -48,3 +50,19 @@ class ContractTests(unittest.TestCase):
         result["questions"] = self.sample["result"]["questions"]
         with self.assertRaisesRegex(ValueError, "only an ok result"):
             make_response(result)
+
+    def test_fake_cli_can_make_sourced_questions_with_current_corpus(self):
+        result = subprocess.run(
+            [sys.executable, "run.py"],
+            cwd=ROOT,
+            env=dict(os.environ, MODEL_PROVIDER="fake", PYTHONIOENCODING="utf-8"),
+            input="Ôn Prompt Engineering và Tool Calling ở ngày 3.\nÔn hết giúp mình.\n\n\n",
+            encoding="utf-8",
+            capture_output=True,
+            check=True,
+        )
+        self.assertIn("Đề nháp từ câu mẫu CP2", result.stdout)
+        self.assertIn("Nguồn:", result.stdout)
+        self.assertIn("day03-p", result.stdout)
+        self.assertIn("model: fake", result.stdout)
+        self.assertIn("Bạn muốn ôn chủ đề nào", result.stdout)
