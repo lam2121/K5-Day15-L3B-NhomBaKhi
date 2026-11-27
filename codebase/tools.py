@@ -115,6 +115,6 @@ if __name__ == "__main__":
     assert len({p["source_id"][:5] for p in search_slides("ôn tổng hợp nhiều ngày", limit=8)}) >= 4
     assert search_slides("Tạo câu hỏi về Quantum Computing") == []
     assert search_slides("Ôn tập ngày 99") == []
-    assert len(search_slides("Giải thích nguyên tắc G10 và workflow cố định")) >= 1
+    assert len(search_slides("Prompt Engineering và Tool Calling ở ngày 3")) >= 1
     assert search_slides("") == []
     print("tools.py self-check OK")
