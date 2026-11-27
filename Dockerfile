@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 COPY backend/ ./backend/
 COPY codebase/ ./codebase/
 COPY data/ ./data/
+COPY frontend/ ./frontend/
 
 RUN adduser --disabled-password --gecos "" --no-create-home appuser \
     && mkdir -p /data \

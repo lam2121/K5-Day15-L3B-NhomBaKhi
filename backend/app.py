@@ -173,6 +173,15 @@ def create_app(*, db_path: str | Path | None = None, mode: str | None = None) ->
             **scored,
         }
 
+    # Mount static frontend if directory exists (unified local fullstack / production container)
+    frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
+    if (frontend_dir / "student").is_dir():
+        from fastapi.staticfiles import StaticFiles
+
+        if (frontend_dir / "admin").is_dir():
+            app.mount("/admin", StaticFiles(directory=str(frontend_dir / "admin"), html=True), name="admin")
+        app.mount("/", StaticFiles(directory=str(frontend_dir / "student"), html=True), name="student")
+
     return app
 
 
