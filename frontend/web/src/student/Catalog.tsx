@@ -165,7 +165,7 @@ function Midterm({ exam, slides, onStart }: { exam: CatalogExam; slides: Catalog
   return (
     <section aria-labelledby="midterm-title" className="plate relative overflow-hidden bg-gradient-to-br from-white via-white to-blush-soft p-6 sm:p-8">
       <div className="grid items-center gap-6 md:grid-cols-[minmax(0,320px)_1fr]">
-        <TieredCake ready={ready} className="mx-auto w-full max-w-[320px]" />
+        <TieredCake ready={ready} className="mx-auto w-full max-w-[280px]" />
         <div>
           <p className="font-display text-lg font-bold text-mint-deep">Tổng hợp cả khoá</p>
           <h2 id="midterm-title" className="text-3xl font-extrabold sm:text-4xl">

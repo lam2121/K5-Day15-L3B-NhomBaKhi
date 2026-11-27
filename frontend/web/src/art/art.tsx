@@ -338,47 +338,64 @@ export function Pastry({ index, covered = false, className = '' }: { index: numb
   );
 }
 
-/** Three-tier cake; each of the 14 strawberries is one slide deck. */
+/** Slender three-tier cake on a stand; each of the 14 strawberries is one slide deck. */
 export function TieredCake({ ready, className = '' }: { ready: boolean[]; className?: string }) {
+  const cx = 120;
   const tiers = [
-    { y: 128, x: 22, w: 196, h: 42, berries: 6, fill: F.creamSoft, drip: F.blush },
-    { y: 88, x: 48, w: 144, h: 40, berries: 5, fill: F.blushSoft, drip: F.white },
-    { y: 50, x: 78, w: 84, h: 38, berries: 3, fill: F.creamSoft, drip: F.blush },
+    { y: 134, w: 128, h: 40, berries: 6, fill: F.creamSoft, cream: F.white },
+    { y: 98, w: 94, h: 36, berries: 5, fill: F.blushSoft, cream: F.white },
+    { y: 66, w: 60, h: 32, berries: 3, fill: F.creamSoft, cream: F.blushSoft },
   ];
   let k = 0;
   return (
-    <Sheet viewBox="0 0 240 190" className={className}>
-      <ellipse cx="120" cy="178" rx="110" ry="8" fill={F.blushSoft} />
-      <path d="M10 170h220c0 5-3 8-8 8H18c-5 0-8-3-8-8z" fill={F.white} {...line(L.soft)} />
+    <Sheet viewBox="0 0 240 214" className={className}>
+      {/* cake stand */}
+      <ellipse cx={cx} cy="206" rx="40" ry="4" fill={F.blushSoft} />
+      <path d={`M${cx - 26} 204c0-6 12-9 26-9s26 3 26 9z`} fill={F.white} {...line(L.soft, 1.8)} />
+      <path d={`M${cx - 7} 196c2-6 2-12 0-18h14c-2 6-2 12 0 18z`} fill={F.white} {...line(L.soft, 1.8)} />
+      <path d={`M${cx - 84} 176c0 4 38 7 84 7s84-3 84-7c0-2-38-3-84-3s-84 1-84 3z`} fill={F.white} {...line(L.soft, 1.8)} />
       {tiers.map((t, ti) => {
-        const step = t.w / 8;
-        const drip = `M${t.x} ${t.y + 6}` +
-          Array.from({ length: 8 }, (_, i) => {
-            const x = t.x + step * (i + 1);
-            return `Q${x - step / 2} ${t.y + (i % 2 ? 22 : 16)} ${x} ${t.y + 6}`;
-          }).join('') + `V${t.y}H${t.x}z`;
-        const spots = Array.from({ length: t.berries }, (_, i) => t.x + ((i + 0.5) * t.w) / t.berries);
+        const x = cx - t.w / 2;
+        const n = Math.round(t.w / 16);
+        const step = t.w / n;
+        // A light frosting lip with short drips.
+        const drip =
+          `M${x} ${t.y + 3}` +
+          Array.from({ length: n }, (_, i) => {
+            const x1 = x + step * (i + 1);
+            const depth = i % 3 === 1 ? 11 : 6;
+            return `Q${x1 - step / 2} ${t.y + depth} ${x1} ${t.y + 3}`;
+          }).join('') +
+          `V${t.y}H${x}z`;
+        const spots = Array.from({ length: t.berries }, (_, i) => x + 10 + ((i + 0.5) * (t.w - 20)) / t.berries);
         return (
           <g key={ti}>
-            <rect x={t.x} y={t.y} width={t.w} height={t.h} rx="9" fill={t.fill} {...line(L.soft)} />
-            <path d={drip} fill={t.drip} {...line(L.soft, 2)} />
-            {Array.from({ length: Math.floor(t.w / 18) }, (_, i) => (
-              <circle key={i} cx={t.x + 10 + i * 18} cy={t.y + t.h - 9} r="1.8" fill={i % 2 ? F.berry : F.mint} />
+            <rect x={x} y={t.y} width={t.w} height={t.h} rx="6" fill={t.fill} {...line(L.soft, 1.8)} />
+            <path d={drip} fill={t.cream} {...line(L.soft, 1.5)} />
+            {/* pearl piping along the base */}
+            {Array.from({ length: Math.floor(t.w / 9) }, (_, i) => (
+              <circle key={i} cx={x + 5 + i * 9} cy={t.y + t.h - 1} r="2.3" fill={F.white} {...line(L.soft, 1)} />
             ))}
-            {spots.map((cx) => {
+            <path d={`M${x + 5} ${t.y + 14}v${t.h - 22}`} stroke={F.white} strokeWidth="2.5" strokeLinecap="round" opacity=".8" />
+            {/* one berry per deck, set on the front of the tier so none hide */}
+            {spots.map((sx) => {
               const on = ready[k++] ?? false;
+              const sy = t.y + t.h / 2 + 3;
               return on ? (
-                <Berry key={cx} x={cx} y={t.y - 6} s={0.62} />
+                <Berry key={sx} x={sx} y={sy} s={0.42} />
               ) : (
-                <circle key={cx} cx={cx} cy={t.y - 5} r="6.5" fill={F.white} {...line(L.pink, 1.8)} strokeDasharray="3 3" />
+                <circle key={sx} cx={sx} cy={sy + 1} r="4.6" fill={F.white} {...line(L.pink, 1.4)} strokeDasharray="2.4 2.4" />
               );
             })}
           </g>
         );
       })}
-      <Spark x={30} y={60} r={6} />
-      <Spark x={206} y={40} r={7} color={F.apricot} />
-      <Spark x={214} y={98} r={4} />
+      <path d={`M${cx - 12} 66c0-6 5-9 9-7 1-6 9-7 11-1 5-2 9 2 8 8z`} fill={F.white} {...line(L.soft, 1.6)} />
+      <circle cx={cx + 1} cy="57" r="3" fill={F.mint} {...line(L.mint, 1.2)} />
+      <Spark x={44} y={70} r={6} />
+      <Spark x={194} y={48} r={7} color={F.apricot} />
+      <Spark x={204} y={120} r={4} />
+      <Spark x={36} y={140} r={3.5} color={F.apricot} />
     </Sheet>
   );
 }

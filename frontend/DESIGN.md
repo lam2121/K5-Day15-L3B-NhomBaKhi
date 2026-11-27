@@ -51,7 +51,7 @@ Soft sticker style, inspired by kawaii strawberry-dessert sticker sheets (refere
 |---|---|---|
 | Slide deck (exam) | Pastry card, a different drawing for each of the 14 decks | "Slide NN", title, "5 câu" |
 | Unpublished deck | Its pastry faded and desaturated, with a small lock sticker | "Chưa mở" plus the backend's reason |
-| Midterm | Three-tier cake, 14 strawberries; an empty dashed circle means that deck is missing | "Đề giữa kỳ", count N/14 |
+| Midterm | Slender three-tier cake on a stand, 14 strawberries on the tier fronts; an empty dashed circle means that deck is missing | "Đề giữa kỳ", count N/14 |
 | Generating | Teapot pouring into a cup | "Đang pha đề N câu…" |
 | Question progress | Row of macarons: outlined = unanswered, strawberry = answered, apricot = skipped at submit, mint = correct, crossed = wrong | aria-label per question |
 | Score | Top view of a cake cut into one slice per question; strawberry slices are correct | "N/M", "X% câu đúng" |
