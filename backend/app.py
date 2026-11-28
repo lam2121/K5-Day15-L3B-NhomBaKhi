@@ -38,7 +38,7 @@ from grading import GradingError
 
 _EXAM_ID_PATTERN = r"^(slide-(0[1-9]|1[0-4])|midterm)$"
 _ATTEMPT_TTL = timedelta(minutes=60)
-_DEFAULT_DB = Path(__file__).resolve().parent / "cramai_web.db"
+_DEFAULT_DB = Path(__file__).resolve().parent.parent / "data-private" / "cramai_web.db"
 _CODEBASE_DIR = Path(__file__).resolve().parent.parent / "codebase"
 _DEFAULT_DOCUMENT_DIR = Path(__file__).resolve().parent.parent / "data-private" / "slides"
 
