@@ -21,7 +21,7 @@ HTTP dùng [OpenAPI](openapi.json). CLI, eval và simulate tiếp tục dùng [h
 
 ## Admin tải và xuất bản PDF riêng tư
 
-- Các route `/admin/slides...` yêu cầu HTTP Basic với `CRAMAI_ADMIN_USERNAME` và `CRAMAI_ADMIN_PASSWORD`; route upload/publish chỉ chấp nhận cùng origin. Không đặt credential hoặc PDF trong frontend.
+- Các route `/admin/slides...` yêu cầu HTTP Basic với `CRAMAI_ADMIN_USER` và `CRAMAI_ADMIN_PASSWORD`; route upload/publish chỉ chấp nhận cùng origin. Không đặt credential hoặc PDF trong frontend.
 - Upload nhận tối đa 5 PDF, 10 MiB/tệp, 25 MiB/lần; chỉ lưu sau khi `extract_pdf_passages` xác nhận PDF đọc được, trong giới hạn trang và có lớp văn bản. Upload bản nháp không thay đổi bản đang xuất bản.
 - File tạm được ghi vào `CRAMAI_DOCUMENT_DIR` rồi đổi tên nguyên tử theo `slide-NN/{revision_id}/document-NN.pdf`. SQLite lưu metadata, `storage_key` tương đối và văn bản trích xuất; không lưu BLOB hoặc public URL. Lỗi ghi DB sẽ xóa thư mục upload mới và giữ revision cũ.
 - Nút publish chỉ đổi con trỏ revision trong giao dịch SQLite. Attempt đang chạy giữ nguyên câu hỏi/đáp án/source snapshot. Volume `/data` cần được mount bền vững khi chạy container; image không chứa PDF người dùng tải lên.

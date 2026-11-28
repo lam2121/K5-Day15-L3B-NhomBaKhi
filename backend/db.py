@@ -10,14 +10,32 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
-if __package__:
-    from .grading import GradingError, grade_submission, normalize_and_validate
-else:  # Support the legacy top-level `db` import used by local test utilities.
-    from grading import GradingError, grade_submission, normalize_and_validate
+from grading import GradingError, grade_submission, normalize_and_validate
 
 _DEFAULT_SEED = Path(__file__).resolve().parent.parent / "data" / "passages.jsonl"
 _DAY_RE = re.compile(r"day(\d+)")
-_LEGACY_SOURCE_ID_RE = re.compile(r"^(day(?:0[1-9]|1[0-4]))-p(\d{3,})-s(\d{2,})$")
+_PREVIEW_LIMIT = 3
+
+# Display names for the 14 fixed slots, cleaned by hand from the course file
+# names. Days 7-10 have no clear topic in their file names, so they keep a
+# neutral label instead of a guessed one. File names are never shown as titles
+# because some contain room codes and lecturers' names.
+SLOT_TITLES = {
+    1: "AI & LLM Foundation",
+    2: "Discovery & Problem Framing",
+    3: "Prompt Engineering & Tool Calling",
+    4: "ReAct & Agent Loop",
+    5: "AI Product Thinking & Requirements",
+    6: "Data Engineering: Ingestion & Storage",
+    7: "Bài giảng ngày 7",
+    8: "Bài giảng ngày 8",
+    9: "Bài giảng ngày 9",
+    10: "Bài giảng ngày 10",
+    11: "Guardrails & AI Safety",
+    12: "AI SDLC",
+    13: "Monitoring, Logging & Observability",
+    14: "Deployment, Agent Benchmarking & Observability",
+}
 
 _SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS slide_slots (
@@ -103,7 +121,6 @@ def _seed_from_jsonl(conn: sqlite3.Connection) -> None:
         for slide_num, passages in grouped.items():
             rev_id = str(uuid4())
             fname = passages[0].get("file_name", f"slide-{slide_num:02d}.pdf")
-            title = re.sub(r"^(?:\d+\s*-\s*)?day\d+-|\.pdf$", "", fname).replace("-", " ").strip().title()
             docs = [{"file_name": fname, "page_count": max(p.get("page", 1) for p in passages)}]
             conn.execute(
                 "INSERT INTO slide_revisions (revision_id, slide_number, documents_json, passages_json, created_at) "
@@ -111,8 +128,8 @@ def _seed_from_jsonl(conn: sqlite3.Connection) -> None:
                 (rev_id, slide_num, json.dumps(docs, ensure_ascii=False), json.dumps(passages, ensure_ascii=False), ts),
             )
             conn.execute(
-                "UPDATE slide_slots SET published_revision_id = ?, title = ? WHERE slide_number = ?",
-                (rev_id, title or f"Slide {slide_num:02d}", slide_num),
+                "UPDATE slide_slots SET published_revision_id = ? WHERE slide_number = ?",
+                (rev_id, slide_num),
             )
 
 
@@ -120,12 +137,18 @@ def init_db(db_path: str | Path) -> None:
     with session(db_path) as conn:
         conn.execute("PRAGMA journal_mode=WAL;")
         conn.executescript(_SCHEMA_SQL)
-        slot_columns = {row["name"] for row in conn.execute("PRAGMA table_info(slide_slots)").fetchall()}
-        if "draft_revision_id" not in slot_columns:
+        columns = {row["name"] for row in conn.execute("PRAGMA table_info(slide_slots)")}
+        if "draft_revision_id" not in columns:  # databases created before the admin API
             conn.execute("ALTER TABLE slide_slots ADD COLUMN draft_revision_id TEXT")
         conn.executemany(
             "INSERT OR IGNORE INTO slide_slots (slide_number, title) VALUES (?, ?)",
-            [(n, f"Slide {n:02d}") for n in range(1, 15)],
+            [(n, SLOT_TITLES[n]) for n in range(1, 15)],
+        )
+        # Slots are fixed, so their names always follow SLOT_TITLES. This also
+        # repairs names that earlier versions generated from file names.
+        conn.executemany(
+            "UPDATE slide_slots SET title = ? WHERE slide_number = ?",
+            [(SLOT_TITLES[n], n) for n in range(1, 15)],
         )
         has_published = conn.execute(
             "SELECT 1 FROM slide_slots WHERE published_revision_id IS NOT NULL LIMIT 1"
@@ -186,112 +209,6 @@ def publish_revision(
         )
 
 
-def save_draft_revision(
-    conn: sqlite3.Connection,
-    *,
-    revision_id: str,
-    slide_number: int,
-    documents: list[dict],
-    passages: list[dict],
-) -> None:
-    ts = datetime.now(timezone.utc).isoformat()
-    with _tx(conn):
-        conn.execute(
-            "INSERT INTO slide_revisions (revision_id, slide_number, documents_json, passages_json, created_at) "
-            "VALUES (?, ?, ?, ?, ?)",
-            (revision_id, slide_number, json.dumps(documents, ensure_ascii=False), json.dumps(passages, ensure_ascii=False), ts),
-        )
-        conn.execute(
-            "UPDATE slide_slots SET draft_revision_id = ? WHERE slide_number = ?",
-            (revision_id, slide_number),
-        )
-
-
-def publish_draft_revision(conn: sqlite3.Connection, *, slide_number: int, revision_id: str) -> None:
-    with _tx(conn):
-        slot = conn.execute(
-            "SELECT draft_revision_id FROM slide_slots WHERE slide_number = ?",
-            (slide_number,),
-        ).fetchone()
-        if slot is None or slot["draft_revision_id"] != revision_id:
-            raise GradingError("stale_draft", 409, "Bản nháp đã thay đổi. Hãy tải lại để duyệt.")
-        revision = conn.execute(
-            "SELECT slide_number FROM slide_revisions WHERE revision_id = ?",
-            (revision_id,),
-        ).fetchone()
-        if revision is None or revision["slide_number"] != slide_number:
-            raise GradingError("stale_draft", 409, "Bản nháp không còn hợp lệ. Hãy tải lại để duyệt.")
-        conn.execute(
-            "UPDATE slide_slots SET published_revision_id = ?, draft_revision_id = NULL WHERE slide_number = ?",
-            (revision_id, slide_number),
-        )
-
-
-def _admin_slot(conn: sqlite3.Connection, row: sqlite3.Row) -> dict:
-    def revision_summary(revision_id: str | None) -> dict | None:
-        if not revision_id:
-            return None
-        revision = conn.execute(
-            "SELECT documents_json, passages_json FROM slide_revisions WHERE revision_id = ?",
-            (revision_id,),
-        ).fetchone()
-        if revision is None:
-            return None
-        documents = json.loads(revision["documents_json"])
-        passages = json.loads(revision["passages_json"])
-        return {
-            "revision_id": revision_id,
-            "documents": [
-                {"file_name": document["file_name"], "page_count": document["page_count"]}
-                for document in documents
-            ],
-            "passage_count": len(passages),
-        }
-
-    return {
-        "slide_number": row["slide_number"],
-        "title": row["title"],
-        "draft": revision_summary(row["draft_revision_id"]),
-        "published": revision_summary(row["published_revision_id"]),
-    }
-
-
-def list_admin_slides(conn: sqlite3.Connection) -> list[dict]:
-    rows = conn.execute(
-        "SELECT slide_number, title, draft_revision_id, published_revision_id FROM slide_slots ORDER BY slide_number"
-    ).fetchall()
-    return [_admin_slot(conn, row) for row in rows]
-
-
-def get_admin_slide_detail(conn: sqlite3.Connection, slide_number: int) -> dict:
-    row = conn.execute(
-        "SELECT slide_number, title, draft_revision_id, published_revision_id FROM slide_slots WHERE slide_number = ?",
-        (slide_number,),
-    ).fetchone()
-    if row is None:
-        raise GradingError("invalid_input", 422, "Chỉ có vị trí 01–14.")
-    slot = _admin_slot(conn, row)
-    preview: list[dict] = []
-    revision_id = row["draft_revision_id"]
-    if revision_id:
-        revision = conn.execute(
-            "SELECT passages_json FROM slide_revisions WHERE revision_id = ?",
-            (revision_id,),
-        ).fetchone()
-        if revision:
-            for passage in json.loads(revision["passages_json"])[:3]:
-                preview.append({
-                    "citation": {
-                        "slide_number": slide_number,
-                        "source_id": passage["source_id"],
-                        "file_name": passage["file_name"],
-                        "page": passage["page"],
-                    },
-                    "text": passage["text"],
-                })
-    return {"slot": slot, "draft_preview": preview}
-
-
 def get_published_passages(conn: sqlite3.Connection, exam_id: str) -> dict[int, list[dict]]:
     target = None if exam_id == "midterm" else int(exam_id.split("-")[1])
     rows = conn.execute(
@@ -303,17 +220,7 @@ def get_published_passages(conn: sqlite3.Connection, exam_id: str) -> dict[int, 
     expected = 14 if target is None else 1
     if len(rows) != expected:
         raise GradingError("exam_unavailable", 409, "Đề chưa mở vì thiếu bộ slide đã xuất bản.")
-    passages_by_slide = {r["slide_number"]: json.loads(r["passages_json"]) for r in rows}
-    # CP3 seed passages identify day/page/segment only. The web contract also
-    # includes the document index; legacy seeded files contain one PDF per day.
-    # Normalize only the returned copy so stored revisions remain untouched.
-    for passages in passages_by_slide.values():
-        for passage in passages:
-            match = _LEGACY_SOURCE_ID_RE.fullmatch(passage.get("source_id", ""))
-            if match:
-                day_id, page, segment = match.groups()
-                passage["source_id"] = f"{day_id}-d01-p{page}-s{segment}"
-    return passages_by_slide
+    return {r["slide_number"]: json.loads(r["passages_json"]) for r in rows}
 
 
 def create_attempt_record(
@@ -337,20 +244,6 @@ def create_attempt_record(
                 expires_at.isoformat(),
             ),
         )
-
-
-def get_attempt_question(conn: sqlite3.Connection, *, attempt_id: str, question_id: str) -> dict:
-    """Return a private question snapshot for an explanation or source-page request."""
-    row = conn.execute(
-        "SELECT questions_json, expires_at FROM attempts WHERE attempt_id = ?",
-        (attempt_id,),
-    ).fetchone()
-    if row is None or datetime.now(timezone.utc) >= _parse_iso(row["expires_at"]):
-        raise GradingError("quiz_unavailable", 404, "Lượt làm bài không còn khả dụng. Hãy tạo lượt mới.")
-    for question in json.loads(row["questions_json"]):
-        if question.get("question_id") == question_id:
-            return question
-    raise GradingError("quiz_unavailable", 404, "Câu hỏi không thuộc lượt làm bài này.")
 
 
 def submit_attempt_tx(
@@ -398,3 +291,131 @@ def submit_attempt_tx(
             ),
         )
         return scored
+
+
+# ---------------------------------------------------------------- admin (T005)
+
+
+def _revision_summary(conn: sqlite3.Connection, revision_id: str | None) -> dict | None:
+    if revision_id is None:
+        return None
+    row = conn.execute(
+        "SELECT documents_json, passages_json FROM slide_revisions WHERE revision_id = ?",
+        (revision_id,),
+    ).fetchone()
+    if row is None:
+        return None
+    documents = json.loads(row["documents_json"])
+    return {
+        "revision_id": revision_id,
+        "documents": [
+            {"file_name": document["file_name"], "page_count": document["page_count"]}
+            for document in documents
+        ],
+        "passage_count": len(json.loads(row["passages_json"])),
+    }
+
+
+def _admin_slot(conn: sqlite3.Connection, row: sqlite3.Row) -> dict:
+    return {
+        "slide_number": row["slide_number"],
+        "title": row["title"],
+        "draft": _revision_summary(conn, row["draft_revision_id"]),
+        "published": _revision_summary(conn, row["published_revision_id"]),
+    }
+
+
+_SLOT_COLUMNS = "slide_number, title, published_revision_id, draft_revision_id"
+
+
+def list_admin_slots(conn: sqlite3.Connection) -> list[dict]:
+    rows = conn.execute(f"SELECT {_SLOT_COLUMNS} FROM slide_slots ORDER BY slide_number").fetchall()
+    return [_admin_slot(conn, r) for r in rows]
+
+
+def _draft_preview(conn: sqlite3.Connection, slide_number: int, draft_id: str | None, published_id: str | None) -> list[dict]:
+    """Up to three passages of an unpublished draft: the first of each file, then the following ones."""
+    if draft_id is None or draft_id == published_id:
+        return []
+    row = conn.execute("SELECT passages_json FROM slide_revisions WHERE revision_id = ?", (draft_id,)).fetchone()
+    passages = json.loads(row["passages_json"]) if row else []
+    picked: list[dict] = []
+    seen_files: set[str] = set()
+    for p in passages:
+        if p["file_name"] not in seen_files:
+            seen_files.add(p["file_name"])
+            picked.append(p)
+    for p in passages:
+        if len(picked) >= _PREVIEW_LIMIT:
+            break
+        if p not in picked:
+            picked.append(p)
+    return [
+        {
+            "citation": {
+                "slide_number": slide_number,
+                "source_id": p["source_id"],
+                "file_name": p["file_name"],
+                "page": p["page"],
+            },
+            "text": p["text"],
+        }
+        for p in picked[:_PREVIEW_LIMIT]
+    ]
+
+
+def get_admin_detail(conn: sqlite3.Connection, slide_number: int) -> dict:
+    row = conn.execute(f"SELECT {_SLOT_COLUMNS} FROM slide_slots WHERE slide_number = ?", (slide_number,)).fetchone()
+    if row is None:
+        raise GradingError("invalid_input", 422, "Chỉ có vị trí 01–14.")
+    return {
+        "slot": _admin_slot(conn, row),
+        "draft_preview": _draft_preview(conn, slide_number, row["draft_revision_id"], row["published_revision_id"]),
+    }
+
+
+def save_draft(
+    conn: sqlite3.Connection,
+    *,
+    slide_number: int,
+    documents: list[dict],
+    passages: list[dict],
+    revision_id: str | None = None,
+) -> str:
+    """Store a new revision as the slot's draft. The published pointer is left untouched."""
+    revision_id = revision_id or str(uuid4())
+    ts = datetime.now(timezone.utc).isoformat()
+    with _tx(conn):
+        conn.execute(
+            "INSERT INTO slide_revisions (revision_id, slide_number, documents_json, passages_json, created_at) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (revision_id, slide_number, json.dumps(documents, ensure_ascii=False), json.dumps(passages, ensure_ascii=False), ts),
+        )
+        conn.execute("UPDATE slide_slots SET draft_revision_id = ? WHERE slide_number = ?", (revision_id, slide_number))
+    return revision_id
+
+
+def get_attempt_question(conn: sqlite3.Connection, *, attempt_id: str, question_id: str) -> dict:
+    """Return a private question snapshot only while its attempt is active."""
+    row = conn.execute(
+        "SELECT questions_json, expires_at FROM attempts WHERE attempt_id = ?",
+        (attempt_id,),
+    ).fetchone()
+    if row is None or datetime.now(timezone.utc) >= _parse_iso(row["expires_at"]):
+        raise GradingError("quiz_unavailable", 404, "Lượt làm bài không còn khả dụng. Hãy tạo lượt mới.")
+    for question in json.loads(row["questions_json"]):
+        if question.get("question_id") == question_id:
+            return question
+    raise GradingError("quiz_unavailable", 404, "Câu hỏi không thuộc lượt làm bài này.")
+
+
+def publish_draft(conn: sqlite3.Connection, *, slide_number: int, revision_id: str) -> None:
+    """Atomically publish the draft the admin reviewed; a different current draft means someone uploaded in between."""
+    with _tx(conn):
+        row = conn.execute("SELECT draft_revision_id FROM slide_slots WHERE slide_number = ?", (slide_number,)).fetchone()
+        if row is None or row["draft_revision_id"] != revision_id:
+            raise GradingError("stale_draft", 409, "Bản nháp đã thay đổi. Hãy tải lại để duyệt.")
+        conn.execute(
+            "UPDATE slide_slots SET published_revision_id = ? WHERE slide_number = ?",
+            (revision_id, slide_number),
+        )
