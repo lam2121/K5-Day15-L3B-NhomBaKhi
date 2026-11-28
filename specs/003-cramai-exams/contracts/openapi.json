@@ -735,7 +735,7 @@
             "adminBasic": []
           }
         ],
-        "description": "Replaces only the slot's draft after all PDFs validate. Multipart uses repeated files fields. Maximum 5 text PDFs, 10 MiB per file and 25 MiB total. Excludes encrypted or image-only documents. With a real model provider configured, upload analyzes visual charts/diagrams once per PDF in page-bounded chunks and stores summaries with the draft passages for reuse during quiz generation. PDF bytes are sent inline to the configured provider and are not exposed through a public URL or stored in traces.",
+        "description": "Replaces only the slot's draft after all PDFs validate. Multipart uses repeated files fields. Maximum 5 text PDFs, 20 MiB per file and 50 MiB total per upload. Excludes encrypted or image-only documents. With a real model provider configured, upload analyzes visual charts/diagrams once per PDF in page-bounded chunks and stores summaries with the draft passages for reuse during quiz generation. PDF bytes are sent inline to the configured provider and are not exposed through a public URL or stored in traces.",
         "requestBody": {
           "required": true,
           "content": {

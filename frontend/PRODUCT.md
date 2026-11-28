@@ -28,7 +28,7 @@ Unlike asking ChatGPT for questions, every CramAI question is generated only fro
 - Catalog always shows 15 entries: Slide 01 → Slide 14, then Đề giữa kỳ. Unavailable entries stay visible with a reason; the midterm is unavailable when any slot is unpublished.
 - Attempt lifetime 60 minutes. Answer keys and citations reach the browser only after submission. Duplicate submission of the same choices returns the same score.
 - Generation can fail: `insufficient_evidence`, `exam_unavailable`, `busy` (429, possibly non-JSON), `upstream_error`. Never auto-retry generation.
-- Admin upload: ≤5 text PDFs per slot, ≤10 MiB each, ≤25 MiB total; encrypted or image-only PDFs are rejected. Publishing a new revision does not change attempts already in progress.
+- Admin upload: ≤5 text PDFs per slot, ≤20 MiB each, ≤50 MiB total per upload; encrypted or image-only PDFs are rejected. Publishing a new revision does not change attempts already in progress.
 
 ## Capabilities and Constraints
 

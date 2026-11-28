@@ -22,7 +22,7 @@ HTTP dùng [OpenAPI](openapi.json). CLI, eval và simulate tiếp tục dùng [h
 ## Admin tải và xuất bản PDF riêng tư
 
 - Các route `/admin/slides...` yêu cầu HTTP Basic với `CRAMAI_ADMIN_USER` và `CRAMAI_ADMIN_PASSWORD`; route upload/publish chỉ chấp nhận cùng origin. Không đặt credential hoặc PDF trong frontend.
-- Upload nhận tối đa 5 PDF, 10 MiB/tệp, 25 MiB/lần; chỉ lưu sau khi `extract_pdf_passages` xác nhận PDF đọc được, trong giới hạn trang và có lớp văn bản. Upload bản nháp không thay đổi bản đang xuất bản.
+- Upload nhận tối đa 5 PDF, 20 MiB/tệp, 50 MiB/lần; chỉ lưu sau khi `extract_pdf_passages` xác nhận PDF đọc được, trong giới hạn trang và có lớp văn bản. Upload bản nháp không thay đổi bản đang xuất bản.
 - Khi provider thật được bật, upload chạy Vision một lần trên từng PDF theo các phần tối đa 80 trang; kết quả tóm tắt biểu đồ/sơ đồ được lưu trong `passages_json` theo document index và trang, đồng thời xuất hiện trong preview để admin rà trước khi publish. Attempt và giải thích dùng lại summary đã lưu. PDF được gửi inline tới provider model đã cấu hình để xử lý Vision; nội dung PDF không được ghi vào trace và không có URL công khai. Chế độ fake bỏ qua Vision.
 - File tạm được ghi vào `CRAMAI_DOCUMENT_DIR` rồi đổi tên nguyên tử theo `slide-NN/{revision_id}/document-NN.pdf`. SQLite lưu metadata, `storage_key` tương đối và văn bản trích xuất; không lưu BLOB hoặc public URL. Lỗi ghi DB sẽ xóa thư mục upload mới và giữ revision cũ.
 - Nút publish chỉ đổi con trỏ revision trong giao dịch SQLite. Attempt đang chạy giữ nguyên câu hỏi/đáp án/source snapshot. Volume `/data` cần được mount bền vững khi chạy container; image không chứa PDF người dùng tải lên.

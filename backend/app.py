@@ -56,8 +56,8 @@ _DEFAULT_DOCUMENT_DIR = Path(__file__).resolve().parent.parent / "data-private" 
 
 # Admin upload limits (contract: PUT /admin/slides/{n}/draft).
 _MAX_FILES = 5
-_MAX_FILE_BYTES = 10 * 1024 * 1024
-_MAX_TOTAL_BYTES = 25 * 1024 * 1024
+_MAX_FILE_BYTES = 20 * 1024 * 1024
+_MAX_TOTAL_BYTES = 50 * 1024 * 1024
 _MULTIPART_OVERHEAD = 1024 * 1024
 _ADMIN_PREFIXES = ("/admin", "/api/v1/admin")
 _VERSION_RE = re.compile(r"^(?:local|[a-f0-9]{40})$")
@@ -419,7 +419,7 @@ def create_app(
                 return _error_json(403, "forbidden_origin", "Yêu cầu khác nguồn không được phép.")
             length = request.headers.get("content-length")
             if length and length.isdigit() and int(length) > _MAX_TOTAL_BYTES + _MULTIPART_OVERHEAD:
-                return _error_json(413, "too_large", "Mỗi file tối đa 10 MB, tổng tối đa 25 MB.")
+                return _error_json(413, "too_large", "Mỗi file tối đa 20 MB, tổng mỗi lần upload tối đa 50 MB.")
         return await call_next(request)
 
     @app.exception_handler(Exception)
@@ -629,11 +629,11 @@ def create_app(
             name = _safe_upload_name(upload.filename)
             data = await upload.read(_MAX_FILE_BYTES + 1)
             if len(data) > _MAX_FILE_BYTES:
-                raise GradingError("too_large", 413, "Mỗi file tối đa 10 MB.")
+                raise GradingError("too_large", 413, "Mỗi file tối đa 20 MB.")
             total += len(data)
             if total > _MAX_TOTAL_BYTES:
-                raise GradingError("too_large", 413, "Tổng dung lượng tối đa 25 MB.")
-            if not data.startswith(b"%PDF-"):
+                raise GradingError("too_large", 413, "Tổng dung lượng mỗi lần upload tối đa 50 MB.")
+            if not name.lower().endswith(".pdf") or not data.startswith(b"%PDF-"):
                 raise GradingError("unsupported_file", 415, "Chỉ hỗ trợ PDF.")
             payload.append((name, data))
 

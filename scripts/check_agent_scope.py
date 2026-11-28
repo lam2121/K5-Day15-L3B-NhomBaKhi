@@ -57,8 +57,14 @@ TASK_SCOPE_OVERRIDES = {
             "frontend/web/src/student/Quiz.tsx",
             "frontend/web/src/student/mock.ts",
         },
-        # T014 only adjusts the shared explanation text contract comment to document stored Vision summaries.
-        "T014": {"frontend/web/src/shared/types.ts"},
+        # T014's upload-time Vision flow also raises the PDF limits in the admin UI and its served bundle.
+        "T014": {
+            "frontend/web/src/shared/types.ts",
+            "frontend/web/src/admin/AdminApp.tsx",
+            "frontend/admin/",
+            "frontend/README.md",
+            "frontend/PRODUCT.md",
+        },
     },
 }
 

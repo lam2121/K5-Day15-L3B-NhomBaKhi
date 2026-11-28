@@ -5,8 +5,8 @@ import type { AdminDetail, AdminList, AdminSlot, RevisionSummary } from '../shar
 import { Announcer, Awning, Icon, MockBadge, Notice } from '../shared/ui';
 
 const MAX_FILES = 5;
-const MAX_FILE_BYTES = 10 * 1024 * 1024;
-const MAX_TOTAL_BYTES = 25 * 1024 * 1024;
+const MAX_FILE_BYTES = 20 * 1024 * 1024;
+const MAX_TOTAL_BYTES = 50 * 1024 * 1024;
 
 const ERRORS: Record<string, [string, string]> = {
   network: ['Không kết nối được máy chủ', 'Kiểm tra mạng rồi thử lại.'],
@@ -14,7 +14,7 @@ const ERRORS: Record<string, [string, string]> = {
   forbidden_origin: ['Yêu cầu bị chặn', 'Trang admin phải mở từ đúng địa chỉ của CramAI. Mở lại trang từ địa chỉ chính thức.'],
   unsupported_file: ['File không phải PDF', 'Chỉ nhận file PDF. Chọn lại file có đuôi .pdf.'],
   invalid_document: ['PDF không đọc được', 'File có thể bị mã hoá, hỏng, hoặc chỉ có ảnh scan không có lớp chữ. Xuất lại PDF có chữ chọn được rồi tải lên lại. Bản đã xuất bản không bị ảnh hưởng.'],
-  too_large: ['File quá lớn', 'Mỗi file tối đa 10 MB, tổng tối đa 25 MB. Tách hoặc nén PDF rồi tải lên lại.'],
+  too_large: ['File quá lớn', 'Mỗi file tối đa 20 MB, tổng mỗi lần upload tối đa 50 MB. Tách hoặc nén PDF rồi tải lên lại.'],
   stale_draft: ['Bản nháp đã thay đổi', 'Có người vừa tải bản nháp khác cho bộ này. Bản nháp mới đã được tải lại, hãy kiểm tra trước khi xuất bản.'],
   invalid_input: ['Yêu cầu không hợp lệ', 'Tải lại trang rồi thử lại.'],
   internal_error: ['Máy chủ gặp lỗi', 'Thử lại sau ít phút. Nếu vẫn lỗi, báo Lâm kèm mã yêu cầu.'],
@@ -320,11 +320,11 @@ function Upload({ slot, onUploaded, onError }: { slot: AdminSlot; onUploaded: (d
   const inputId = `pdf-input-${slot.slide_number}`;
 
   const total = files.reduce((s, f) => s + f.size, 0);
-  const badFile = (f: File) => (!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf' ? 'không phải PDF' : f.size > MAX_FILE_BYTES ? 'quá 10 MB' : null);
+  const badFile = (f: File) => (!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf' ? 'không phải PDF' : f.size > MAX_FILE_BYTES ? 'quá 20 MB' : null);
   const problems = [
     ...files.filter(badFile).map((f) => `${f.name}: ${badFile(f)}`),
     ...(files.length > MAX_FILES ? [`Chọn tối đa 5 file, đang chọn ${files.length}.`] : []),
-    ...(total > MAX_TOTAL_BYTES ? [`Tổng dung lượng ${mb(total)}, vượt 25 MB.`] : []),
+    ...(total > MAX_TOTAL_BYTES ? [`Tổng dung lượng ${mb(total)}, vượt 50 MB mỗi lần upload.`] : []),
   ];
 
   const submit = (e: React.FormEvent) => {
@@ -371,7 +371,7 @@ function Upload({ slot, onUploaded, onError }: { slot: AdminSlot; onUploaded: (d
     >
       <p className="font-display text-lg font-bold">PDF cho Slide {pad2(slot.slide_number)}</p>
       <p id={`${inputId}-hint`} className="mt-1 text-sm text-cocoa-soft">
-        Kéo file vào đây hoặc bấm Chọn file PDF. Tối đa 5 file có lớp chữ, mỗi file ≤ 10 MB, tổng ≤ 25 MB. Bản nháp mới thay bản nháp cũ; bản đang xuất
+        Kéo file vào đây hoặc bấm Chọn file PDF. Tối đa 5 file có lớp chữ, mỗi file ≤ 20 MB, tổng mỗi lần upload ≤ 50 MB. Bản nháp mới thay bản nháp cũ; bản đang xuất
         bản giữ nguyên.
       </p>
       <input
