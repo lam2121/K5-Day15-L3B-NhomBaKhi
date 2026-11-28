@@ -72,6 +72,60 @@ jobs:
           esac
           python3 scripts/check_agent_scope.py --role "$role" --base "$PR_BASE_SHA"
 
+  web:
+    # Feature 003 (T011): contract tests, built frontend in sync with its source,
+    # a smoke run of the API and pages, and the Docker image built from this commit.
+    name: Web (contract, smoke, image)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MODEL_PROVIDER: fake
+      PYTHONUTF8: '1'
+      CRAMAI_ADMIN_USER: ci-admin
+      CRAMAI_ADMIN_PASSWORD: ci-only-not-a-secret
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Install project and backend dependencies
+        run: python -m pip install -r requirements.txt -r backend/requirements-dev.txt
+      - name: Backend unit tests
+        run: python -m unittest discover -s backend -p "test_*.py" -v
+      - name: Web exam tests against the OpenAPI contract
+        run: python -m unittest tests.test_web_exams -v
+      - name: Smoke the API and pages with Uvicorn
+        shell: bash
+        run: |
+          CRAMAI_WEB_DB="$RUNNER_TEMP/smoke.db" PYTHONPATH=backend:codebase \
+            python -m uvicorn app:app --app-dir backend --host 127.0.0.1 --port 8000 > "$RUNNER_TEMP/uvicorn.log" 2>&1 &
+          python scripts/web_smoke.py http://127.0.0.1:8000 || { cat "$RUNNER_TEMP/uvicorn.log"; exit 1; }
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/web/package-lock.json
+      - name: Built frontend matches its source
+        shell: bash
+        run: |
+          npm ci --prefix frontend/web --no-audit --no-fund
+          npm run build --prefix frontend/web
+          if [[ -n "$(git status --porcelain -- frontend/student frontend/admin)" ]]; then
+            git status --short -- frontend/student frontend/admin
+            echo "frontend/student or frontend/admin is out of date. Run 'npm run build' in frontend/web and commit the output." >&2
+            exit 1
+          fi
+      - name: Build the Docker image for this commit and smoke it
+        shell: bash
+        run: |
+          docker build --label "org.opencontainers.image.revision=$GITHUB_SHA" -t "cramai-web:$GITHUB_SHA" .
+          docker run -d --name cramai -p 8001:8000 \
+            -e CRAMAI_ADMIN_USER -e CRAMAI_ADMIN_PASSWORD -e MODEL_PROVIDER "cramai-web:$GITHUB_SHA"
+          python scripts/web_smoke.py http://127.0.0.1:8001 || { docker logs cramai; exit 1; }
+          docker inspect --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}' "cramai-web:$GITHUB_SHA"
+
   package:
     name: Package repository snapshot
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'

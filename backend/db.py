@@ -14,12 +14,35 @@ from grading import GradingError, grade_submission, normalize_and_validate
 
 _DEFAULT_SEED = Path(__file__).resolve().parent.parent / "data" / "passages.jsonl"
 _DAY_RE = re.compile(r"day(\d+)")
+_PREVIEW_LIMIT = 3
+
+# Display names for the 14 fixed slots, cleaned by hand from the course file
+# names. Days 7-10 have no clear topic in their file names, so they keep a
+# neutral label instead of a guessed one. File names are never shown as titles
+# because some contain room codes and lecturers' names.
+SLOT_TITLES = {
+    1: "AI & LLM Foundation",
+    2: "Discovery & Problem Framing",
+    3: "Prompt Engineering & Tool Calling",
+    4: "ReAct & Agent Loop",
+    5: "AI Product Thinking & Requirements",
+    6: "Data Engineering: Ingestion & Storage",
+    7: "Bài giảng ngày 7",
+    8: "Bài giảng ngày 8",
+    9: "Bài giảng ngày 9",
+    10: "Bài giảng ngày 10",
+    11: "Guardrails & AI Safety",
+    12: "AI SDLC",
+    13: "Monitoring, Logging & Observability",
+    14: "Deployment, Agent Benchmarking & Observability",
+}
 
 _SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS slide_slots (
     slide_number          INTEGER PRIMARY KEY CHECK (slide_number BETWEEN 1 AND 14),
     title                 TEXT NOT NULL,
-    published_revision_id TEXT
+    published_revision_id TEXT,
+    draft_revision_id     TEXT
 );
 
 CREATE TABLE IF NOT EXISTS slide_revisions (
@@ -98,7 +121,6 @@ def _seed_from_jsonl(conn: sqlite3.Connection) -> None:
         for slide_num, passages in grouped.items():
             rev_id = str(uuid4())
             fname = passages[0].get("file_name", f"slide-{slide_num:02d}.pdf")
-            title = re.sub(r"^(?:\d+\s*-\s*)?day\d+-|\.pdf$", "", fname).replace("-", " ").strip().title()
             docs = [{"file_name": fname, "page_count": max(p.get("page", 1) for p in passages)}]
             conn.execute(
                 "INSERT INTO slide_revisions (revision_id, slide_number, documents_json, passages_json, created_at) "
@@ -106,8 +128,8 @@ def _seed_from_jsonl(conn: sqlite3.Connection) -> None:
                 (rev_id, slide_num, json.dumps(docs, ensure_ascii=False), json.dumps(passages, ensure_ascii=False), ts),
             )
             conn.execute(
-                "UPDATE slide_slots SET published_revision_id = ?, title = ? WHERE slide_number = ?",
-                (rev_id, title or f"Slide {slide_num:02d}", slide_num),
+                "UPDATE slide_slots SET published_revision_id = ? WHERE slide_number = ?",
+                (rev_id, slide_num),
             )
 
 
@@ -115,9 +137,18 @@ def init_db(db_path: str | Path) -> None:
     with session(db_path) as conn:
         conn.execute("PRAGMA journal_mode=WAL;")
         conn.executescript(_SCHEMA_SQL)
+        columns = {row["name"] for row in conn.execute("PRAGMA table_info(slide_slots)")}
+        if "draft_revision_id" not in columns:  # databases created before the admin API
+            conn.execute("ALTER TABLE slide_slots ADD COLUMN draft_revision_id TEXT")
         conn.executemany(
             "INSERT OR IGNORE INTO slide_slots (slide_number, title) VALUES (?, ?)",
-            [(n, f"Slide {n:02d}") for n in range(1, 15)],
+            [(n, SLOT_TITLES[n]) for n in range(1, 15)],
+        )
+        # Slots are fixed, so their names always follow SLOT_TITLES. This also
+        # repairs names that earlier versions generated from file names.
+        conn.executemany(
+            "UPDATE slide_slots SET title = ? WHERE slide_number = ?",
+            [(SLOT_TITLES[n], n) for n in range(1, 15)],
         )
         has_published = conn.execute(
             "SELECT 1 FROM slide_slots WHERE published_revision_id IS NOT NULL LIMIT 1"
@@ -260,3 +291,106 @@ def submit_attempt_tx(
             ),
         )
         return scored
+
+
+# ---------------------------------------------------------------- admin (T005)
+
+
+def _revision_summary(conn: sqlite3.Connection, revision_id: str | None) -> dict | None:
+    if revision_id is None:
+        return None
+    row = conn.execute(
+        "SELECT documents_json, passages_json FROM slide_revisions WHERE revision_id = ?",
+        (revision_id,),
+    ).fetchone()
+    if row is None:
+        return None
+    return {
+        "revision_id": revision_id,
+        "documents": json.loads(row["documents_json"]),
+        "passage_count": len(json.loads(row["passages_json"])),
+    }
+
+
+def _admin_slot(conn: sqlite3.Connection, row: sqlite3.Row) -> dict:
+    return {
+        "slide_number": row["slide_number"],
+        "title": row["title"],
+        "draft": _revision_summary(conn, row["draft_revision_id"]),
+        "published": _revision_summary(conn, row["published_revision_id"]),
+    }
+
+
+_SLOT_COLUMNS = "slide_number, title, published_revision_id, draft_revision_id"
+
+
+def list_admin_slots(conn: sqlite3.Connection) -> list[dict]:
+    rows = conn.execute(f"SELECT {_SLOT_COLUMNS} FROM slide_slots ORDER BY slide_number").fetchall()
+    return [_admin_slot(conn, r) for r in rows]
+
+
+def _draft_preview(conn: sqlite3.Connection, slide_number: int, draft_id: str | None, published_id: str | None) -> list[dict]:
+    """Up to three passages of an unpublished draft: the first of each file, then the following ones."""
+    if draft_id is None or draft_id == published_id:
+        return []
+    row = conn.execute("SELECT passages_json FROM slide_revisions WHERE revision_id = ?", (draft_id,)).fetchone()
+    passages = json.loads(row["passages_json"]) if row else []
+    picked: list[dict] = []
+    seen_files: set[str] = set()
+    for p in passages:
+        if p["file_name"] not in seen_files:
+            seen_files.add(p["file_name"])
+            picked.append(p)
+    for p in passages:
+        if len(picked) >= _PREVIEW_LIMIT:
+            break
+        if p not in picked:
+            picked.append(p)
+    return [
+        {
+            "citation": {
+                "slide_number": slide_number,
+                "source_id": p["source_id"],
+                "file_name": p["file_name"],
+                "page": p["page"],
+            },
+            "text": p["text"],
+        }
+        for p in picked[:_PREVIEW_LIMIT]
+    ]
+
+
+def get_admin_detail(conn: sqlite3.Connection, slide_number: int) -> dict:
+    row = conn.execute(f"SELECT {_SLOT_COLUMNS} FROM slide_slots WHERE slide_number = ?", (slide_number,)).fetchone()
+    if row is None:
+        raise GradingError("invalid_input", 422, "Chỉ có vị trí 01–14.")
+    return {
+        "slot": _admin_slot(conn, row),
+        "draft_preview": _draft_preview(conn, slide_number, row["draft_revision_id"], row["published_revision_id"]),
+    }
+
+
+def save_draft(conn: sqlite3.Connection, *, slide_number: int, documents: list[dict], passages: list[dict]) -> str:
+    """Store a new revision as the slot's draft. The published pointer is left untouched."""
+    revision_id = str(uuid4())
+    ts = datetime.now(timezone.utc).isoformat()
+    with _tx(conn):
+        conn.execute(
+            "INSERT INTO slide_revisions (revision_id, slide_number, documents_json, passages_json, created_at) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (revision_id, slide_number, json.dumps(documents, ensure_ascii=False), json.dumps(passages, ensure_ascii=False), ts),
+        )
+        conn.execute("UPDATE slide_slots SET draft_revision_id = ? WHERE slide_number = ?", (revision_id, slide_number))
+    return revision_id
+
+
+def publish_draft(conn: sqlite3.Connection, *, slide_number: int, revision_id: str) -> None:
+    """Atomically publish the draft the admin reviewed; a different current draft means someone uploaded in between."""
+    with _tx(conn):
+        row = conn.execute("SELECT draft_revision_id FROM slide_slots WHERE slide_number = ?", (slide_number,)).fetchone()
+        if row is None or row["draft_revision_id"] != revision_id:
+            raise GradingError("stale_draft", 409, "Bản nháp đã thay đổi. Hãy tải lại để duyệt.")
+        conn.execute(
+            "UPDATE slide_slots SET published_revision_id = ? WHERE slide_number = ?",
+            (revision_id, slide_number),
+        )
