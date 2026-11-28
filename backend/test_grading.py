@@ -253,3 +253,19 @@ class GradingProductionTests(unittest.TestCase):
         # Lượt 3 khi đã phủ hết 10 trang vẫn tạo đề thành công (không báo 422)
         a3 = self.client.post("/api/v1/attempts", json={"exam_id": "slide-04"})
         self.assertEqual(a3.status_code, 201)
+
+    def test_rate_limiter_blocks_burst_with_429_busy(self):
+        limited_app = create_app(db_path=self.db_path, mode="fake", attempt_rate_limit=2)
+        with TestClient(limited_app) as c:
+            self.assertEqual(c.post("/api/v1/attempts", json={"exam_id": "slide-01"}).status_code, 201)
+            self.assertEqual(c.post("/api/v1/attempts", json={"exam_id": "slide-01"}).status_code, 201)
+            blocked = c.post("/api/v1/attempts", json={"exam_id": "slide-01"})
+            self.assertEqual(blocked.status_code, 429)
+            self.assertEqual(blocked.json()["error"]["code"], "busy")
+            self.assertEqual(blocked.headers.get("retry-after"), "60")
+            # IP khác không bị ảnh hưởng bởi burst của IP đầu
+            async def other_ip_app(scope, receive, send):
+                await limited_app({**scope, "client": ("203.0.113.50", 5000)}, receive, send)
+
+            with TestClient(other_ip_app) as other:
+                self.assertEqual(other.post("/api/v1/attempts", json={"exam_id": "slide-01"}).status_code, 201)
