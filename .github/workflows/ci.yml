@@ -225,7 +225,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          remote_command="cd '$ORACLE_DEPLOY_PATH' && git fetch --prune origin main && git switch main && git reset --hard '$GITHUB_SHA' && docker compose --env-file deploy/oracle/.env.oracle -f deploy/oracle/compose.yml pull caddy && docker compose --env-file deploy/oracle/.env.oracle -f deploy/oracle/compose.yml up -d --build --remove-orphans"
+          remote_command="cd '$ORACLE_DEPLOY_PATH' && git fetch --prune origin main && git switch main && git reset --hard '$GITHUB_SHA' && docker compose --env-file deploy/oracle/.env.oracle -f deploy/oracle/compose.yml pull caddy && docker compose --env-file deploy/oracle/.env.oracle -f deploy/oracle/compose.yml up -d --build --remove-orphans && docker compose --env-file deploy/oracle/.env.oracle -f deploy/oracle/compose.yml exec -T caddy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile && docker compose --env-file deploy/oracle/.env.oracle -f deploy/oracle/compose.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile"
           ssh -i "$HOME/.ssh/oracle_vps" \
             -o BatchMode=yes \
             -o IdentitiesOnly=yes \
