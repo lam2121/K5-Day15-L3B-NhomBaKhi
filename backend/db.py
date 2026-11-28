@@ -23,7 +23,8 @@ _SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS slide_slots (
     slide_number          INTEGER PRIMARY KEY CHECK (slide_number BETWEEN 1 AND 14),
     title                 TEXT NOT NULL,
-    published_revision_id TEXT
+    published_revision_id TEXT,
+    draft_revision_id     TEXT
 );
 
 CREATE TABLE IF NOT EXISTS slide_revisions (
@@ -119,6 +120,9 @@ def init_db(db_path: str | Path) -> None:
     with session(db_path) as conn:
         conn.execute("PRAGMA journal_mode=WAL;")
         conn.executescript(_SCHEMA_SQL)
+        slot_columns = {row["name"] for row in conn.execute("PRAGMA table_info(slide_slots)").fetchall()}
+        if "draft_revision_id" not in slot_columns:
+            conn.execute("ALTER TABLE slide_slots ADD COLUMN draft_revision_id TEXT")
         conn.executemany(
             "INSERT OR IGNORE INTO slide_slots (slide_number, title) VALUES (?, ?)",
             [(n, f"Slide {n:02d}") for n in range(1, 15)],
@@ -182,6 +186,112 @@ def publish_revision(
         )
 
 
+def save_draft_revision(
+    conn: sqlite3.Connection,
+    *,
+    revision_id: str,
+    slide_number: int,
+    documents: list[dict],
+    passages: list[dict],
+) -> None:
+    ts = datetime.now(timezone.utc).isoformat()
+    with _tx(conn):
+        conn.execute(
+            "INSERT INTO slide_revisions (revision_id, slide_number, documents_json, passages_json, created_at) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (revision_id, slide_number, json.dumps(documents, ensure_ascii=False), json.dumps(passages, ensure_ascii=False), ts),
+        )
+        conn.execute(
+            "UPDATE slide_slots SET draft_revision_id = ? WHERE slide_number = ?",
+            (revision_id, slide_number),
+        )
+
+
+def publish_draft_revision(conn: sqlite3.Connection, *, slide_number: int, revision_id: str) -> None:
+    with _tx(conn):
+        slot = conn.execute(
+            "SELECT draft_revision_id FROM slide_slots WHERE slide_number = ?",
+            (slide_number,),
+        ).fetchone()
+        if slot is None or slot["draft_revision_id"] != revision_id:
+            raise GradingError("stale_draft", 409, "Bản nháp đã thay đổi. Hãy tải lại để duyệt.")
+        revision = conn.execute(
+            "SELECT slide_number FROM slide_revisions WHERE revision_id = ?",
+            (revision_id,),
+        ).fetchone()
+        if revision is None or revision["slide_number"] != slide_number:
+            raise GradingError("stale_draft", 409, "Bản nháp không còn hợp lệ. Hãy tải lại để duyệt.")
+        conn.execute(
+            "UPDATE slide_slots SET published_revision_id = ?, draft_revision_id = NULL WHERE slide_number = ?",
+            (revision_id, slide_number),
+        )
+
+
+def _admin_slot(conn: sqlite3.Connection, row: sqlite3.Row) -> dict:
+    def revision_summary(revision_id: str | None) -> dict | None:
+        if not revision_id:
+            return None
+        revision = conn.execute(
+            "SELECT documents_json, passages_json FROM slide_revisions WHERE revision_id = ?",
+            (revision_id,),
+        ).fetchone()
+        if revision is None:
+            return None
+        documents = json.loads(revision["documents_json"])
+        passages = json.loads(revision["passages_json"])
+        return {
+            "revision_id": revision_id,
+            "documents": [
+                {"file_name": document["file_name"], "page_count": document["page_count"]}
+                for document in documents
+            ],
+            "passage_count": len(passages),
+        }
+
+    return {
+        "slide_number": row["slide_number"],
+        "title": row["title"],
+        "draft": revision_summary(row["draft_revision_id"]),
+        "published": revision_summary(row["published_revision_id"]),
+    }
+
+
+def list_admin_slides(conn: sqlite3.Connection) -> list[dict]:
+    rows = conn.execute(
+        "SELECT slide_number, title, draft_revision_id, published_revision_id FROM slide_slots ORDER BY slide_number"
+    ).fetchall()
+    return [_admin_slot(conn, row) for row in rows]
+
+
+def get_admin_slide_detail(conn: sqlite3.Connection, slide_number: int) -> dict:
+    row = conn.execute(
+        "SELECT slide_number, title, draft_revision_id, published_revision_id FROM slide_slots WHERE slide_number = ?",
+        (slide_number,),
+    ).fetchone()
+    if row is None:
+        raise GradingError("invalid_input", 422, "Chỉ có vị trí 01–14.")
+    slot = _admin_slot(conn, row)
+    preview: list[dict] = []
+    revision_id = row["draft_revision_id"]
+    if revision_id:
+        revision = conn.execute(
+            "SELECT passages_json FROM slide_revisions WHERE revision_id = ?",
+            (revision_id,),
+        ).fetchone()
+        if revision:
+            for passage in json.loads(revision["passages_json"])[:3]:
+                preview.append({
+                    "citation": {
+                        "slide_number": slide_number,
+                        "source_id": passage["source_id"],
+                        "file_name": passage["file_name"],
+                        "page": passage["page"],
+                    },
+                    "text": passage["text"],
+                })
+    return {"slot": slot, "draft_preview": preview}
+
+
 def get_published_passages(conn: sqlite3.Connection, exam_id: str) -> dict[int, list[dict]]:
     target = None if exam_id == "midterm" else int(exam_id.split("-")[1])
     rows = conn.execute(
@@ -227,6 +337,20 @@ def create_attempt_record(
                 expires_at.isoformat(),
             ),
         )
+
+
+def get_attempt_question(conn: sqlite3.Connection, *, attempt_id: str, question_id: str) -> dict:
+    """Return a private question snapshot for an explanation or source-page request."""
+    row = conn.execute(
+        "SELECT questions_json, expires_at FROM attempts WHERE attempt_id = ?",
+        (attempt_id,),
+    ).fetchone()
+    if row is None or datetime.now(timezone.utc) >= _parse_iso(row["expires_at"]):
+        raise GradingError("quiz_unavailable", 404, "Lượt làm bài không còn khả dụng. Hãy tạo lượt mới.")
+    for question in json.loads(row["questions_json"]):
+        if question.get("question_id") == question_id:
+            return question
+    raise GradingError("quiz_unavailable", 404, "Câu hỏi không thuộc lượt làm bài này.")
 
 
 def submit_attempt_tx(

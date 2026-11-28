@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ROLE_FILES = {
     "lam": {
-        ".gitignore", ".env.example", "AGENTS.md", "README.md", "TEAMS.md",
+        ".gitignore", ".dockerignore", ".env.example", "AGENTS.md", "README.md", "TEAMS.md",
         "spec.md", "tasks.md", "requirements.txt", "codebase/ai.py", "codebase/contracts.py",
         ".github/workflows/ci.yml", "docs/agents.md", "docs/ci-cd.md", "docs/connect-model.md",
         "docs/ai-usage.md", "eval/README.md",
@@ -47,6 +47,16 @@ TASK_SCOPE_OVERRIDES = {
             "slides/outline.md", "slides/content.md",
             "demo-slides.pdf", ".gitattributes",
         },
+        # T013 is a coordinated explanation feature: Lâm owns its backend and contract;
+        # Phước Anh owns the student UI, with Docker keeping PDFs on the private /data volume.
+        "T013": {
+            "Dockerfile",
+            "frontend/admin/",
+            "frontend/student/",
+            "frontend/web/src/shared/types.ts",
+            "frontend/web/src/student/Quiz.tsx",
+            "frontend/web/src/student/mock.ts",
+        },
     },
 }
 
@@ -64,7 +74,8 @@ def is_in_scope(role: str, path: str, task_ids: set[str] | None = None) -> bool:
     if is_owned(role, path):
         return True
     for task_id in task_ids or set():
-        if path in TASK_SCOPE_OVERRIDES.get(role, {}).get(task_id, set()):
+        overrides = TASK_SCOPE_OVERRIDES.get(role, {}).get(task_id, set())
+        if path in overrides or any(override.endswith("/") and path.startswith(override) for override in overrides):
             return True
     return False
 

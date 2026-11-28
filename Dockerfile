@@ -3,7 +3,8 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app/backend:/app/codebase \
-    CRAMAI_WEB_DB=/data/cramai_web.db
+    CRAMAI_WEB_DB=/data/cramai_web.db \
+    CRAMAI_DOCUMENT_DIR=/data/slides
 
 WORKDIR /app
 
@@ -16,7 +17,7 @@ COPY data/ ./data/
 COPY frontend/ ./frontend/
 
 RUN adduser --disabled-password --gecos "" --no-create-home appuser \
-    && mkdir -p /data \
+    && mkdir -p /data/slides \
     && chown -R appuser:appuser /app /data
 
 USER appuser

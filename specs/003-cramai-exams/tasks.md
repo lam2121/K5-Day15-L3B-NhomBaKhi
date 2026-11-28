@@ -12,7 +12,7 @@
 ## Giai đoạn 2 — US2 · Admin chuẩn bị và xuất bản (P1)
 
 - [ ] T004 [P] [US2] **Khiêm** viết trích PDF theo `SlidePassage` trong `codebase/tools.py`, bàn giao cách kiểm PDF hỏng, thiếu lớp văn bản và mã đoạn cho Lâm.
-- [ ] T005 [US2] **Lâm** trong `backend/` triển khai 14 vị trí, auth admin, nhập draft, preview và publish nguyên tử theo `AdminList`, `AdminDetail`, `PublishRequest`.
+- [x] T005 [US2] **Lâm** trong `backend/` triển khai 14 vị trí, HTTP Basic admin, nhập draft có giới hạn, preview và publish nguyên tử theo `AdminList`, `AdminDetail`, `PublishRequest`. PDF gốc ở volume riêng; API chỉ trả ảnh từng trang theo citation.
 - [ ] T006 [P] [US2] **Phước Anh** trong `frontend/admin/` làm màn hình danh sách, chọn bộ, tải PDF, xem bản nháp, xuất bản và báo lỗi theo `AdminDetail`.
 
 ## Giai đoạn 3 — US1 · Chọn, làm và chấm đề (P1)
@@ -27,6 +27,10 @@
 - [ ] T010 [P] [US3] **Lâm** trong `deploy/` định nghĩa reverse proxy, service, HTTPS, đường dẫn dữ liệu, giới hạn lưu lượng và khôi phục theo SHA.
 - [ ] T011 [US3] **Lâm** mở rộng `.github/workflows/ci.yml` để kiểm hợp đồng, smoke web và đóng gói cùng commit. Giữ các lệnh CLI/eval/simulate.
 - [ ] T012 [US3] **Lâm** triển khai khi có quyền VPS, tài liệu được phép và cấu hình model. Ghi SHA và kết quả nghiệm thu, chấm bài và kiểm khôi phục trong `deploy/README.md`.
+
+## Giai đoạn 5 — US4 · Giải thích và xem trang nguồn sau khi chọn (P1)
+
+- [x] T013 [US4] **Lâm + Phước Anh** sau mỗi lựa chọn, hiện ngay đúng/sai và đáp án đúng từ snapshot qua endpoint check không gọi model; thêm nút giải thích tùy chọn gọi model và mở trang nguồn. Snapshot toàn văn trang, render đúng trang PDF riêng thành PNG. PDF gốc nằm trong volume Docker `/data/slides`, không phục vụ công khai; fallback hiển thị toàn văn trích xuất và nói rõ khi ảnh gốc chưa có. Đồng bộ OpenAPI, kiểu frontend, mock và hướng dẫn lưu trữ.
 
 ## Phụ thuộc và điều kiện ghép
 
