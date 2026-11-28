@@ -22,7 +22,7 @@ from uuid import UUID, uuid4
 
 from fastapi import FastAPI, File, Path as PathParam, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import JSONResponse, RedirectResponse, Response
 from pydantic import BaseModel, ConfigDict, Field
 
 from codebase.agent import InsufficientExamEvidence, MODEL_PROVIDER, call_model, generate_exam
@@ -746,6 +746,11 @@ def create_app(
         from fastapi.staticfiles import StaticFiles
 
         if (frontend_dir / "admin").is_dir():
+            @app.get("/admin", include_in_schema=False)
+            def admin_root():
+                # Keep the public no-slash URL working even if the edge proxy has stale config.
+                return RedirectResponse(url="/admin/", status_code=308)
+
             app.mount("/admin", StaticFiles(directory=str(frontend_dir / "admin"), html=True), name="admin")
         app.mount("/", StaticFiles(directory=str(frontend_dir / "student"), html=True), name="student")
 

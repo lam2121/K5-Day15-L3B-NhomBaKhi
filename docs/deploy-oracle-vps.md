@@ -2,7 +2,7 @@
 
 ## Runtime layout
 
-The student SPA, admin SPA and API use the same origin. HTTPS supports either the supplied public IPv4 address or a domain name. The FastAPI container serves the built frontend at / and /admin/, and the API at /api/v1. Caddy keeps `/admin` as the canonical public URL, rewrites it internally to the FastAPI `/admin/` mount, and redirects `/admin/` back to `/admin`. Caddy is the only public-facing container: it terminates HTTPS and proxies to the app over the private Compose network. TCP port 8000 is not published on the VPS.
+The student SPA, admin SPA and API use the same origin. HTTPS supports either the supplied public IPv4 address or a domain name. The FastAPI container serves the built frontend at / and /admin/, and the API at /api/v1. Caddy keeps `/admin` as the canonical public URL, rewrites it internally to the FastAPI `/admin/` mount, and redirects `/admin/` back to `/admin`. FastAPI also redirects an unrewritten `/admin` request to `/admin/` as a fallback. Caddy is the only public-facing container: it terminates HTTPS and proxies to the app over the private Compose network. TCP port 8000 is not published on the VPS.
 
 The cramai_data named volume stores the database and application documents under /data. Caddy's certificate and configuration data use separate named volumes. Uploaded source documents are not mounted into a public static directory.
 
@@ -61,7 +61,7 @@ The deploy job is part of the existing CI workflow. It waits for the Ubuntu/Wind
 3. Add the repository variable ORACLE_VPS_DEPLOY_ENABLED with value true only after the server clone, private .env.oracle, DNS, Docker and Compose are ready.
 4. Confirm the VPS already has the repository cloned, deploy/oracle/.env.oracle configured, and Docker Compose working.
 
-After this setup, each successful push to main automatically deploys the tested commit. The existing workflow_dispatch event can also be run manually from main. The workflow fetches and resets only the dedicated checkout, pulls Caddy, rebuilds the app image, and recreates the Compose services. Uncommitted code changes in that checkout will be discarded; the /data named volume is separate from the Git checkout and is retained.
+After this setup, each successful push to main automatically deploys the tested commit. The existing workflow_dispatch event can also be run manually from main. The workflow fetches and resets only the dedicated checkout, pulls Caddy, rebuilds the app image, recreates the Compose services, validates the mounted Caddyfile, and reloads Caddy so configuration-only changes take effect. Uncommitted code changes in that checkout will be discarded; the /data named volume is separate from the Git checkout and is retained.
 
 ## Data and operations
 
