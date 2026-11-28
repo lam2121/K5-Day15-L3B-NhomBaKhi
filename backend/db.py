@@ -61,6 +61,8 @@ CREATE TABLE IF NOT EXISTS attempts (
     expires_at     TEXT NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS idx_attempts_exam_created ON attempts(exam_id, created_at DESC);
+
 CREATE TABLE IF NOT EXISTS submissions (
     attempt_id      TEXT PRIMARY KEY REFERENCES attempts(attempt_id),
     answers_json    TEXT NOT NULL,
@@ -196,17 +198,8 @@ def publish_revision(
     documents: list[dict],
     passages: list[dict],
 ) -> None:
-    ts = datetime.now(timezone.utc).isoformat()
-    with _tx(conn):
-        conn.execute(
-            "INSERT INTO slide_revisions (revision_id, slide_number, documents_json, passages_json, created_at) "
-            "VALUES (?, ?, ?, ?, ?)",
-            (revision_id, slide_number, json.dumps(documents, ensure_ascii=False), json.dumps(passages, ensure_ascii=False), ts),
-        )
-        conn.execute(
-            "UPDATE slide_slots SET published_revision_id = ? WHERE slide_number = ?",
-            (revision_id, slide_number),
-        )
+    rev = save_draft(conn, slide_number=slide_number, documents=documents, passages=passages, revision_id=revision_id)
+    publish_draft(conn, slide_number=slide_number, revision_id=rev)
 
 
 def get_published_passages(conn: sqlite3.Connection, exam_id: str) -> dict[int, list[dict]]:
@@ -221,6 +214,21 @@ def get_published_passages(conn: sqlite3.Connection, exam_id: str) -> dict[int, 
     if len(rows) != expected:
         raise GradingError("exam_unavailable", 409, "Đề chưa mở vì thiếu bộ slide đã xuất bản.")
     return {r["slide_number"]: json.loads(r["passages_json"]) for r in rows}
+
+
+def recent_seen_sources(conn: sqlite3.Connection, exam_id: str, *, limit: int = 10) -> set[str]:
+    """Return source_ids already used in recent attempts for this exam_id to avoid repeat questions."""
+    rows = conn.execute(
+        "SELECT questions_json FROM attempts WHERE exam_id = ? ORDER BY created_at DESC LIMIT ?",
+        (exam_id, limit),
+    ).fetchall()
+    return {
+        c["source_id"]
+        for r in rows
+        for q in json.loads(r["questions_json"])
+        for c in q.get("citations", ())
+        if c.get("source_id")
+    }
 
 
 def create_attempt_record(
@@ -341,14 +349,18 @@ def _draft_preview(conn: sqlite3.Connection, slide_number: int, draft_id: str | 
     passages = json.loads(row["passages_json"]) if row else []
     picked: list[dict] = []
     seen_files: set[str] = set()
-    for p in passages:
+    seen_ids: set[int] = set()
+    for idx, p in enumerate(passages):
         if p["file_name"] not in seen_files:
             seen_files.add(p["file_name"])
+            seen_ids.add(idx)
             picked.append(p)
-    for p in passages:
+            if len(picked) >= _PREVIEW_LIMIT:
+                break
+    for idx, p in enumerate(passages):
         if len(picked) >= _PREVIEW_LIMIT:
             break
-        if p not in picked:
+        if idx not in seen_ids:
             picked.append(p)
     return [
         {

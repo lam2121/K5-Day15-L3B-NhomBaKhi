@@ -218,3 +218,38 @@ class GradingProductionTests(unittest.TestCase):
                     res = c.post("/api/v1/attempts", json={"exam_id": "slide-02"})
                 self.assertEqual(res.status_code, 422)
                 self.assertEqual(res.json()["error"]["code"], "insufficient_evidence")
+
+    def test_retake_covers_new_passages_without_repeating_until_exhausted(self):
+        with session(self.db_path) as conn:
+            publish_revision(
+                conn,
+                revision_id=str(uuid4()),
+                slide_number=4,
+                documents=[{"file_name": "slide-04.pdf", "page_count": 10}],
+                passages=[
+                    {
+                        "source_id": f"day04-d01-p{p:03d}-s01",
+                        "file_name": "slide-04.pdf",
+                        "page": p,
+                        "text": f"Kiến thức trọng tâm trang {p} giúp ôn tập hiệu quả.",
+                    }
+                    for p in range(1, 11)
+                ],
+            )
+        answers = [{"question_id": f"q{i:02d}", "option_id": "a"} for i in range(1, 6)]
+
+        a1 = self.client.post("/api/v1/attempts", json={"exam_id": "slide-04"}).json()
+        s1 = self.client.post("/api/v1/submissions", json={"attempt_id": a1["attempt_id"], "answers": answers}).json()
+        pages1 = {c["page"] for item in s1["items"] for c in item["citations"]}
+
+        a2 = self.client.post("/api/v1/attempts", json={"exam_id": "slide-04"}).json()
+        s2 = self.client.post("/api/v1/submissions", json={"attempt_id": a2["attempt_id"], "answers": answers}).json()
+        pages2 = {c["page"] for item in s2["items"] for c in item["citations"]}
+
+        self.assertEqual(pages1, {1, 2, 3, 4, 5})
+        self.assertEqual(pages2, {6, 7, 8, 9, 10})
+        self.assertTrue(pages1.isdisjoint(pages2))
+
+        # Lượt 3 khi đã phủ hết 10 trang vẫn tạo đề thành công (không báo 422)
+        a3 = self.client.post("/api/v1/attempts", json={"exam_id": "slide-04"})
+        self.assertEqual(a3.status_code, 201)
