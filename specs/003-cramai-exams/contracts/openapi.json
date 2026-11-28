@@ -735,7 +735,7 @@
             "adminBasic": []
           }
         ],
-        "description": "Replaces only the slot's draft after all PDFs validate. Multipart uses repeated files fields. Maximum 5 text PDFs, 10 MiB per file and 25 MiB total. Excludes encrypted or image-only documents.",
+        "description": "Replaces only the slot's draft after all PDFs validate. Multipart uses repeated files fields. Maximum 5 text PDFs, 10 MiB per file and 25 MiB total. Excludes encrypted or image-only documents. With a real model provider configured, upload analyzes visual charts/diagrams once per PDF in page-bounded chunks and stores summaries with the draft passages for reuse during quiz generation. PDF bytes are sent inline to the configured provider and are not exposed through a public URL or stored in traces.",
         "requestBody": {
           "required": true,
           "content": {
@@ -844,6 +844,14 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Configured Vision provider is busy; the draft was not saved.",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          },
+          "502": {
+            "description": "Vision provider failed or returned an invalid summary; the draft was not saved.",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
           }
         }
       }
@@ -1271,7 +1279,7 @@
           "source_id": {"type": "string", "pattern": "^day(0[1-9]|1[0-4])(?:-d[0-9]{2,})?-p[0-9]{3,}-s[0-9]{2,}$"},
           "file_name": {"type": "string", "minLength": 1},
           "page": {"type": "integer", "minimum": 1},
-          "text": {"type": "string", "minLength": 1},
+          "text": {"type": "string", "minLength": 1, "description": "Extracted page text, optionally followed by the Vision summary stored at PDF upload."},
           "text_is_complete": {"type": "boolean", "description": "True when text is the full extracted text of this PDF page; false for a partial legacy/demo passage."},
           "image_url": {
             "oneOf": [
@@ -1438,7 +1446,8 @@
                 },
                 "text": {
                   "type": "string",
-                  "minLength": 1
+                  "minLength": 1,
+                  "description": "Passage text with a stored Vision summary appended when the page contains a useful chart or diagram."
                 }
               },
               "required": [

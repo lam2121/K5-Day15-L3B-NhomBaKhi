@@ -33,6 +33,9 @@
 
 - [x] T013 [US4] **Lâm + Phước Anh** sau mỗi lựa chọn, hiện ngay đúng/sai và đáp án đúng từ snapshot qua endpoint check không gọi model; thêm nút giải thích tùy chọn gọi model và mở trang nguồn. Snapshot toàn văn trang, render đúng trang PDF riêng thành PNG. PDF gốc nằm trong volume Docker `/data/slides`, không phục vụ công khai; fallback hiển thị toàn văn trích xuất và nói rõ khi ảnh gốc chưa có. Đồng bộ OpenAPI, kiểu frontend, mock và hướng dẫn lưu trữ.
 
+- [x] T014 [US2] **Lâm** phân tích biểu đồ/sơ đồ bằng PDF Vision một lần trong luồng upload admin, lưu tóm tắt theo file/trang trong revision và dùng lại khi sinh đề/giải thích. Giữ PDF gốc trong volume riêng, không ghi nội dung vào trace và báo lỗi upload nếu provider Vision không hoàn tất.
+  - Hoàn tất adapter inline cho Anthropic, Gemini và OpenAI; PDF được chia thành phần 80 trang, summary lưu cùng passage và đưa vào context tạo đề/giải thích. Kiểm cú pháp Python, OpenAPI JSON và phạm vi; chưa thử upload PDF thật.
+
 ## Phụ thuộc và điều kiện ghép
 
 T002, T003, T004 và frontend làm song song từ contract. T005 cần T001/T004, T007 cần T003/T005, T009 ghép cả hai frontend với API. Web dùng để demo khi đã nghiệm thu luồng đầu cuối. Các mốc của hackathon tiếp tục bám commit CP2, chỉ đưa web vào hồ sơ khi phạm vi được nhóm chốt và phù hợp quy định. Các run cũ giữ nguyên.

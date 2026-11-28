@@ -57,6 +57,8 @@ TASK_SCOPE_OVERRIDES = {
             "frontend/web/src/student/Quiz.tsx",
             "frontend/web/src/student/mock.ts",
         },
+        # T014 only adjusts the shared explanation text contract comment to document stored Vision summaries.
+        "T014": {"frontend/web/src/shared/types.ts"},
     },
 }
 

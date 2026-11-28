@@ -41,7 +41,7 @@ export interface Citation {
 }
 
 export interface ExplanationSourcePage extends Citation {
-  /** Extracted text for this cited page; it may be partial when false. */
+  /** Extracted page text (complete or partial per text_is_complete), optionally supplemented with an upload-time Vision summary. */
   text: string;
   /** Same-origin, attempt-authorized PNG render of only the cited page, or null when unavailable. */
   image_url: string | null;
