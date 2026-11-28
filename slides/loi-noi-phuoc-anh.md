@@ -1,6 +1,6 @@
 # Lời nói cả deck: Bùi Phước Anh trình bày một mình
 
-Phước Anh đại diện nhóm nói cả 8 trang của `demo-slides.pdf`, tổng khoảng **5 phút**. Những chữ **in đậm** là con số cần nói rõ. Số liệu lấy từ `evidence/summary.md`, `eval/report.md`, `eval/run-2.csv`, `cost/cost-estimate.md` và `cost/simulate-1-summary.md`; phần web lấy từ `specs/003-cramai-exams/` và code `backend/`, `frontend/`.
+Phước Anh đại diện nhóm nói cả 8 trang của `demo-slides.pdf`, tổng khoảng **5 phút**. Bản trình chiếu HTML [cramai-demo-5-phut.html](cramai-demo-5-phut.html) có cùng 8 trang, lời dẫn cho một người nói (phím N) và câu B01 làm demo offline. Những chữ **in đậm** là con số cần nói rõ. Số liệu lấy từ `evidence/summary.md`, `eval/report.md`, `eval/run-2.csv`, `cost/cost-estimate.md` và `cost/simulate-1-summary.md`; phần web lấy từ `specs/003-cramai-exams/` và code `backend/`, `frontend/`.
 
 | Trang | Nội dung | Thời gian |
 |---|---|---|
