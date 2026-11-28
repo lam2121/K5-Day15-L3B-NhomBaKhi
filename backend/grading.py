@@ -16,11 +16,19 @@ _RELATIVE_OPTION_RE = re.compile(
 
 
 class GradingError(Exception):
-    def __init__(self, code: str, status_code: int, message: str) -> None:
+    def __init__(
+        self,
+        code: str,
+        status_code: int,
+        message: str,
+        *,
+        headers: dict[str, str] | None = None,
+    ) -> None:
         super().__init__(message)
         self.code = code
         self.status_code = status_code
         self.message = message
+        self.headers = headers
 
 
 def filter_substantive_passages(passages_by_slide: dict[int, list[dict]]) -> dict[int, list[dict]]:
