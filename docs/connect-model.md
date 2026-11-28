@@ -50,6 +50,12 @@ Khởi động lại dịch vụ sau khi đổi `.env` để adapter nạp cấu
 
 Lượt tạo đề ở web chỉ nhận các passage đã xuất bản từ revision được chọn. Câu trả về được kiểm số lượng, lựa chọn và mã nguồn; nếu thiếu căn cứ API trả `insufficient_evidence`, còn lỗi model trả `upstream_error`.
 
+### PDF Vision cho biểu đồ và sơ đồ
+
+Khi provider thật được bật, admin upload gọi `call_pdf_vision` một lượt trên từng PDF (tách thành phần tối đa 80 trang nếu cần). Model chỉ được yêu cầu tóm tắt hình, biểu đồ, bảng hoặc sơ đồ có ý nghĩa học tập. Backend lưu summary theo tệp/trang trong revision và hiển thị trong preview; đề và lời giải dùng lại nội dung đó, không gọi Vision lại cho mỗi lượt học viên. Chế độ `fake` bỏ qua bước này.
+
+Để phân tích, các byte PDF được gửi inline qua API của provider đã cấu hình (`anthropic`, `gemini` hoặc `openai`). PDF vẫn nằm trong volume riêng của CramAI, không có URL công khai và không được đưa vào trace; tuy vậy nhà cung cấp model nhận nội dung PDF trong yêu cầu Vision. Upload chỉ lưu bản nháp sau khi Vision hoàn tất; lỗi provider giữ nguyên revision đang xuất bản và trả lỗi để admin thử lại.
+
 ## Lỗi thường gặp
 
 | Lỗi | Xử lý |

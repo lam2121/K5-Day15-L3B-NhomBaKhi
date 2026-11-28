@@ -1,7 +1,9 @@
 """Adapter model của CramAI. Cấu hình cục bộ theo docs/connect-model.md."""
 
+import base64
 import json
 import os
+from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
@@ -31,7 +33,7 @@ MODEL_NAME = (os.environ.get("MODEL_NAME") or "").strip()
 API_KEY = (os.environ.get("API_KEY") or "").strip()
 
 
-def _post_json(url: str, headers: dict[str, str], body: dict) -> dict:
+def _post_json(url: str, headers: dict[str, str], body: dict, *, timeout: int = 60) -> dict:
     request = Request(
         url,
         method="POST",
@@ -39,7 +41,7 @@ def _post_json(url: str, headers: dict[str, str], body: dict) -> dict:
         data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
     )
     try:
-        with urlopen(request, timeout=60) as response:
+        with urlopen(request, timeout=timeout) as response:
             payload = json.load(response)
     except HTTPError as error:
         error.close()
@@ -153,4 +155,131 @@ def call_model(system: str, user: str) -> ModelResponse:
         raise RuntimeError(f"{MODEL_PROVIDER}: phản hồi không có văn bản.")
     if result["tokens_in"] == 0 or result["tokens_out"] == 0:
         raise RuntimeError(f"{MODEL_PROVIDER}: phản hồi có văn bản nhưng usage báo 0 token.")
+    return result
+
+
+def call_pdf_vision(system: str, user: str, pdf_data: bytes, filename: str) -> ModelResponse:
+    """Send one private PDF chunk for upload-time visual summarization.
+
+    This intentionally does not use ``@model_call``: admin PDFs must not be
+    included in the CLI evaluation traces. The returned usage is still read
+    from the provider response.
+    """
+    if MODEL_PROVIDER == "fake":
+        raise RuntimeError("PDF Vision cần model thật; không gọi vision ở chế độ fake.")
+    if not MODEL_NAME or not API_KEY:
+        raise RuntimeError(f"{MODEL_PROVIDER}: cần MODEL_NAME và API_KEY trong .env.")
+    if not isinstance(pdf_data, bytes) or not pdf_data.startswith(b"%PDF-"):
+        raise ValueError("PDF Vision chỉ nhận dữ liệu PDF hợp lệ.")
+    if not isinstance(filename, str) or not filename.strip():
+        raise ValueError("PDF Vision cần tên file để gọi provider.")
+
+    encoded_pdf = base64.b64encode(pdf_data).decode("ascii")
+    timeout = 180
+
+    if MODEL_PROVIDER == "anthropic":
+        content = [
+            {
+                "type": "document",
+                "source": {"type": "base64", "media_type": "application/pdf", "data": encoded_pdf},
+            },
+            {"type": "text", "text": user},
+        ]
+        body = {"model": MODEL_NAME, "max_tokens": 8192, "messages": [{"role": "user", "content": content}]}
+        if system:
+            body["system"] = system
+        payload = _post_json(
+            "https://api.anthropic.com/v1/messages",
+            {"Authorization": f"Bearer {API_KEY}", "anthropic-version": "2026-10-21"},
+            body,
+            timeout=timeout,
+        )
+        if payload.get("stop_reason") != "end_turn":
+            raise RuntimeError("anthropic: PDF Vision chưa hoàn tất phản hồi.")
+        usage = payload.get("usage") or {}
+        tokens_in = _tokens(usage.get("input_tokens"), "input_tokens")
+        for field in ("cache_creation_input_tokens", "cache_read_input_tokens"):
+            if usage.get(field) is not None:
+                tokens_in += _tokens(usage[field], field)
+        result = {
+            "text": "".join(block.get("text", "") for block in (payload.get("content") or []) if block.get("type") == "text"),
+            "model": payload.get("model") or MODEL_NAME,
+            "tokens_in": tokens_in,
+            "tokens_out": _tokens(usage.get("output_tokens"), "output_tokens"),
+        }
+    elif MODEL_PROVIDER == "gemini":
+        model = MODEL_NAME.removeprefix("models/")
+        if not model:
+            raise RuntimeError("gemini: cần mã model trong MODEL_NAME.")
+        body = {
+            "contents": [{"role": "user", "parts": [
+                {"inline_data": {"mime_type": "application/pdf", "data": encoded_pdf}},
+                {"text": user},
+            ]}],
+            "generationConfig": {"maxOutputTokens": 8192},
+        }
+        if system:
+            body["systemInstruction"] = {"parts": [{"text": system}]}
+        payload = _post_json(
+            f"https://generativelanguage.googleapis.com/v1beta/models/{quote(model, safe='')}:generateContent",
+            {"x-goog-api-key": API_KEY},
+            body,
+            timeout=timeout,
+        )
+        candidates = payload.get("candidates")
+        if not candidates or candidates[0].get("finishReason", "STOP") != "STOP":
+            raise RuntimeError("gemini: PDF Vision chưa hoàn tất phản hồi.")
+        parts = candidates[0].get("content", {}).get("parts", [])
+        usage = payload.get("usageMetadata") or {}
+        result = {
+            "text": "".join(part.get("text", "") for part in parts if not part.get("thought")),
+            "model": payload.get("modelVersion") or model,
+            "tokens_in": _tokens(usage.get("promptTokenCount"), "promptTokenCount"),
+            "tokens_out": _tokens(usage.get("candidatesTokenCount"), "candidatesTokenCount")
+            + _tokens(usage.get("thoughtsTokenCount", 0), "thoughtsTokenCount"),
+        }
+    elif MODEL_PROVIDER == "openai":
+        body = {
+            "model": MODEL_NAME,
+            "instructions": system,
+            "max_output_tokens": 8192,
+            "input": [{"role": "user", "content": [
+                {
+                    "type": "input_file",
+                    "filename": Path(filename).name,
+                    "file_data": f"data:application/pdf;base64,{encoded_pdf}",
+                    "detail": "high",
+                },
+                {"type": "input_text", "text": user},
+            ]}],
+        }
+        payload = _post_json(
+            "https://api.openai.com/v1/responses",
+            {"Authorization": f"Bearer {API_KEY}"},
+            body,
+            timeout=timeout,
+        )
+        if payload.get("status") != "completed":
+            raise RuntimeError("openai: PDF Vision chưa hoàn tất phản hồi.")
+        text_parts = [
+            part.get("text", "")
+            for item in payload.get("output", [])
+            if item.get("type") == "message"
+            for part in item.get("content", [])
+            if part.get("type") == "output_text"
+        ]
+        usage = payload.get("usage") or {}
+        result = {
+            "text": "".join(text_parts),
+            "model": payload.get("model") or MODEL_NAME,
+            "tokens_in": _tokens(usage.get("input_tokens"), "input_tokens"),
+            "tokens_out": _tokens(usage.get("output_tokens"), "output_tokens"),
+        }
+    else:
+        raise RuntimeError("MODEL_PROVIDER phải là fake, openai, gemini hoặc anthropic.")
+
+    if not isinstance(result["text"], str) or not result["text"].strip():
+        raise RuntimeError(f"{MODEL_PROVIDER}: PDF Vision không trả văn bản.")
+    if result["tokens_in"] == 0 or result["tokens_out"] == 0:
+        raise RuntimeError(f"{MODEL_PROVIDER}: phản hồi PDF Vision báo 0 token.")
     return result

@@ -20,7 +20,7 @@ Một frontend cho học viên và một trang admin, dùng backend HTTP cùng o
 
 ## Luồng và điểm kiểm tra
 
-1. **Nhập nguồn.** Admin tải tập PDF vào bản nháp của một ô. Xác minh file và lớp văn bản, tạo mã đoạn theo buổi/tệp/trang, rồi lưu bản nháp. Xuất bản đúng revision bằng giao dịch. Nếu thất bại, giữ con trỏ published cũ.
+1. **Nhập nguồn.** Admin tải tập PDF vào bản nháp của một ô. Xác minh file và lớp văn bản, tạo mã đoạn theo buổi/tệp/trang, chạy một lượt Vision theo từng PDF để tóm tắt biểu đồ/sơ đồ, gắn tóm tắt vào đúng trang rồi lưu bản nháp. Các lần tạo đề và giải thích đọc lại summary từ revision; không gọi Vision lặp lại. PDF gốc chỉ lưu trong volume riêng; request Vision gửi PDF inline tới provider đã cấu hình và không ghi PDF vào trace. Xuất bản đúng revision bằng giao dịch. Nếu thất bại, giữ con trỏ published cũ.
 2. **Tạo đề.** Backend xác minh `exam_id`, lấy revision đang xuất bản và lọc nguồn đủ nội dung. Hưng tạo ứng viên và kiểm số câu, bốn lựa chọn khác nhau, đúng một đáp án và mã đoạn thuộc tập đã gửi model. Đề giữa kỳ phải có đúng một câu cho mỗi bộ. Từ chối tạo lượt nếu chưa đạt.
 3. **Làm và nộp.** Lưu snapshot câu hỏi, phương án, đáp án và trích dẫn trước khi trả đề. Khóa đầu ra công khai bằng schema allowlist. Backend chấm và lưu một kết quả cho bộ lựa chọn hợp lệ đầu tiên. Gửi lại cùng bộ trả kết quả đã lưu. Đổi bộ sau khi đã nộp trả lỗi.
 4. **Giải thích và xem nguồn.** Chỉ gọi khi học viên đã chọn đáp án và bấm nút. Backend nạp snapshot riêng, tạo lời giải bám sát toàn văn trang, trả đáp án sau thao tác này; ảnh trang được render từ PDF riêng và chỉ trả một trang PNG. Nếu PDF gốc chưa có, trả văn bản trích xuất và thông báo fallback.

@@ -22,7 +22,7 @@ Học viên mở danh mục theo thứ tự Slide 01 → Slide 14 → Đề gi�
 
 Admin đăng nhập và chọn vị trí trong 01–14 để nạp PDF, xem bản nháp và xuất bản nội dung đủ quyền sử dụng.
 
-1. Admin có thể nạp một hoặc nhiều PDF cho một bộ, xem tên file, số trang và đoạn đại diện, sau đó xuất bản đúng bản nháp.
+1. Admin có thể nạp một hoặc nhiều PDF cho một bộ, xem tên file, số trang và đoạn đại diện, sau đó xuất bản đúng bản nháp. Trong lúc tải lên, AI Vision tóm tắt biểu đồ/sơ đồ một lần theo từng phần PDF; bản tóm tắt được lưu cùng bản nháp để tạo đề sau đó không phân tích Vision lại.
 2. Khi file không hợp lệ hoặc quá trình nhập lỗi, bản đã xuất bản vẫn dùng được. Bản nháp chưa xuất bản không xuất hiện trong dữ liệu đề.
 3. Thay thế bộ slide tạo phiên bản mới. Bài đang làm vẫn được chấm theo câu hỏi, đáp án và trích dẫn đã nhận. Người dùng không có quyền admin không thể sửa tài liệu.
 
@@ -57,6 +57,7 @@ Sau khi chọn đáp án cho một câu, học viên có thể chủ động b�
 - **FR-009** Frontend và backend có thể chạy cục bộ, sau đó phát hành cùng một phiên bản trên một VPS.
 - **FR-010** PDF gốc không được phục vụ công khai. Bản gốc nằm trong volume riêng ngoài document root; API kiểm tra attempt và citation rồi chỉ trả ảnh PNG của trang được dẫn. Khi thiếu PDF gốc, giao diện phải ghi rõ đang dùng văn bản trích xuất.
 - **FR-011** Lời giải AI chỉ được tạo sau khi học viên chủ động bấm nút giải thích; phải dùng câu hỏi, lựa chọn và văn bản trang nguồn trong snapshot của attempt. Model lỗi hoặc thiếu nguồn thì hiển thị lỗi phù hợp, không suy đoán.
+- **FR-012** Trong lúc admin tải PDF lên bản nháp, backend dùng Vision phân tích các biểu đồ/sơ đồ một lần, lưu tóm tắt theo đúng tệp và trang trong revision; tạo đề và giải thích dùng lại tóm tắt đã lưu, không gọi Vision lại cho từng học viên. PDF gốc luôn nằm trong volume riêng; nội dung PDF được gửi inline tới provider model đã cấu hình, không tạo URL công khai hay đưa nội dung PDF vào trace.
 
 ## Success Criteria
 
@@ -66,6 +67,7 @@ Sau khi chọn đáp án cho một câu, học viên có thể chủ động b�
 - **SC-004** CLI, eval và simulate chạy theo cửa vào của đề. Nếu nhóm dùng web để demo, kết quả web được kiểm riêng với cùng chính sách nguồn.
 - **SC-005** Khi phát hành lên VPS, kiểm được mã bản phát hành, một ca có nguồn và một ca thiếu nguồn. Lưu kết quả thử khôi phục.
 - **SC-006** PDF gốc không thể tải qua static URL. Lượt hợp lệ chỉ nhận PNG đúng trang được dẫn; attempt hết hạn, câu khác hoặc citation ngoài snapshot bị từ chối.
+- **SC-007** Sau khi admin tải PDF có biểu đồ, bản nháp hiển thị tóm tắt Vision gắn với trang nguồn; xuất bản revision rồi tạo đề dùng được tóm tắt đó. Việc tạo nhiều lượt đề từ revision không gọi lại Vision.
 
 ## Giả định và phạm vi
 
