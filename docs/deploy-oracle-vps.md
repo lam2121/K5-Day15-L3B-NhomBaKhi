@@ -2,7 +2,7 @@
 
 ## Runtime layout
 
-The student SPA, admin SPA and API use the same origin. HTTPS supports either the supplied public IPv4 address or a domain name. The FastAPI container serves the built frontend at / and /admin/, and the API at /api/v1. Caddy is the only public-facing container: it terminates HTTPS and proxies to the app over the private Compose network. TCP port 8000 is not published on the VPS.
+The student SPA, admin SPA and API use the same origin. HTTPS supports either the supplied public IPv4 address or a domain name. The FastAPI container serves the built frontend at / and /admin/, and the API at /api/v1. Caddy keeps `/admin` as the canonical public URL, rewrites it internally to the FastAPI `/admin/` mount, and redirects `/admin/` back to `/admin`. Caddy is the only public-facing container: it terminates HTTPS and proxies to the app over the private Compose network. TCP port 8000 is not published on the VPS.
 
 The cramai_data named volume stores the database and application documents under /data. Caddy's certificate and configuration data use separate named volumes. Uploaded source documents are not mounted into a public static directory.
 
@@ -44,7 +44,7 @@ docker compose --env-file deploy/oracle/.env.oracle -f deploy/oracle/compose.yml
 docker compose --env-file deploy/oracle/.env.oracle -f deploy/oracle/compose.yml logs --tail=100 app caddy
 ```
 
-Open https://<DOMAIN>/ for the student experience and https://<DOMAIN>/admin/ for the admin interface. Caddy 2.11.7 uses Let's Encrypt's shortlived profile for direct IP certificates; those certificates last 160 hours and Caddy renews them automatically. The default_sni setting lets clients that omit SNI (common when connecting by IP) select the IP certificate. Keep ports 80 and 443 reachable so certificate validation and renewal work.
+Open https://<DOMAIN>/ for the student experience and https://<DOMAIN>/admin for the admin interface. Requests to the old `/admin/` path redirect to the canonical no-trailing-slash URL. Caddy 2.11.7 uses Let's Encrypt's shortlived profile for direct IP certificates; those certificates last 160 hours and Caddy renews them automatically. The default_sni setting lets clients that omit SNI (common when connecting by IP) select the IP certificate. Keep ports 80 and 443 reachable so certificate validation and renewal work.
 
 ## 4. Enable CI/CD deployment from main
 
