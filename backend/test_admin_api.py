@@ -132,8 +132,8 @@ class AdminApiTest(unittest.TestCase):
         # Nothing above created a draft.
         self.assertIsNone(self.client.get("/api/v1/admin/slides/4", headers=_auth()).json()["slot"]["draft"])
 
-    def test_rejects_file_over_10_mb(self) -> None:
-        big = b"%PDF-1.4\n" + b"0" * (10 * 1024 * 1024)
+    def test_rejects_file_over_20_mb(self) -> None:
+        big = b"%PDF-1.4\n" + b"0" * (20 * 1024 * 1024)
         res = self._upload(5, [("big.pdf", big)])
         self.assertEqual((res.status_code, res.json()["error"]["code"]), (413, "too_large"))
 
