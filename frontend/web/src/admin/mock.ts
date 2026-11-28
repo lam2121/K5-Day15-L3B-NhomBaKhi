@@ -6,10 +6,10 @@ import { ApiError, pad2, type Body } from '../shared/api';
 import type { AdminDetail, AdminSlot, DraftPreview, RevisionSummary } from '../shared/types';
 
 const TITLES = [
-  'Nền tảng AI và LLM', 'Discovery và đóng khung vấn đề', 'Tư duy sản phẩm AI và yêu cầu',
-  'Prompt engineering và tool calling', 'ReAct và vòng lặp agent', 'Data engineering: thu thập và lưu trữ',
-  'Bài giảng ngày 7', 'Bài giảng ngày 8', 'Bài giảng ngày 9', 'Bài giảng ngày 10',
-  'Guardrails và an toàn AI', 'Vòng đời phát triển AI', 'Monitoring, logging và observability', 'Triển khai và benchmark agent',
+  'AI & LLM Foundation', 'Discovery & Problem Framing', 'Prompt Engineering & Tool Calling',
+  'ReAct & Agent Loop', 'AI Product Thinking & Requirements', 'Data Engineering: Ingestion & Storage',
+  'Retrieval & Context Engineering (RAG)', 'From Workflows to Agents: Multi-Agent', 'Evaluation & Failure Analysis', 'Project Delivery: From PoC to Pilot',
+  'Guardrails, HITL & Responsible AI', 'Deployment: Đưa Agent lên Cloud', 'Launch & Economics', 'Deployment, Agent Benchmarking & Observability',
 ];
 const EXCERPTS = [
   'Mô hình ngôn ngữ dự đoán token tiếp theo dựa trên toàn bộ ngữ cảnh đã có trong cửa sổ.',
