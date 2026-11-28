@@ -37,3 +37,5 @@ TEAMS.md
 Makefile
 run.py
 requirements.txt
+**/node_modules
+frontend/web

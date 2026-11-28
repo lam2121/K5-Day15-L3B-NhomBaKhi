@@ -144,8 +144,11 @@ def create_app(
     admin_user: str | None = None,
     admin_password: str | None = None,
     public_origin: str | None = None,
+    generator=None,
 ) -> FastAPI:
+    """`generator(exam_id, passages_by_slide) -> questions` defaults to the offline fake generator."""
     resolved_db = Path(db_path or os.environ.get("CRAMAI_WEB_DB") or _DEFAULT_DB)
+    generate = generator or _default_fake_generator
     # Admin credentials come from service configuration only. Without both
     # values the admin page and API stay closed (fail closed).
     admin_user = admin_user if admin_user is not None else os.environ.get("CRAMAI_ADMIN_USER", "")
@@ -219,7 +222,12 @@ def create_app(
     def create_attempt(body: AttemptRequest) -> dict:
         with session(resolved_db) as conn:
             passages_by_slide = get_published_passages(conn, body.exam_id)
-        questions = _default_fake_generator(body.exam_id, passages_by_slide)
+        try:
+            questions = generate(body.exam_id, passages_by_slide)
+        except GradingError:
+            raise
+        except Exception:  # model or network failure: no attempt is stored
+            raise GradingError("upstream_error", 502, "Chưa gọi được model. Hãy thử lại sau.") from None
         expected_count = 14 if body.exam_id == "midterm" else 5
         if len(questions) != expected_count:
             raise GradingError("insufficient_evidence", 422, "Chưa đủ căn cứ để tạo đề theo phạm vi này.")
