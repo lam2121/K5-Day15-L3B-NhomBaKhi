@@ -64,7 +64,7 @@ jobs:
         shell: bash
         run: |
           case "$PR_BRANCH" in
-            lam|cramai/lam-integration|cramai/lam-oracle-vps) role=lam ;;
+            lam|cramai/lam-integration|cramai/lam-oracle-vps|cramai/lam-package-fix) role=lam ;;
             cramai/hung-workflow) role=hung ;;
             cramai/khiem-data) role=khiem ;;
             cramai/phuoc-anh-product) role=phuoc-anh ;;
