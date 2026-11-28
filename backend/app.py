@@ -32,6 +32,7 @@ from db import (
     list_admin_slots,
     list_catalog,
     publish_draft,
+    recent_seen_sources,
     save_draft,
     session,
     submit_attempt_tx,
@@ -39,6 +40,7 @@ from db import (
 from grading import (
     GradingError,
     filter_substantive_passages,
+    prioritize_unseen_passages,
     validate_generated_questions,
 )
 
@@ -390,13 +392,15 @@ def create_app(
 
     @app.post("/api/v1/attempts", status_code=201)
     def create_attempt(body: AttemptRequest) -> dict:
-        with session(resolved_db) as conn:
-            passages_by_slide = get_published_passages(conn, body.exam_id)
-        clean_passages = filter_substantive_passages(passages_by_slide)
         if app.state.mode == "live" and generator is None and MODEL_PROVIDER == "fake":
             raise GradingError("upstream_error", 503, "Chưa cấu hình model thật cho dịch vụ web.")
+        with session(resolved_db) as conn:
+            passages_by_slide = get_published_passages(conn, body.exam_id)
+            seen_sources = recent_seen_sources(conn, body.exam_id)
+        clean_passages = filter_substantive_passages(passages_by_slide)
+        target_passages = prioritize_unseen_passages(body.exam_id, clean_passages, seen_sources)
         try:
-            questions = generate(body.exam_id, clean_passages)
+            questions = generate(body.exam_id, target_passages)
         except InsufficientExamEvidence as exc:
             raise GradingError("insufficient_evidence", 422, str(exc)) from None
         except GradingError:

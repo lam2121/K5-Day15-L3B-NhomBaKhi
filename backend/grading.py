@@ -39,6 +39,26 @@ def filter_substantive_passages(passages_by_slide: dict[int, list[dict]]) -> dic
     return filtered
 
 
+def prioritize_unseen_passages(
+    exam_id: str,
+    passages_by_slide: dict[int, list[dict]],
+    seen_source_ids: set[str],
+) -> dict[int, list[dict]]:
+    """Prefer unseen passages across retakes; fall back to full pool when unseen count is low."""
+    if not seen_source_ids:
+        return passages_by_slide
+    min_needed = 1 if exam_id == "midterm" else 5
+    prioritized: dict[int, list[dict]] = {}
+    for slide_num, passages in passages_by_slide.items():
+        unseen = [p for p in passages if p.get("source_id") not in seen_source_ids]
+        prioritized[slide_num] = (
+            unseen
+            if len(unseen) >= min_needed
+            else sorted(passages, key=lambda p: p.get("source_id") in seen_source_ids)
+        )
+    return prioritized
+
+
 def validate_generated_questions(
     exam_id: str,
     questions: list[dict],
