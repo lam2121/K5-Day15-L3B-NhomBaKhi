@@ -8,6 +8,7 @@
 - [ ] T002 [P] **Khiêm** lập nguồn theo 14 bộ, rà quyền sử dụng và bàn giao tập PDF rút gọn hoặc fixture synthetic trong `data/`. Giữ nguyên bản ghi benchmark đã chốt.
 - [ ] T003 [P] **Hưng** dùng [contract Python](contracts/core.md) xây bộ sinh đề 5/14 câu trong `codebase/agent.py`, giữ `answer(text)`, kiểm đúng một lựa chọn và nguồn từng bộ.
   - Đã thêm `generate_exam(exam_id, passages_by_slide)` theo contract và giữ `answer(text)`; backend live path đã gọi thành công một lượt Slide 03 và nhận năm câu hợp lệ. Full contract checks vẫn nằm trong T009.
+  - Bổ sung tương thích citation `dayNN-pNNN-sNN` cho revision PDF admin đã xuất bản trước khi có document index; ID nguồn gốc được giữ nguyên. PDF upload mới tiếp tục dùng `dayNN-dNN-pNNN-sNN`.
 
 ## Giai đoạn 2 — US2 · Admin chuẩn bị và xuất bản (P1)
 
