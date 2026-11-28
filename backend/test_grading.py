@@ -169,3 +169,52 @@ class GradingProductionTests(unittest.TestCase):
         with ThreadPoolExecutor(max_workers=2) as pool:
             statuses = sorted(pool.map(post_one, [a1, a2]))
         self.assertEqual(statuses, [200, 409])
+
+    def test_outline_only_slide_rejected_before_generation(self):
+        with session(self.db_path) as conn:
+            publish_revision(
+                conn,
+                revision_id=str(uuid4()),
+                slide_number=1,
+                documents=[{"file_name": "outline.pdf", "page_count": 2}],
+                passages=[
+                    {"source_id": "day01-d01-p001-s01", "file_name": "outline.pdf", "page": 1, "text": "Agenda: Intro & Q&A"},
+                    {"source_id": "day01-d01-p002-s01", "file_name": "outline.pdf", "page": 2, "text": "[Dàn ý] Tóm tắt bài"},
+                ],
+            )
+        res = self.client.post("/api/v1/attempts", json={"exam_id": "slide-01"})
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(res.json()["error"]["code"], "insufficient_evidence")
+
+    def test_hallucinated_citation_and_relative_option_blocked(self):
+        for case in ("relative_option", "fake_citation"):
+            with self.subTest(case=case):
+                def bad_gen(_exam_id, passages_by_slide, mode=case):
+                    p = passages_by_slide[2][0]
+                    return [
+                        {
+                            "question_id": f"q{i:02d}",
+                            "prompt": f"Câu {i}?",
+                            "options": [
+                                {"option_id": "a", "text": f"Đáp án A {i}"},
+                                {"option_id": "b", "text": f"Đáp án B {i}"},
+                                {"option_id": "c", "text": f"Đáp án C {i}"},
+                                {"option_id": "d", "text": "Cả A và B" if (mode == "relative_option" and i == 1) else f"Đáp án D {i}"},
+                            ],
+                            "correct_option_id": "a",
+                            "slide_number": 2,
+                            "citations": [{
+                                "slide_number": 2,
+                                "source_id": "day02-fake-999" if (mode == "fake_citation" and i == 1) else p["source_id"],
+                                "file_name": p["file_name"],
+                                "page": p["page"],
+                            }],
+                        }
+                        for i in range(1, 6)
+                    ]
+
+                app_bad = create_app(db_path=self.db_path, mode="fake", generator=bad_gen)
+                with TestClient(app_bad) as c:
+                    res = c.post("/api/v1/attempts", json={"exam_id": "slide-02"})
+                self.assertEqual(res.status_code, 422)
+                self.assertEqual(res.json()["error"]["code"], "insufficient_evidence")
