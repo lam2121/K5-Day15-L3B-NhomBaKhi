@@ -110,6 +110,7 @@ export function App() {
 
   const choose = (qid: string, optionId: string) => {
     if (!session || session.expired || session.result) return;
+    if (session.answers[qid]) return; // mỗi câu chỉ được chọn một lần
     setSession({ ...session, answers: { ...session.answers, [qid]: optionId }, missing: session.missing?.filter((id) => id !== qid) });
     if (bar.kind === 'confirm' || bar.kind === 'error') setBar({ kind: 'idle' });
   };

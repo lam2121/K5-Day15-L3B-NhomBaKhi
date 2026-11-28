@@ -20,6 +20,26 @@ const ERRORS: Record<string, [string, string]> = {
   internal_error: ['Máy chủ gặp lỗi', 'Thử lại sau ít phút. Nếu vẫn lỗi, báo Lâm kèm mã yêu cầu.'],
 };
 
+const ADMIN_STORE_KEY = 'cramai.admin.selected.v1';
+
+function loadSelected(): number | null {
+  try {
+    const n = Number(localStorage.getItem(ADMIN_STORE_KEY));
+    return Number.isInteger(n) && n >= 1 && n <= 14 ? n : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveSelected(n: number | null) {
+  try {
+    if (n === null) localStorage.removeItem(ADMIN_STORE_KEY);
+    else localStorage.setItem(ADMIN_STORE_KEY, String(n));
+  } catch {
+    /* storage unavailable: selection just isn't remembered */
+  }
+}
+
 type Flash = { kind: 'success' | 'error'; title: string; body: string } | null;
 
 function errorFlash(err: ApiError): Flash {
@@ -60,16 +80,22 @@ export function AdminApp() {
       (e) => setListError(asApiError(e)),
     );
   };
-  useEffect(loadSlots, []);
+  useEffect(() => {
+    loadSlots();
+    const saved = loadSelected();
+    if (saved !== null) select(saved, false, false);
+  }, []);
 
-  const select = (n: number, keepFlash = false) => {
+  const select = (n: number, keepFlash = false, focus = true) => {
     setSelected(n);
+    saveSelected(n);
     if (!keepFlash) setFlash(null);
     setDetail(null);
     setDetailError(null);
     request<AdminDetail>('GET', '/admin/slides/' + n).then(
       (d) => {
         setDetail(d);
+        if (!focus) return;
         requestAnimationFrame(() => {
           const title = titleRef.current;
           if (!title) return;

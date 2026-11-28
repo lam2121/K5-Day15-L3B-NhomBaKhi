@@ -239,16 +239,17 @@ export function Quiz(p: QuizProps) {
               {q.prompt}
             </h1>
             <fieldset ref={optionsRef} className="mt-6 grid gap-3">
-              <legend className="sr-only">Chọn một đáp án</legend>
+              <legend className="sr-only">{selectedOptionId ? 'Đã chọn đáp án, không đổi được' : 'Chọn một đáp án'}</legend>
               {q.options.map((opt) => {
                 const id = `opt-${q.question_id}-${opt.option_id}`;
                 const checked = session.answers[q.question_id] === opt.option_id;
+                const locked = !!session.expired || !!selectedOptionId;
                 return (
                   <label
                     key={opt.option_id}
                     htmlFor={id}
                     className={`group flex cursor-pointer items-center gap-4 rounded-[1.4rem] p-3 pr-4 ring-2 transition-[background-color,transform,box-shadow] has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-mint-deep has-[:disabled]:cursor-not-allowed ${
-                      checked ? 'bg-blush-soft ring-strawberry shadow-[0_3px_0_#F28076]' : 'bg-white ring-cocoa-line hover:-translate-y-0.5 hover:bg-cream-soft'
+                      checked ? 'bg-blush-soft ring-strawberry shadow-[0_3px_0_#F28076]' : locked ? 'bg-white ring-cocoa-line opacity-60' : 'bg-white ring-cocoa-line hover:-translate-y-0.5 hover:bg-cream-soft'
                     }`}
                   >
                     <input
@@ -257,14 +258,14 @@ export function Quiz(p: QuizProps) {
                       name={`answer-${q.question_id}`}
                       value={opt.option_id}
                       checked={checked}
-                      disabled={!!session.expired}
+                      disabled={locked}
                       onChange={() => p.onChoose(q.question_id, opt.option_id)}
                       className="sr-only"
                     />
                     <span
                       aria-hidden="true"
                       className={`grid h-11 w-11 shrink-0 place-items-center rounded-full font-display text-lg font-extrabold ring-2 ring-cocoa ${
-                        checked ? 'bg-strawberry' : 'bg-cream group-hover:bg-apricot'
+                        checked ? 'bg-strawberry' : locked ? 'bg-cream' : 'bg-cream group-hover:bg-apricot'
                       }`}
                     >
                       {opt.option_id.toUpperCase()}
