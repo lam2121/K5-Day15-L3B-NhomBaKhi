@@ -40,6 +40,34 @@ export interface Citation {
   page: number;
 }
 
+export interface ExplanationSourcePage extends Citation {
+  /** Extracted text for this cited page; it may be partial when false. */
+  text: string;
+  /** Same-origin, attempt-authorized PNG render of only the cited page, or null when unavailable. */
+  image_url: string | null;
+  /** True only when extraction covered the full page. */
+  text_is_complete: boolean;
+}
+
+export interface ExplanationResponse {
+  request_id: string;
+  attempt_id: string;
+  question_id: string;
+  selected_option_id: string;
+  correct_option_id: string;
+  explanation: string;
+  source_pages: ExplanationSourcePage[];
+}
+
+export interface AnswerCheckResponse {
+  request_id: string;
+  attempt_id: string;
+  question_id: string;
+  selected_option_id: string;
+  correct_option_id: string;
+  is_correct: boolean;
+}
+
 export interface ScoredQuestion {
   question_id: string;
   selected_option_id: string;

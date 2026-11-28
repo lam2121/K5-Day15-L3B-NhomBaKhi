@@ -305,9 +305,13 @@ def _revision_summary(conn: sqlite3.Connection, revision_id: str | None) -> dict
     ).fetchone()
     if row is None:
         return None
+    documents = json.loads(row["documents_json"])
     return {
         "revision_id": revision_id,
-        "documents": json.loads(row["documents_json"]),
+        "documents": [
+            {"file_name": document["file_name"], "page_count": document["page_count"]}
+            for document in documents
+        ],
         "passage_count": len(json.loads(row["passages_json"])),
     }
 
@@ -370,9 +374,16 @@ def get_admin_detail(conn: sqlite3.Connection, slide_number: int) -> dict:
     }
 
 
-def save_draft(conn: sqlite3.Connection, *, slide_number: int, documents: list[dict], passages: list[dict]) -> str:
+def save_draft(
+    conn: sqlite3.Connection,
+    *,
+    slide_number: int,
+    documents: list[dict],
+    passages: list[dict],
+    revision_id: str | None = None,
+) -> str:
     """Store a new revision as the slot's draft. The published pointer is left untouched."""
-    revision_id = str(uuid4())
+    revision_id = revision_id or str(uuid4())
     ts = datetime.now(timezone.utc).isoformat()
     with _tx(conn):
         conn.execute(
@@ -382,6 +393,20 @@ def save_draft(conn: sqlite3.Connection, *, slide_number: int, documents: list[d
         )
         conn.execute("UPDATE slide_slots SET draft_revision_id = ? WHERE slide_number = ?", (revision_id, slide_number))
     return revision_id
+
+
+def get_attempt_question(conn: sqlite3.Connection, *, attempt_id: str, question_id: str) -> dict:
+    """Return a private question snapshot only while its attempt is active."""
+    row = conn.execute(
+        "SELECT questions_json, expires_at FROM attempts WHERE attempt_id = ?",
+        (attempt_id,),
+    ).fetchone()
+    if row is None or datetime.now(timezone.utc) >= _parse_iso(row["expires_at"]):
+        raise GradingError("quiz_unavailable", 404, "Lượt làm bài không còn khả dụng. Hãy tạo lượt mới.")
+    for question in json.loads(row["questions_json"]):
+        if question.get("question_id") == question_id:
+            return question
+    raise GradingError("quiz_unavailable", 404, "Câu hỏi không thuộc lượt làm bài này.")
 
 
 def publish_draft(conn: sqlite3.Connection, *, slide_number: int, revision_id: str) -> None:

@@ -285,6 +285,144 @@
         }
       }
     },
+    "/attempts/{attempt_id}/questions/{question_id}/check": {
+      "post": {
+        "operationId": "checkQuestionAnswer",
+        "description": "After the learner selects an option, immediately returns correctness and the correct option from the private attempt snapshot. This does not generate an explanation or return citations/source pages.",
+        "parameters": [
+          {
+            "name": "attempt_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "format": "uuid"}
+          },
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "pattern": "^q[0-9]{2,}$"}
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/SelectedOptionRequest"},
+              "example": {"selected_option_id": "b"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Correctness feedback only",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/AnswerCheckResponse"}}}
+          },
+          "404": {
+            "description": "Attempt expired or question is unavailable",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          },
+          "422": {
+            "description": "Invalid selected option",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          }
+        }
+      }
+    },
+    "/attempts/{attempt_id}/questions/{question_id}/explanation": {
+      "post": {
+        "operationId": "explainQuestion",
+        "description": "Only after the learner explicitly asks, generate a grounded explanation and reveal the answer key. Original PDFs remain private in the mounted data volume; source pages are returned as one-page PNGs through an attempt- and citation-checked endpoint.",
+        "parameters": [
+          {
+            "name": "attempt_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "format": "uuid"}
+          },
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "pattern": "^q[0-9]{2,}$"}
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/SelectedOptionRequest"},
+              "example": {"selected_option_id": "b"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Answer and grounded explanation requested by the learner",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/ExplanationResponse"}
+              }
+            }
+          },
+          "404": {
+            "description": "Attempt expired or question is unavailable",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          },
+          "422": {
+            "description": "No cited source text or invalid selected option",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          },
+          "429": {
+            "description": "Model provider is busy",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          },
+          "502": {
+            "description": "Model provider failed to generate the explanation",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          }
+        }
+      }
+    },
+    "/attempts/{attempt_id}/questions/{question_id}/source-pages/{source_id}": {
+      "get": {
+        "operationId": "getAttemptSourcePage",
+        "description": "Returns only the cited page as a private PNG after validating the attempt, question, citation and expiry. The original PDF is never served to the browser.",
+        "parameters": [
+          {
+            "name": "attempt_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "format": "uuid"}
+          },
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "pattern": "^q[0-9]{2,}$"}
+          },
+          {
+            "name": "source_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "pattern": "^day(0[1-9]|1[0-4])-d[0-9]{2,}-p[0-9]{3,}-s[0-9]{2,}$"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cited source page rasterized from the private PDF",
+            "content": {"image/png": {"schema": {"type": "string", "format": "binary"}}},
+            "headers": {
+              "Cache-Control": {"schema": {"type": "string"}, "description": "private, no-store"},
+              "X-Content-Type-Options": {"schema": {"type": "string"}, "description": "nosniff"}
+            }
+          },
+          "404": {
+            "description": "Page is not part of this attempt or the private source is unavailable",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}
+          }
+        }
+      }
+    },
     "/submissions": {
       "post": {
         "operationId": "submitAttempt",
@@ -1087,6 +1225,65 @@
         ],
         "additionalProperties": false
       },
+      "SelectedOptionRequest": {
+        "type": "object",
+        "properties": {
+          "selected_option_id": {"type": "string", "enum": ["a", "b", "c", "d"]}
+        },
+        "required": ["selected_option_id"],
+        "additionalProperties": false
+      },
+      "AnswerCheckResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {"type": "string", "format": "uuid"},
+          "attempt_id": {"type": "string", "format": "uuid"},
+          "question_id": {"type": "string", "pattern": "^q[0-9]{2,}$"},
+          "selected_option_id": {"type": "string", "enum": ["a", "b", "c", "d"]},
+          "correct_option_id": {"type": "string", "enum": ["a", "b", "c", "d"]},
+          "is_correct": {"type": "boolean"}
+        },
+        "required": ["request_id", "attempt_id", "question_id", "selected_option_id", "correct_option_id", "is_correct"],
+        "additionalProperties": false
+      },
+      "ExplanationResponse": {
+        "type": "object",
+        "properties": {
+          "request_id": {"type": "string", "format": "uuid"},
+          "attempt_id": {"type": "string", "format": "uuid"},
+          "question_id": {"type": "string", "pattern": "^q[0-9]{2,}$"},
+          "selected_option_id": {"type": "string", "enum": ["a", "b", "c", "d"]},
+          "correct_option_id": {"type": "string", "enum": ["a", "b", "c", "d"]},
+          "explanation": {"type": "string", "minLength": 1, "maxLength": 3000},
+          "source_pages": {
+            "type": "array",
+            "items": {"$ref": "#/components/schemas/ExplanationSourcePage"},
+            "minItems": 1
+          }
+        },
+        "required": ["request_id", "attempt_id", "question_id", "selected_option_id", "correct_option_id", "explanation", "source_pages"],
+        "additionalProperties": false
+      },
+      "ExplanationSourcePage": {
+        "type": "object",
+        "properties": {
+          "slide_number": {"type": "integer", "minimum": 1, "maximum": 14},
+          "source_id": {"type": "string", "pattern": "^day(0[1-9]|1[0-4])-d[0-9]{2,}-p[0-9]{3,}-s[0-9]{2,}$"},
+          "file_name": {"type": "string", "minLength": 1},
+          "page": {"type": "integer", "minimum": 1},
+          "text": {"type": "string", "minLength": 1},
+          "text_is_complete": {"type": "boolean", "description": "True when text is the full extracted text of this PDF page; false for a partial legacy/demo passage."},
+          "image_url": {
+            "oneOf": [
+              {"type": "string", "format": "uri-reference"},
+              {"type": "null"}
+            ],
+            "description": "Same-origin private PNG route; null if the original PDF is unavailable."
+          }
+        },
+        "required": ["slide_number", "source_id", "file_name", "page", "text", "image_url", "text_is_complete"],
+        "additionalProperties": false
+      },
       "SubmissionResponse": {
         "type": "object",
         "properties": {
@@ -1370,6 +1567,7 @@
                 "type": "string",
                 "enum": [
                   "invalid_input",
+                  "too_large",
                   "exam_unavailable",
                   "insufficient_evidence",
                   "upstream_error",
@@ -1382,6 +1580,7 @@
                   "unsupported_file",
                   "invalid_document",
                   "stale_draft",
+                  "source_unavailable",
                   "internal_error"
                 ]
               },

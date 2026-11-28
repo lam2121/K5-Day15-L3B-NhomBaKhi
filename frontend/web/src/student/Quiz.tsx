@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MiniMacaron, type MacaronState } from '../art/art';
+import { asApiError, request } from '../shared/api';
+import type { AnswerCheckResponse, ExplanationResponse, ExplanationSourcePage } from '../shared/types';
 import { Icon, Notice } from '../shared/ui';
 import type { Session } from './session';
 
@@ -9,6 +11,11 @@ export type BarState =
   | { kind: 'confirm' }
   | { kind: 'sending' }
   | { kind: 'error'; title: string; body: string; action: 'retry' | 'submit' | 'home' };
+
+type AnswerCheck =
+  | { key: string; kind: 'checking' }
+  | { key: string; kind: 'result'; isCorrect: boolean; correctOptionId: string }
+  | { key: string; kind: 'error'; message: string };
 
 interface QuizProps {
   session: Session;
@@ -69,7 +76,28 @@ export function Quiz(p: QuizProps) {
   const q = questions[index];
   const slideNumber = session.attempt.exam_id === 'midterm' ? null : session.attempt.exam_id.slice(-2);
   const answered = questions.filter((x) => !!session.answers[x.question_id]).length;
+  const selectedOptionId = session.answers[q.question_id] ?? '';
   const optionsRef = useRef<HTMLFieldSetElement>(null);
+  const explainButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const requestKeyRef = useRef('');
+  const checkRequestKeyRef = useRef('');
+  const checkSequenceRef = useRef(0);
+  const lastSelectionRef = useRef({ attemptId: session.attempt.attempt_id, questionId: q.question_id, optionId: '' });
+  const [answerCheck, setAnswerCheck] = useState<AnswerCheck | null>(null);
+  const [explanation, setExplanation] = useState<ExplanationResponse | null>(null);
+  const [explanationLoading, setExplanationLoading] = useState(false);
+  const [explanationError, setExplanationError] = useState('');
+  const [activeSource, setActiveSource] = useState(0);
+  const [imageUnavailable, setImageUnavailable] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const requestKey = `${q.question_id}:${selectedOptionId}`;
+  requestKeyRef.current = requestKey;
+  const answerCheckKey = `${session.attempt.attempt_id}:${q.question_id}:${selectedOptionId}`;
+  const currentAnswerCheck = answerCheck?.key === answerCheckKey ? answerCheck : null;
+  checkRequestKeyRef.current = answerCheckKey;
+  const currentExplanation = explanation?.question_id === q.question_id && explanation.selected_option_id === selectedOptionId ? explanation : null;
+  const sourcePage = currentExplanation?.source_pages[Math.min(activeSource, currentExplanation.source_pages.length - 1)] ?? null;
 
   // Move focus to the chosen or first option when the question changes.
   useEffect(() => {
@@ -78,6 +106,96 @@ export function Quiz(p: QuizProps) {
     const target = root.querySelector<HTMLInputElement>('input:checked') ?? root.querySelector<HTMLInputElement>('input');
     target?.focus({ preventScroll: true });
   }, [index]);
+
+  // A changed question or answer invalidates any explanation and closes its dialog.
+  useEffect(() => {
+    setExplanation(null);
+    setExplanationLoading(false);
+    setExplanationError('');
+    setActiveSource(0);
+    setImageUnavailable(false);
+    if (dialogRef.current?.open) dialogRef.current.close();
+    setDialogOpen(false);
+  }, [q.question_id, selectedOptionId]);
+
+  useEffect(() => {
+    setImageUnavailable(false);
+  }, [sourcePage?.source_id]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (dialogOpen && !dialog.open) {
+      dialog.showModal();
+      dialog.querySelector<HTMLButtonElement>('[data-dialog-close]')?.focus();
+    } else if (!dialogOpen && dialog.open) {
+      dialog.close();
+    }
+  }, [dialogOpen]);
+
+  const checkAnswer = (questionId: string, optionId: string) => {
+    if (!optionId || session.expired) return;
+    const key = `${session.attempt.attempt_id}:${questionId}:${optionId}`;
+    const sequence = ++checkSequenceRef.current;
+    checkRequestKeyRef.current = key;
+    setAnswerCheck({ key, kind: 'checking' });
+    request<AnswerCheckResponse>(
+      'POST',
+      `/attempts/${encodeURIComponent(session.attempt.attempt_id)}/questions/${encodeURIComponent(questionId)}/check`,
+      { selected_option_id: optionId },
+    ).then(
+      (response) => {
+        if (sequence !== checkSequenceRef.current || checkRequestKeyRef.current !== key) return;
+        setAnswerCheck({ key, kind: 'result', isCorrect: response.is_correct, correctOptionId: response.correct_option_id });
+      },
+      (error) => {
+        if (sequence !== checkSequenceRef.current || checkRequestKeyRef.current !== key) return;
+        const apiError = asApiError(error);
+        setAnswerCheck({ key, kind: 'error', message: apiError.message || 'Chưa kiểm tra được đáp án. Hãy thử lại.' });
+      },
+    );
+  };
+
+  // Check once when a choice changes. Navigating to another answered question
+  // clears feedback but does not make a second request for the old choice.
+  useEffect(() => {
+    const previous = lastSelectionRef.current;
+    const sameAttempt = previous.attemptId === session.attempt.attempt_id;
+    const sameQuestion = sameAttempt && previous.questionId === q.question_id;
+    const changedChoice = sameQuestion && previous.optionId !== selectedOptionId;
+    const changedQuestionOrChoice = !sameQuestion || changedChoice;
+    lastSelectionRef.current = { attemptId: session.attempt.attempt_id, questionId: q.question_id, optionId: selectedOptionId };
+    if (changedQuestionOrChoice) setAnswerCheck(null);
+    if (changedQuestionOrChoice && selectedOptionId && !session.expired) checkAnswer(q.question_id, selectedOptionId);
+  }, [session.attempt.attempt_id, session.expired, q.question_id, selectedOptionId]);
+
+  const loadExplanation = async () => {
+    if (!selectedOptionId || session.expired || explanationLoading) return;
+    if (currentExplanation) {
+      setDialogOpen(true);
+      return;
+    }
+    const sentKey = requestKey;
+    setExplanationLoading(true);
+    setExplanationError('');
+    try {
+      const response = await request<ExplanationResponse>(
+        'POST',
+        `/attempts/${encodeURIComponent(session.attempt.attempt_id)}/questions/${encodeURIComponent(q.question_id)}/explanation`,
+        { selected_option_id: selectedOptionId },
+      );
+      if (requestKeyRef.current !== sentKey) return;
+      setExplanation(response);
+      setActiveSource(0);
+      setDialogOpen(true);
+    } catch (error) {
+      if (requestKeyRef.current !== sentKey) return;
+      const apiError = asApiError(error);
+      setExplanationError(apiError.message || 'Chưa tải được lời giải. Hãy thử lại.');
+    } finally {
+      if (requestKeyRef.current === sentKey) setExplanationLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6 pb-36">
@@ -161,6 +279,50 @@ export function Quiz(p: QuizProps) {
               })}
             </fieldset>
 
+            {selectedOptionId && currentAnswerCheck && (
+              <div className="mt-4 min-h-8" aria-live="polite" aria-atomic="true">
+                {currentAnswerCheck.kind === 'checking' ? (
+                  <p role="status" aria-busy="true" className="font-bold text-cocoa-soft">Đang kiểm tra đáp án…</p>
+                ) : currentAnswerCheck.kind === 'result' ? (
+                  <div role="status" className={`rounded-xl p-3 ring-2 ${currentAnswerCheck.isCorrect ? 'bg-mint-soft text-mint-deep ring-mint' : 'bg-blush-soft text-strawberry-ink ring-strawberry/50'}`}>
+                    <p className="font-display text-lg font-extrabold">{currentAnswerCheck.isCorrect ? 'Đúng' : 'Chưa đúng'}</p>
+                    <p className="mt-1 font-bold">
+                      Đáp án đúng: {currentAnswerCheck.correctOptionId.toUpperCase()} · {q.options.find((option) => option.option_id === currentAnswerCheck.correctOptionId)?.text ?? 'Xem trên slide'}
+                    </p>
+                  </div>
+                ) : (
+                  <div role="alert" className="flex flex-wrap items-center gap-3 text-sm font-bold text-strawberry-ink">
+                    <span>{currentAnswerCheck.message}</span>
+                    <button type="button" className="btn btn-quiet" onClick={() => checkAnswer(q.question_id, selectedOptionId)}>Kiểm tra lại</button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {selectedOptionId && (
+              <div className="mt-5">
+                <button
+                  ref={explainButtonRef}
+                  type="button"
+                  className="btn btn-secondary"
+                  disabled={!!session.expired || explanationLoading}
+                  aria-busy={explanationLoading}
+                  aria-haspopup="dialog"
+                  aria-controls="question-explanation-dialog"
+                  onClick={loadExplanation}
+                >
+                  <Icon name="file" />
+                  {explanationLoading ? 'Đang đọc slide và tạo lời giải…' : currentExplanation ? 'Mở lại slide và lời giải' : 'Xem slide và lời giải'}
+                </button>
+                <p className="mt-2 text-sm text-cocoa-soft">
+                  {session.attempt.mode === 'fake'
+                    ? 'Chế độ mẫu: trang nguồn và lời giải được mô phỏng để xem giao diện.'
+                    : 'Khi bấm, bạn sẽ thấy trang nguồn và lời giải thích dễ hiểu do AI tạo.'}
+                </p>
+                {explanationError && <p role="alert" className="mt-2 text-sm font-bold text-strawberry-ink">{explanationError}</p>}
+              </div>
+            )}
+
             <div className="mt-6 flex flex-wrap gap-3">
               <button type="button" className="btn btn-secondary" disabled={index === 0} onClick={() => p.onGo(index - 1)}>
                 <Icon name="left" /> Câu trước
@@ -188,9 +350,146 @@ export function Quiz(p: QuizProps) {
         </aside>
       </div>
 
+      <ExplanationDialog
+        dialogRef={dialogRef}
+        explanation={currentExplanation}
+        options={q.options}
+        sourcePage={sourcePage}
+        activeSource={activeSource}
+        imageUnavailable={imageUnavailable}
+        onImageError={() => setImageUnavailable(true)}
+        onSelectSource={setActiveSource}
+        onClose={() => setDialogOpen(false)}
+      />
+
       {!session.expired && <ActionTray {...p} answered={answered} total={questions.length} />}
     </div>
   );
+}
+
+function ExplanationDialog({
+  dialogRef,
+  explanation,
+  options,
+  sourcePage,
+  activeSource,
+  imageUnavailable,
+  onImageError,
+  onSelectSource,
+  onClose,
+}: {
+  dialogRef: React.RefObject<HTMLDialogElement>;
+  explanation: ExplanationResponse | null;
+  options: { option_id: string; text: string }[];
+  sourcePage: ExplanationSourcePage | null;
+  activeSource: number;
+  imageUnavailable: boolean;
+  onImageError: () => void;
+  onSelectSource: (index: number) => void;
+  onClose: () => void;
+}) {
+  const questionTitle = explanation ? `Slide ${String(sourcePage?.slide_number ?? '').padStart(2, '0')} · trang ${sourcePage?.page ?? ''}` : 'Lời giải';
+  const imageUrl = sourcePage?.image_url ? sameOriginUrl(sourcePage.image_url) : null;
+  const correctOption = explanation?.correct_option_id;
+
+  return (
+    <dialog
+      ref={dialogRef}
+      id="question-explanation-dialog"
+      aria-labelledby="explanation-title"
+      onClose={onClose}
+      onClick={(event) => {
+        if (event.target === dialogRef.current) onClose();
+      }}
+      className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto border-0 bg-transparent p-3 backdrop:bg-cocoa/60 sm:p-6"
+    >
+      {explanation && (
+        <div className="mx-auto my-2 max-w-7xl rounded-blob bg-cream p-4 shadow-lift ring-2 ring-cocoa-line sm:my-6 sm:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="inline-flex rounded-pill bg-mint px-3 py-1 font-display font-bold">Nguồn và lời giải</p>
+              <h2 id="explanation-title" className="mt-2 text-2xl font-extrabold sm:text-3xl">{questionTitle}</h2>
+              <p className="mt-1 text-sm text-cocoa-soft">Trang nguồn và lời giải được mở theo yêu cầu của bạn.</p>
+            </div>
+            <button data-dialog-close type="button" className="btn btn-secondary" onClick={onClose}>
+              <Icon name="cross" /> Đóng
+            </button>
+          </div>
+
+          {explanation.source_pages.length > 1 && (
+            <nav aria-label="Trang nguồn của câu hỏi" className="mt-4 flex flex-wrap gap-2">
+              {explanation.source_pages.map((source, index) => (
+                <button
+                  key={source.source_id}
+                  type="button"
+                  aria-pressed={activeSource === index}
+                  onClick={() => onSelectSource(index)}
+                  className={`rounded-pill px-4 py-2 font-bold ring-2 transition-colors ${activeSource === index ? 'bg-strawberry ring-cocoa' : 'bg-white ring-cocoa-line hover:bg-cream-soft'}`}
+                >
+                  Slide {String(source.slide_number).padStart(2, '0')} · trang {source.page}
+                </button>
+              ))}
+            </nav>
+          )}
+
+          <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.7fr)]">
+            <section aria-labelledby="source-page-title" className="min-w-0">
+              <h3 id="source-page-title" className="mb-2 text-xl font-bold">Trang slide đầy đủ · {sourcePage?.file_name ?? 'Nguồn'}</h3>
+              {sourcePage && imageUrl && !imageUnavailable ? (
+                <div className="max-h-[72vh] overflow-auto rounded-2xl bg-white p-2 shadow-plate ring-2 ring-cocoa-line sm:p-4">
+                  <img
+                    src={imageUrl}
+                    alt={`Toàn bộ trang ${sourcePage.page} của ${sourcePage.file_name}`}
+                    className="mx-auto h-auto max-h-[68vh] w-auto max-w-full object-contain"
+                    onError={onImageError}
+                  />
+                </div>
+              ) : sourcePage ? (
+                <div className="min-h-[26rem] rounded-2xl bg-white p-5 shadow-plate ring-2 ring-cocoa-line sm:p-8">
+                  <p className="mb-4 rounded-xl bg-cream-soft p-3 text-sm text-cocoa-soft">
+                    {sourcePage.text_is_complete
+                      ? imageUnavailable
+                        ? 'Không tải được ảnh trang slide gốc. Bên dưới là toàn bộ văn bản trích xuất được của trang; bố cục và hình minh họa gốc không được hiển thị.'
+                        : 'Ảnh trang slide gốc chưa có trên máy chủ. Bên dưới là toàn bộ văn bản trích xuất được của trang; bố cục và hình minh họa gốc không được hiển thị.'
+                      : imageUnavailable
+                        ? 'Không tải được ảnh trang slide gốc. Bên dưới chỉ có phần văn bản trích xuất hiện có; phần này có thể chưa gồm toàn bộ nội dung trang, bố cục hoặc hình minh họa.'
+                        : 'Ảnh trang slide gốc chưa có trên máy chủ. Bên dưới chỉ có phần văn bản trích xuất hiện có; phần này có thể chưa gồm toàn bộ nội dung trang, bố cục hoặc hình minh họa.'}
+                  </p>
+                  <p className="mb-3 font-display text-lg font-bold">Slide {String(sourcePage.slide_number).padStart(2, '0')} · trang {sourcePage.page}</p>
+                  <pre className="whitespace-pre-wrap break-words font-body text-base leading-relaxed text-cocoa">{sourcePage.text || 'Trang nguồn chưa có văn bản trích xuất.'}</pre>
+                </div>
+              ) : (
+                <p className="rounded-2xl bg-white p-5 text-cocoa-soft ring-2 ring-cocoa-line">Không có trang nguồn cho câu này.</p>
+              )}
+              {sourcePage && <p className="mt-2 break-all text-sm text-cocoa-soft">Nguồn: {sourcePage.file_name} · trang {sourcePage.page} · {sourcePage.source_id}</p>}
+            </section>
+
+            <section aria-labelledby="explanation-title" className="rounded-blob bg-white p-5 shadow-plate ring-2 ring-cocoa-line sm:p-6">
+              <h3 className="text-xl font-extrabold">Lời giải dễ hiểu</h3>
+              <p className="mt-3 rounded-xl bg-mint-soft p-3 font-bold text-mint-deep">
+                Đáp án đúng: {correctOption?.toUpperCase()} · {options.find((option) => option.option_id === correctOption)?.text ?? 'Xem trên trang slide'}
+              </p>
+              {explanation.selected_option_id !== correctOption && (
+                <p className="mt-3 rounded-xl bg-blush-soft p-3 text-strawberry-ink">
+                  Bạn đã chọn {explanation.selected_option_id.toUpperCase()}. Hãy đối chiếu lựa chọn này với đáp án đúng trên slide.
+                </p>
+              )}
+              <p className="mt-4 whitespace-pre-wrap leading-relaxed text-cocoa">{explanation.explanation}</p>
+            </section>
+          </div>
+        </div>
+      )}
+    </dialog>
+  );
+}
+
+function sameOriginUrl(value: string): string | null {
+  try {
+    const url = new URL(value, window.location.origin);
+    return url.origin === window.location.origin ? url.toString() : null;
+  } catch {
+    return null;
+  }
 }
 
 function ActionTray(p: QuizProps & { answered: number; total: number }) {

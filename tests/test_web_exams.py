@@ -260,6 +260,54 @@ class WebExamsTest(unittest.TestCase):
         new = self._submit(self._attempt("slide-09").json(), "a").json()
         self.assertEqual({c["file_name"] for item in new["items"] for c in item["citations"]}, {"cap-nhat.pdf"})
 
+    @unittest.skipUnless(HAS_PDF, "pymupdf not installed")
+    def test_answer_check_and_optional_explanation_keep_private_full_page(self) -> None:
+        import pymupdf
+
+        source_text = "A network uses protocols to define how clients and servers exchange messages. " * 45
+        doc = pymupdf.open()
+        doc.new_page().insert_textbox(pymupdf.Rect(36, 36, 560, 800), source_text, fontsize=8)
+        upload = self.client.put(
+            "/api/v1/admin/slides/3/draft",
+            files=[("files", ("network.pdf", doc.tobytes(), "application/pdf"))],
+            headers=AUTH,
+        )
+        doc.close()
+        self.assertEqual(upload.status_code, 200, upload.text)
+        revision_id = upload.json()["slot"]["draft"]["revision_id"]
+        published = self.client.post(
+            "/api/v1/admin/slides/3/publish",
+            json={"revision_id": revision_id},
+            headers=AUTH,
+        )
+        self.assertEqual(published.status_code, 200, published.text)
+
+        attempt = self._attempt("slide-03").json()
+        question = attempt["questions"][0]
+        check = self.client.post(
+            f"/api/v1/attempts/{attempt['attempt_id']}/questions/{question['question_id']}/check",
+            json={"selected_option_id": "a"},
+        )
+        self.assertEqual(check.status_code, 200, check.text)
+        self.assertTrue(check.json()["is_correct"])
+        self.assertEqual(check.json()["correct_option_id"], "a")
+        self.assertNotIn("citations", check.json())
+        self.assertNotIn("explanation", check.json())
+
+        explanation = self.client.post(
+            f"/api/v1/attempts/{attempt['attempt_id']}/questions/{question['question_id']}/explanation",
+            json={"selected_option_id": "a"},
+        )
+        self.assertEqual(explanation.status_code, 200, explanation.text)
+        source = explanation.json()["source_pages"][0]
+        self.assertTrue(source["text_is_complete"])
+        self.assertGreater(len(source["text"]), 1200)
+        self.assertTrue(source["image_url"])
+
+        image = self.client.get(source["image_url"])
+        self.assertEqual((image.status_code, image.headers.get("content-type")), (200, "image/png"))
+        self.assertEqual(image.headers.get("cache-control"), "private, no-store")
+
 
 if __name__ == "__main__":
     unittest.main()

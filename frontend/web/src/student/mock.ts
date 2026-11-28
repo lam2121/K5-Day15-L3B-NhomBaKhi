@@ -7,7 +7,7 @@
    expire after 45 s). Slide 14 returns insufficient_evidence; slide 13 returns
    busy (429) on the first try. */
 import { ApiError, pad2, type Body } from '../shared/api';
-import type { AttemptResponse, CatalogExam, Citation, SubmissionResponse } from '../shared/types';
+import type { AttemptResponse, CatalogExam, Citation, ExplanationResponse, SubmissionResponse } from '../shared/types';
 
 const scenario = new URLSearchParams(window.location.search).get('scenario') || 'partial';
 const DELAY = 700;
@@ -150,6 +150,62 @@ function handle(method: string, path: string, body?: Body): unknown {
     };
     record.submitted = { sig, result };
     persist(record);
+    return result;
+  }
+  const checkRoute = path.match(/^\/attempts\/([^/]+)\/questions\/([^/]+)\/check$/);
+  if (method === 'POST' && checkRoute) {
+    const [, attemptId, questionId] = checkRoute;
+    const req = body as { selected_option_id?: string };
+    const record = findAttempt(attemptId);
+    if (!record) throw fail(404, 'quiz_unavailable', 'Không tìm thấy lượt làm bài');
+    if (Date.parse(record.attempt.expires_at) <= Date.now() && !record.submitted) throw fail(404, 'quiz_unavailable', 'Lượt đã hết hạn');
+    const question = record.attempt.questions.find((item) => item.question_id === questionId);
+    const correct = record.key[questionId];
+    const selected = req?.selected_option_id;
+    if (typeof selected !== 'string' || !question || !correct || !question.options.some((option) => option.option_id === selected)) {
+      throw fail(422, 'invalid_input', 'Câu hỏi hoặc lựa chọn không hợp lệ');
+    }
+    return {
+      request_id: uuid(),
+      attempt_id: attemptId,
+      question_id: questionId,
+      selected_option_id: selected,
+      correct_option_id: correct.correct,
+      is_correct: correct.correct === selected,
+    };
+  }
+  const explanationRoute = path.match(/^\/attempts\/([^/]+)\/questions\/([^/]+)\/explanation$/);
+  if (method === 'POST' && explanationRoute) {
+    const [, attemptId, questionId] = explanationRoute;
+    const req = body as { selected_option_id?: string };
+    const record = findAttempt(attemptId);
+    if (!record) throw fail(404, 'quiz_unavailable', 'Không tìm thấy lượt làm bài');
+    if (Date.parse(record.attempt.expires_at) <= Date.now() && !record.submitted) throw fail(404, 'quiz_unavailable', 'Lượt đã hết hạn');
+    const question = record.attempt.questions.find((item) => item.question_id === questionId);
+    const correct = record.key[questionId];
+    const selected = req?.selected_option_id;
+    if (typeof selected !== 'string' || !question || !correct || !question.options.some((option) => option.option_id === selected)) {
+      throw fail(422, 'invalid_input', 'Câu hỏi hoặc lựa chọn không hợp lệ');
+    }
+    const source = correct.citations[0];
+    const correctText = question.options.find((option) => option.option_id === correct.correct)?.text ?? '';
+    const selectedText = question.options.find((option) => option.option_id === selected)?.text ?? '';
+    const result: ExplanationResponse = {
+      request_id: uuid(),
+      attempt_id: attemptId,
+      question_id: questionId,
+      selected_option_id: selected,
+      correct_option_id: correct.correct,
+      explanation: selected === correct.correct
+        ? `Bạn chọn đúng. ${correctText} là phương án phù hợp với nội dung của trang nguồn.`
+        : `Bạn chọn “${selectedText}”. Đáp án đúng là “${correctText}”, vì nội dung trang nguồn xác nhận phương án này.`,
+      source_pages: [{
+        ...source,
+        text: `Nội dung trích xuất mô phỏng từ ${source.file_name}, trang ${source.page}. Dữ liệu trong chế độ demo là giả lập, không phải nội dung slide thật.`,
+        image_url: null,
+        text_is_complete: false,
+      }],
+    };
     return result;
   }
   throw fail(404, 'internal_error', 'Không có route mock');
