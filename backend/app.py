@@ -34,7 +34,11 @@ from db import (
     session,
     submit_attempt_tx,
 )
-from grading import GradingError
+from grading import (
+    GradingError,
+    filter_substantive_passages,
+    validate_generated_questions,
+)
 
 _EXAM_ID_PATTERN = r"^(slide-(0[1-9]|1[0-4])|midterm)$"
 _ATTEMPT_TTL = timedelta(minutes=60)
@@ -189,15 +193,20 @@ def _document_path(
     file_name: str,
     storage_key: str | None = None,
     *,
-    document_dir: str | Path | None = None,
+    document_dir: Path,
 ) -> Path | None:
     """Resolve a PDF only inside the private mounted document directory."""
-    document_root = Path(document_dir or os.environ.get("CRAMAI_DOCUMENT_DIR", _DEFAULT_DOCUMENT_DIR)).resolve()
+    document_root = document_dir.resolve()
     relative_key = (storage_key or Path(file_name.replace("\\", "/")).name).replace("\\", "/")
     candidate = (document_root / relative_key).resolve()
     if candidate.suffix.lower() != ".pdf" or not candidate.is_relative_to(document_root) or not candidate.is_file():
         return None
     return candidate
+
+
+def _assert_valid_option(question: dict, option_id: str, message: str) -> None:
+    if option_id not in {option["option_id"] for option in question.get("options", [])}:
+        raise GradingError("invalid_answers", 422, message)
 
 
 def _explanation_for(question: dict, selected_option_id: str, *, fake: bool) -> str:
@@ -279,21 +288,6 @@ def _to_public_questions(questions: list[dict]) -> list[dict]:
         {"question_id": q["question_id"], "prompt": q["prompt"], "options": q["options"]}
         for q in questions
     ]
-
-
-def _validate_exam_coverage(exam_id: str, questions: list[dict]) -> None:
-    """Fail closed if the generated questions do not match the selected scope."""
-    expected_count = 14 if exam_id == "midterm" else 5
-    if len(questions) != expected_count:
-        raise GradingError("insufficient_evidence", 422, "Chưa đủ câu hỏi có căn cứ để tạo đề này.")
-    if exam_id == "midterm":
-        slide_numbers = [question.get("slide_number") for question in questions]
-        if sorted(slide_numbers) != list(range(1, 15)):
-            raise GradingError("insufficient_evidence", 422, "Chưa đủ căn cứ để tạo đề có đủ 14 bộ slide.")
-    else:
-        requested_slide = int(exam_id.split("-")[1])
-        if any(question.get("slide_number") != requested_slide for question in questions):
-            raise GradingError("upstream_error", 502, "Model trả đề không đúng phạm vi đã chọn.")
 
 
 def create_app(
@@ -388,10 +382,11 @@ def create_app(
     def create_attempt(body: AttemptRequest) -> dict:
         with session(resolved_db) as conn:
             passages_by_slide = get_published_passages(conn, body.exam_id)
+        clean_passages = filter_substantive_passages(passages_by_slide)
         if app.state.mode == "live" and generator is None and MODEL_PROVIDER == "fake":
             raise GradingError("upstream_error", 503, "Chưa cấu hình model thật cho dịch vụ web.")
         try:
-            questions = generate(body.exam_id, passages_by_slide)
+            questions = generate(body.exam_id, clean_passages)
         except InsufficientExamEvidence as exc:
             raise GradingError("insufficient_evidence", 422, str(exc)) from None
         except GradingError:
@@ -402,8 +397,8 @@ def create_app(
             raise GradingError("upstream_error", 502, "Chưa gọi được model. Hãy thử lại sau.") from None
         except Exception:  # model or network failure: no attempt is stored
             raise GradingError("upstream_error", 502, "Chưa gọi được model. Hãy thử lại sau.") from None
-        _validate_exam_coverage(body.exam_id, questions)
-        _source_passage_pages(questions, passages_by_slide)
+        validate_generated_questions(body.exam_id, questions, clean_passages)
+        _source_passage_pages(questions, clean_passages)
 
         now = datetime.now(timezone.utc)
         expires_at = now + _ATTEMPT_TTL
@@ -444,9 +439,7 @@ def create_app(
     def check_question(attempt_id: UUID, question_id: str, body: SelectedOptionRequest) -> dict:
         with session(resolved_db) as conn:
             question = get_attempt_question(conn, attempt_id=str(attempt_id), question_id=question_id)
-        option_ids = {option["option_id"] for option in question.get("options", [])}
-        if body.selected_option_id not in option_ids:
-            raise GradingError("invalid_answers", 422, "Chọn một đáp án hợp lệ cho câu hỏi.")
+        _assert_valid_option(question, body.selected_option_id, "Chọn một đáp án hợp lệ cho câu hỏi.")
         return {
             "request_id": str(uuid4()),
             "attempt_id": str(attempt_id),
@@ -460,9 +453,7 @@ def create_app(
     def explain_question(attempt_id: UUID, question_id: str, body: SelectedOptionRequest) -> dict:
         with session(resolved_db) as conn:
             question = get_attempt_question(conn, attempt_id=str(attempt_id), question_id=question_id)
-        option_ids = {option["option_id"] for option in question.get("options", [])}
-        if body.selected_option_id not in option_ids:
-            raise GradingError("invalid_answers", 422, "Chọn một đáp án hợp lệ trước khi mở giải thích.")
+        _assert_valid_option(question, body.selected_option_id, "Chọn một đáp án hợp lệ trước khi mở giải thích.")
 
         pages: list[dict] = []
         for page in question.get("_source_pages", []):
@@ -567,7 +558,7 @@ def create_app(
             total += len(data)
             if total > _MAX_TOTAL_BYTES:
                 raise GradingError("too_large", 413, "Tổng dung lượng tối đa 25 MB.")
-            if not name.lower().endswith(".pdf") or not data.startswith(b"%PDF-"):
+            if not data.startswith(b"%PDF-"):
                 raise GradingError("unsupported_file", 415, "Chỉ hỗ trợ PDF.")
             payload.append((name, data))
 
