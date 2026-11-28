@@ -13,7 +13,7 @@ ROLE_FILES = {
         ".gitignore", ".dockerignore", ".env.example", "AGENTS.md", "README.md", "TEAMS.md",
         "spec.md", "tasks.md", "requirements.txt", "codebase/ai.py", "codebase/contracts.py",
         ".github/workflows/ci.yml", "docs/agents.md", "docs/ci-cd.md", "docs/connect-model.md",
-        "docs/ai-usage.md", "eval/README.md",
+        "docs/ai-usage.md", "docs/deploy-oracle-vps.md", "eval/README.md",
         "reflection/nguyen-van-lam.md",
     },
     "hung": {"codebase/agent.py", "eval/report.md", "reflection/nguyen-duy-hung.md"},

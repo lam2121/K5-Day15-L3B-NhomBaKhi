@@ -38,3 +38,4 @@ Makefile
 run.py
 requirements.txt
 frontend/web
+deploy/oracle/.env.oracle

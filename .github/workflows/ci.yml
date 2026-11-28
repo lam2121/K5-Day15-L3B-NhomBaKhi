@@ -64,7 +64,7 @@ jobs:
         shell: bash
         run: |
           case "$PR_BRANCH" in
-            lam|cramai/lam-integration) role=lam ;;
+            lam|cramai/lam-integration|cramai/lam-oracle-vps) role=lam ;;
             cramai/hung-workflow) role=hung ;;
             cramai/khiem-data) role=khiem ;;
             cramai/phuoc-anh-product) role=phuoc-anh ;;
@@ -158,3 +158,77 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           compression-level: 0
+  deploy-oracle:
+    name: Deploy to Oracle VPS
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      vars.ORACLE_VPS_DEPLOY_ENABLED == 'true'
+    needs: [test, web]
+    environment: oracle-production
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: oracle-production-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Validate deployment secrets
+        env:
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+          ORACLE_SSH_USER: ${{ secrets.ORACLE_SSH_USER }}
+          ORACLE_SSH_PRIVATE_KEY: ${{ secrets.ORACLE_SSH_PRIVATE_KEY }}
+          ORACLE_SSH_KNOWN_HOSTS: ${{ secrets.ORACLE_SSH_KNOWN_HOSTS }}
+          ORACLE_DEPLOY_PATH: ${{ secrets.ORACLE_DEPLOY_PATH }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in ORACLE_HOST ORACLE_SSH_USER ORACLE_SSH_PRIVATE_KEY ORACLE_SSH_KNOWN_HOSTS ORACLE_DEPLOY_PATH; do
+            if [[ -z "${!name}" ]]; then
+              echo "Missing required environment secret: $name" >&2
+              exit 1
+            fi
+          done
+          if [[ ! "$ORACLE_HOST" =~ ^[A-Za-z0-9.-]+$ ]]; then
+            echo "ORACLE_HOST must be an IPv4 address or DNS hostname." >&2
+            exit 1
+          fi
+          if [[ ! "$ORACLE_SSH_USER" =~ ^[A-Za-z_][A-Za-z0-9_-]*$ ]]; then
+            echo "ORACLE_SSH_USER has an invalid format." >&2
+            exit 1
+          fi
+          if [[ ! "$ORACLE_DEPLOY_PATH" =~ ^/[A-Za-z0-9._/-]+$ || "$ORACLE_DEPLOY_PATH" == *..* ]]; then
+            echo "ORACLE_DEPLOY_PATH must be an absolute dedicated path without parent-directory segments." >&2
+            exit 1
+          fi
+          if [[ ! "$GITHUB_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Unexpected commit SHA format." >&2
+            exit 1
+          fi
+
+      - name: Configure SSH
+        env:
+          ORACLE_SSH_PRIVATE_KEY: ${{ secrets.ORACLE_SSH_PRIVATE_KEY }}
+          ORACLE_SSH_KNOWN_HOSTS: ${{ secrets.ORACLE_SSH_KNOWN_HOSTS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$ORACLE_SSH_PRIVATE_KEY" > "$HOME/.ssh/oracle_vps"
+          printf '%s\n' "$ORACLE_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/oracle_vps" "$HOME/.ssh/known_hosts"
+
+      - name: Deploy the tested main commit
+        env:
+          ORACLE_HOST: ${{ secrets.ORACLE_HOST }}
+          ORACLE_SSH_USER: ${{ secrets.ORACLE_SSH_USER }}
+          ORACLE_DEPLOY_PATH: ${{ secrets.ORACLE_DEPLOY_PATH }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          remote_command="cd '$ORACLE_DEPLOY_PATH' && git fetch --prune origin main && git switch main && git reset --hard '$GITHUB_SHA' && docker compose --env-file deploy/oracle/.env.oracle -f deploy/oracle/compose.yml pull caddy && docker compose --env-file deploy/oracle/.env.oracle -f deploy/oracle/compose.yml up -d --build --remove-orphans"
+          ssh -i "$HOME/.ssh/oracle_vps" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            "$ORACLE_SSH_USER@$ORACLE_HOST" "$remote_command"

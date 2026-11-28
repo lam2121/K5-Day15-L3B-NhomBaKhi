@@ -27,3 +27,7 @@ python scripts/check_agent_scope.py --role lam --base origin/main
 Trong GitHub Actions, mở lượt **CramAI CI/CD** thành công trên `main`, chọn artifact `cramai-<commit>-<lần chạy>`. Ở Linux hoặc Git Bash, kiểm file tải về bằng `sha256sum -c cramai.zip.sha256`. Gói ZIP chứa nội dung đã commit, gồm cả hồ sơ đánh giá, chi phí và tài liệu có mặt tại commit. Job dừng nếu phát hiện file đã track trùng quy tắc ignore.
 
 Gói này dùng để bàn giao bản có thể tải về. Trước khi nộp, đối chiếu yêu cầu của từng checkpoint và dùng đúng commit cùng link repo. [GitHub Actions artifacts](https://docs.github.com/en/actions/tutorials/store-and-share-data).
+
+## Oracle VPS deployment
+
+The main CI pipeline can deploy the exact tested main commit to Oracle after the environment secrets and ORACLE_VPS_DEPLOY_ENABLED repository variable are configured. See [Deploy CramAI to an Oracle Cloud VPS](deploy-oracle-vps.md) for server setup, HTTPS, persistent data, secrets, and rollback guidance.
