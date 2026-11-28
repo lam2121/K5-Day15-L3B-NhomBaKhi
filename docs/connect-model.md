@@ -36,6 +36,20 @@ python -c "import sys; sys.path.insert(0, 'codebase'); from ai import call_model
 
 Khi tên model khác `fake` và cả hai số token dương, ghi mã đó trong bàn giao. Sau khi Hưng ghép workflow và Khiêm thay benchmark mẫu, dùng `python run.py eval --try` để kiểm cả đường đi trước khi chạy lượt 1. Mô phỏng và bảng giá dùng đúng mã model ghi trong lượt đo. [Quickstart checkpoint](../specs/001-cramai/quickstart.md).
 
+## Dùng model thật cho backend web
+
+Backend web dùng chung adapter `codebase/ai.py` và file `.env` ở thư mục gốc repo. Tạo `.env` từ `.env.example`, rồi điền cấu hình provider bạn có quyền dùng, ví dụ:
+
+```dotenv
+MODEL_PROVIDER=anthropic
+MODEL_NAME=claude-haiku-5-5
+API_KEY=<API key của bạn>
+```
+
+Khởi động lại dịch vụ sau khi đổi `.env` để adapter nạp cấu hình. `GET /api/v1/health` trả `mode: live` khi provider không phải `fake`; route này không gọi model và không xác minh key. `POST /api/v1/attempts` mới gọi model và có thể phát sinh phí API. Key chỉ được đọc ở backend, không gửi xuống trình duyệt. Nếu chưa có cấu hình, giữ `MODEL_PROVIDER=fake` để chạy demo offline.
+
+Lượt tạo đề ở web chỉ nhận các passage đã xuất bản từ revision được chọn. Câu trả về được kiểm số lượng, lựa chọn và mã nguồn; nếu thiếu căn cứ API trả `insufficient_evidence`, còn lỗi model trả `upstream_error`.
+
 ## Lỗi thường gặp
 
 | Lỗi | Xử lý |

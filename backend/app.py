@@ -12,15 +12,27 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
-from db import (
-    create_attempt_record,
-    get_published_passages,
-    init_db,
-    list_catalog,
-    session,
-    submit_attempt_tx,
-)
-from grading import GradingError
+from codebase.agent import InsufficientExamEvidence, MODEL_PROVIDER, generate_exam
+if __package__:
+    from .db import (
+        create_attempt_record,
+        get_published_passages,
+        init_db,
+        list_catalog,
+        session,
+        submit_attempt_tx,
+    )
+    from .grading import GradingError
+else:  # Support the legacy `app` import used by local test utilities.
+    from db import (
+        create_attempt_record,
+        get_published_passages,
+        init_db,
+        list_catalog,
+        session,
+        submit_attempt_tx,
+    )
+    from grading import GradingError
 
 _EXAM_ID_PATTERN = r"^(slide-(0[1-9]|1[0-4])|midterm)$"
 _ATTEMPT_TTL = timedelta(minutes=60)
@@ -92,6 +104,22 @@ def _to_public_questions(questions: list[dict]) -> list[dict]:
     ]
 
 
+def _validate_exam_coverage(exam_id: str, questions: list[dict]) -> None:
+    """Fail closed if generated questions do not match the selected exam scope."""
+    expected_count = 14 if exam_id == "midterm" else 5
+    if len(questions) != expected_count:
+        raise GradingError("insufficient_evidence", 422, "Chưa đủ câu hỏi có căn cứ để tạo đề này.")
+
+    if exam_id == "midterm":
+        slide_numbers = [question.get("slide_number") for question in questions]
+        if sorted(slide_numbers) != list(range(1, 15)):
+            raise GradingError("insufficient_evidence", 422, "Chưa đủ căn cứ để tạo đề có đủ 14 bộ slide.")
+    else:
+        requested_slide = int(exam_id.split("-")[1])
+        if any(question.get("slide_number") != requested_slide for question in questions):
+            raise GradingError("upstream_error", 502, "Model trả đề không đúng phạm vi đã chọn.")
+
+
 def create_app(*, db_path: str | Path | None = None, mode: str | None = None) -> FastAPI:
     resolved_db = Path(db_path or os.environ.get("CRAMAI_WEB_DB") or _DEFAULT_DB)
 
@@ -102,9 +130,10 @@ def create_app(*, db_path: str | Path | None = None, mode: str | None = None) ->
 
     app = FastAPI(title="CramAI Exam API", version="1.0.0", lifespan=lifespan)
     app.state.db_path = resolved_db
-    app.state.mode = mode or os.environ.get("MODEL_PROVIDER", "fake").strip().lower() or "fake"
+    configured_mode = "fake" if MODEL_PROVIDER == "fake" else "live"
+    app.state.mode = mode or configured_mode
     if app.state.mode not in {"fake", "live"}:
-        app.state.mode = "live"
+        app.state.mode = configured_mode
 
     @app.exception_handler(GradingError)
     async def handle_grading_error(_: Request, exc: GradingError) -> JSONResponse:
@@ -133,10 +162,20 @@ def create_app(*, db_path: str | Path | None = None, mode: str | None = None) ->
     def create_attempt(body: AttemptRequest) -> dict:
         with session(resolved_db) as conn:
             passages_by_slide = get_published_passages(conn, body.exam_id)
-        questions = _default_fake_generator(body.exam_id, passages_by_slide)
-        expected_count = 14 if body.exam_id == "midterm" else 5
-        if len(questions) != expected_count:
-            raise GradingError("insufficient_evidence", 422, "Chưa đủ căn cứ để tạo đề theo phạm vi này.")
+        if app.state.mode == "fake":
+            questions = _default_fake_generator(body.exam_id, passages_by_slide)
+        else:
+            if MODEL_PROVIDER == "fake":
+                raise GradingError("upstream_error", 503, "Chưa cấu hình model thật cho dịch vụ web.")
+            try:
+                questions = generate_exam(body.exam_id, passages_by_slide)
+            except InsufficientExamEvidence as exc:
+                raise GradingError("insufficient_evidence", 422, str(exc)) from None
+            except RuntimeError as exc:
+                if "HTTP 429" in str(exc):
+                    raise GradingError("busy", 429, "Model đang quá tải. Hãy thử lại sau.") from None
+                raise GradingError("upstream_error", 502, "Model chưa tạo được đề. Hãy thử lại sau.") from None
+        _validate_exam_coverage(body.exam_id, questions)
 
         now = datetime.now(timezone.utc)
         expires_at = now + _ATTEMPT_TTL

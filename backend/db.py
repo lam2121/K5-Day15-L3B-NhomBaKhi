@@ -10,10 +10,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
-from grading import GradingError, grade_submission, normalize_and_validate
+if __package__:
+    from .grading import GradingError, grade_submission, normalize_and_validate
+else:  # Support the legacy top-level `db` import used by local test utilities.
+    from grading import GradingError, grade_submission, normalize_and_validate
 
 _DEFAULT_SEED = Path(__file__).resolve().parent.parent / "data" / "passages.jsonl"
 _DAY_RE = re.compile(r"day(\d+)")
+_LEGACY_SOURCE_ID_RE = re.compile(r"^(day(?:0[1-9]|1[0-4]))-p(\d{3,})-s(\d{2,})$")
 
 _SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS slide_slots (
@@ -189,7 +193,17 @@ def get_published_passages(conn: sqlite3.Connection, exam_id: str) -> dict[int, 
     expected = 14 if target is None else 1
     if len(rows) != expected:
         raise GradingError("exam_unavailable", 409, "Đề chưa mở vì thiếu bộ slide đã xuất bản.")
-    return {r["slide_number"]: json.loads(r["passages_json"]) for r in rows}
+    passages_by_slide = {r["slide_number"]: json.loads(r["passages_json"]) for r in rows}
+    # CP3 seed passages identify day/page/segment only. The web contract also
+    # includes the document index; legacy seeded files contain one PDF per day.
+    # Normalize only the returned copy so stored revisions remain untouched.
+    for passages in passages_by_slide.values():
+        for passage in passages:
+            match = _LEGACY_SOURCE_ID_RE.fullmatch(passage.get("source_id", ""))
+            if match:
+                day_id, page, segment = match.groups()
+                passage["source_id"] = f"{day_id}-d01-p{page}-s{segment}"
+    return passages_by_slide
 
 
 def create_attempt_record(

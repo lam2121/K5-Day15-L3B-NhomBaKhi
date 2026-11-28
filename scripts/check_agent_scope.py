@@ -37,6 +37,9 @@ TASK_SCOPE_OVERRIDES = {
     # One coordinated product change approved by the code owners after CP2.
     "lam": {
         "T028": {"codebase/app.py", "codebase/agent.py"},
+        # The role-hung agent delivered the shared web exam generator for T003;
+        # Lâm integrates it into the backend via T007 on the integration branch.
+        "T003": {"codebase/agent.py"},
         # Group-approved CP4 integration: Lâm copies the measured simulation into
         # Phước Anh's estimate and reconciles the shared slide checklist.
         "T022": {"cost/cost-estimate.md"},
