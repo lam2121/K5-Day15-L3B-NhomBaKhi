@@ -40,3 +40,4 @@ data-btc
 data-btc/
 # PDF gốc, corpus riêng và dữ liệu chưa xử lý nằm ở máy nhóm
 /data-private/
+/deploy/oracle/.env.oracle

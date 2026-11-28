@@ -1,0 +1,13 @@
+{
+    default_sni {$DOMAIN}
+}
+
+{$DOMAIN} {
+    tls {
+        issuer acme {
+            profile shortlived
+        }
+    }
+    encode zstd gzip
+    reverse_proxy app:8000
+}

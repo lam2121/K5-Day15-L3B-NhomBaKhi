@@ -1,0 +1,77 @@
+name: cramai
+
+services:
+  app:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    init: true
+    environment:
+      MODEL_PROVIDER: "${MODEL_PROVIDER:-fake}"
+      MODEL_NAME: "${MODEL_NAME:-}"
+      API_KEY: "${API_KEY:-}"
+      CRAMAI_ADMIN_USER: "${CRAMAI_ADMIN_USER:?Set CRAMAI_ADMIN_USER in deploy/oracle/.env.oracle}"
+      CRAMAI_ADMIN_PASSWORD: "${CRAMAI_ADMIN_PASSWORD:?Set CRAMAI_ADMIN_PASSWORD in deploy/oracle/.env.oracle}"
+      CRAMAI_PUBLIC_ORIGIN: "https://${DOMAIN:?Set DOMAIN in deploy/oracle/.env.oracle}"
+      CRAMAI_WEB_DB: /data/cramai_web.db
+      CRAMAI_DOCUMENT_DIR: /data/slides
+    expose:
+      - "8000"
+    volumes:
+      - cramai_data:/data
+    command:
+      - uvicorn
+      - app:app
+      - --app-dir
+      - backend
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --workers
+      - "1"
+      - --proxy-headers
+      - --forwarded-allow-ips=*
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - web
+    logging:
+      driver: local
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  caddy:
+    image: caddy:2.11.7-alpine
+    restart: unless-stopped
+    init: true
+    environment:
+      DOMAIN: "${DOMAIN:?Set DOMAIN in deploy/oracle/.env.oracle}"
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+    logging:
+      driver: local
+      options:
+        max-size: 10m
+        max-file: "3"
+
+volumes:
+  cramai_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  web:
+    driver: bridge
