@@ -16,9 +16,9 @@ _DEFAULT_SEED = Path(__file__).resolve().parent.parent / "data" / "passages.json
 _DAY_RE = re.compile(r"day(\d+)")
 _PREVIEW_LIMIT = 3
 
-# Display names for the 14 fixed slots, cleaned by hand from the course file
-# names. Days 7-10 have no clear topic in their file names, so they keep a
-# neutral label instead of a guessed one. File names are never shown as titles
+# Display names for the 14 fixed slots, based on the lecture materials. Some
+# source filenames are not descriptive, so titles for those days follow their
+# extracted lecture topics instead. File names are never shown as titles
 # because some contain room codes and lecturers' names.
 SLOT_TITLES = {
     1: "AI & LLM Foundation",
@@ -27,10 +27,10 @@ SLOT_TITLES = {
     4: "ReAct & Agent Loop",
     5: "AI Product Thinking & Requirements",
     6: "Data Engineering: Ingestion & Storage",
-    7: "Bài giảng ngày 7",
-    8: "Bài giảng ngày 8",
-    9: "Bài giảng ngày 9",
-    10: "Bài giảng ngày 10",
+    7: "RAG, Context & Memory",
+    8: "Advanced Retrieval, Grounding & UX",
+    9: "Evaluation & LLM-as-Judge",
+    10: "Project Delivery: PoC to Pilot",
     11: "Guardrails & AI Safety",
     12: "AI SDLC",
     13: "Monitoring, Logging & Observability",
