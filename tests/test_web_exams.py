@@ -17,7 +17,19 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTRACT = json.loads((ROOT / "specs" / "003-cramai-exams" / "contracts" / "openapi.json").read_text(encoding="utf-8"))
-HAS_WEB = all(importlib.util.find_spec(m) for m in ("fastapi", "httpx", "multipart"))
+
+
+def _web_stack_available() -> bool:
+    """True when FastAPI, its TestClient (httpx or httpx2) and multipart parsing all import."""
+    try:
+        import fastapi.testclient  # noqa: F401
+        import multipart  # noqa: F401
+    except (ImportError, RuntimeError):  # Starlette raises RuntimeError when its HTTP client is missing
+        return False
+    return True
+
+
+HAS_WEB = _web_stack_available()
 HAS_PDF = importlib.util.find_spec("pymupdf") is not None
 
 if HAS_WEB:

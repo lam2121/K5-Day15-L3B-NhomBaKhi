@@ -1,0 +1,4 @@
+-r requirements.txt
+# Test-only: FastAPI's TestClient needs httpx (Starlette < 1.0) or httpx2 (Starlette >= 1.0).
+httpx>=0.27.0,<1.0.0
+httpx2>=2.0.0,<3.0.0
