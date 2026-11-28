@@ -7,7 +7,7 @@
 - [ ] T001 **Lâm** tạo khung `backend/`, dependency web riêng, cấu hình SQLite và thư mục dữ liệu ngoài repo. Cả nhóm dùng cùng commit có OpenAPI trước khi mở PR theo vai.
 - [ ] T002 [P] **Khiêm** lập nguồn theo 14 bộ, rà quyền sử dụng và bàn giao tập PDF rút gọn hoặc fixture synthetic trong `data/`. Giữ nguyên bản ghi benchmark đã chốt.
 - [ ] T003 [P] **Hưng** dùng [contract Python](contracts/core.md) xây bộ sinh đề 5/14 câu trong `codebase/agent.py`, giữ `answer(text)`, kiểm đúng một lựa chọn và nguồn từng bộ.
-  - Đã thêm `generate_exam(exam_id, passages_by_slide)` theo contract và giữ `answer(text)`; Lâm đã nối backend live path. Task vẫn chờ review hợp đồng và chạy kiểm tra sau khi có API key.
+  - Đã thêm `generate_exam(exam_id, passages_by_slide)` theo contract và giữ `answer(text)`; backend live path đã gọi thành công một lượt Slide 03 và nhận năm câu hợp lệ. Full contract checks vẫn nằm trong T009.
 
 ## Giai đoạn 2 — US2 · Admin chuẩn bị và xuất bản (P1)
 
@@ -18,7 +18,7 @@
 ## Giai đoạn 3 — US1 · Chọn, làm và chấm đề (P1)
 
 - [ ] T007 [US1] **Lâm** trong `backend/` triển khai `CatalogResponse`, `AttemptResponse`, `SubmissionResponse`, snapshot, thời hạn và chấm điểm. Kiểm đúng số câu và khóa đáp án trước khi trả DTO.
-  - Luồng `POST /api/v1/attempts` đã chọn model thật khi `MODEL_PROVIDER` không phải `fake`, giữ generator giả cho offline mode, kiểm số lượng/độ phủ và chỉ trả câu hỏi cùng phương án trước khi nộp. Chưa có `.env`/API key trong checkout để xác minh cuộc gọi thật; test HTTP vẫn thuộc T009.
+  - Luồng `POST /api/v1/attempts` chọn model thật khi `MODEL_PROVIDER` không phải `fake`, giữ generator giả cho offline mode, kiểm số lượng/độ phủ và chỉ trả câu hỏi cùng phương án trước khi nộp. Một lượt Slide 03 dùng `.env` bị ignore ở checkout gốc trả `mode=live`, năm câu, không lộ đáp án hoặc citations trước khi nộp. Key không được chép vào worktree; kiểm HTTP đầy đủ vẫn thuộc T009.
 - [ ] T008 [P] [US1] **Phước Anh** trong `frontend/student/` làm danh mục, loading, form làm bài và màn hình kết quả. Dùng mẫu `AttemptResponse` và `SubmissionResponse` trước khi ghép backend.
 - [ ] T009 [US1] **Lâm** ghép và thêm `tests/test_web_exams.py`. Kiểm đủ 15 mục, kích hoạt đề giữa kỳ, số câu và phủ đủ bộ, quyền admin, chặn khóa đáp án, nộp trùng, hết hạn, cập nhật slide và lỗi model. Cả nhóm demo hai phạm vi.
 
