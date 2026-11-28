@@ -1,22 +1,30 @@
 """FastAPI service for CramAI web exams and deterministic LMS grading."""
 
+import base64
+import binascii
 import os
+import secrets
+import sys
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from uuid import UUID, uuid4
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, File, Path as PathParam, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from db import (
     create_attempt_record,
+    get_admin_detail,
     get_published_passages,
     init_db,
+    list_admin_slots,
     list_catalog,
+    publish_draft,
+    save_draft,
     session,
     submit_attempt_tx,
 )
@@ -25,6 +33,14 @@ from grading import GradingError
 _EXAM_ID_PATTERN = r"^(slide-(0[1-9]|1[0-4])|midterm)$"
 _ATTEMPT_TTL = timedelta(minutes=60)
 _DEFAULT_DB = Path(__file__).resolve().parent / "cramai_web.db"
+_CODEBASE_DIR = Path(__file__).resolve().parent.parent / "codebase"
+
+# Admin upload limits (contract: PUT /admin/slides/{n}/draft).
+_MAX_FILES = 5
+_MAX_FILE_BYTES = 10 * 1024 * 1024
+_MAX_TOTAL_BYTES = 25 * 1024 * 1024
+_MULTIPART_OVERHEAD = 1024 * 1024
+_ADMIN_PREFIXES = ("/admin", "/api/v1/admin")
 
 
 class AttemptRequest(BaseModel):
@@ -42,6 +58,35 @@ class SubmissionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     attempt_id: UUID
     answers: list[AnswerItem]
+
+
+class PublishRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    revision_id: UUID
+
+
+def _is_admin_path(path: str) -> bool:
+    return any(path == prefix or path.startswith(prefix + "/") for prefix in _ADMIN_PREFIXES)
+
+
+def _basic_credentials(header: str | None) -> tuple[str, str] | None:
+    if not header or not header.lower().startswith("basic "):
+        return None
+    try:
+        decoded = base64.b64decode(header[6:].strip(), validate=True).decode("utf-8")
+    except (binascii.Error, UnicodeDecodeError):
+        return None
+    user, sep, password = decoded.partition(":")
+    return (user, password) if sep else None
+
+
+def _extract_pdf_passages():
+    """Khiem's extractor lives in codebase/tools.py; the container puts codebase/ on PYTHONPATH."""
+    if str(_CODEBASE_DIR) not in sys.path:
+        sys.path.append(str(_CODEBASE_DIR))
+    from tools import extract_pdf_passages
+
+    return extract_pdf_passages
 
 
 def _error_json(status_code: int, code: str, message: str, request_id: str | None = None) -> JSONResponse:
@@ -92,8 +137,20 @@ def _to_public_questions(questions: list[dict]) -> list[dict]:
     ]
 
 
-def create_app(*, db_path: str | Path | None = None, mode: str | None = None) -> FastAPI:
+def create_app(
+    *,
+    db_path: str | Path | None = None,
+    mode: str | None = None,
+    admin_user: str | None = None,
+    admin_password: str | None = None,
+    public_origin: str | None = None,
+) -> FastAPI:
     resolved_db = Path(db_path or os.environ.get("CRAMAI_WEB_DB") or _DEFAULT_DB)
+    # Admin credentials come from service configuration only. Without both
+    # values the admin page and API stay closed (fail closed).
+    admin_user = admin_user if admin_user is not None else os.environ.get("CRAMAI_ADMIN_USER", "")
+    admin_password = admin_password if admin_password is not None else os.environ.get("CRAMAI_ADMIN_PASSWORD", "")
+    public_origin = (public_origin if public_origin is not None else os.environ.get("CRAMAI_PUBLIC_ORIGIN", "")).rstrip("/")
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
@@ -114,7 +171,36 @@ def create_app(*, db_path: str | Path | None = None, mode: str | None = None) ->
     async def handle_validation_error(request: Request, _: RequestValidationError) -> JSONResponse:
         if request.url.path.endswith("/submissions"):
             return _error_json(422, "invalid_answers", "Hãy chọn đúng một đáp án cho mỗi câu.")
+        if request.url.path.startswith("/api/v1/admin/"):
+            return _error_json(422, "invalid_input", "Yêu cầu admin không hợp lệ. Chỉ có vị trí 01–14.")
         return _error_json(400, "invalid_input", "Dữ liệu đầu vào không hợp lệ.")
+
+    @app.middleware("http")
+    async def guard_admin(request: Request, call_next):
+        """HTTP Basic for /admin/ and /api/v1/admin/*, same-origin writes, and an early body-size cap."""
+        path = request.url.path
+        if not _is_admin_path(path):
+            return await call_next(request)
+
+        creds = _basic_credentials(request.headers.get("authorization"))
+        ok = bool(admin_user and admin_password and creds) and (
+            secrets.compare_digest(creds[0].encode(), admin_user.encode())
+            & secrets.compare_digest(creds[1].encode(), admin_password.encode())
+        )
+        if not ok:
+            response = _error_json(401, "unauthorized", "Cần đăng nhập admin.")
+            response.headers["WWW-Authenticate"] = 'Basic realm="CramAI admin", charset="UTF-8"'
+            return response
+
+        if request.method not in ("GET", "HEAD", "OPTIONS"):
+            origin = request.headers.get("origin")
+            expected = public_origin or f"{request.url.scheme}://{request.headers.get('host', '')}"
+            if origin and origin.rstrip("/") != expected:
+                return _error_json(403, "forbidden_origin", "Yêu cầu khác nguồn không được phép.")
+            length = request.headers.get("content-length")
+            if length and length.isdigit() and int(length) > _MAX_TOTAL_BYTES + _MULTIPART_OVERHEAD:
+                return _error_json(413, "too_large", "Mỗi file tối đa 10 MB, tổng tối đa 25 MB.")
+        return await call_next(request)
 
     @app.exception_handler(Exception)
     async def handle_unexpected_error(_: Request, __: Exception) -> JSONResponse:
@@ -172,6 +258,58 @@ def create_app(*, db_path: str | Path | None = None, mode: str | None = None) ->
             "attempt_id": str(body.attempt_id),
             **scored,
         }
+
+    # ------------------------------------------------------------ admin (T005)
+
+    @app.get("/api/v1/admin/slides")
+    def admin_list() -> dict:
+        with session(resolved_db) as conn:
+            return {"slides": list_admin_slots(conn)}
+
+    @app.get("/api/v1/admin/slides/{slide_number}")
+    def admin_detail(slide_number: int = PathParam(ge=1, le=14)) -> dict:
+        with session(resolved_db) as conn:
+            return get_admin_detail(conn, slide_number)
+
+    @app.put("/api/v1/admin/slides/{slide_number}/draft")
+    async def admin_upload_draft(
+        slide_number: int = PathParam(ge=1, le=14),
+        files: list[UploadFile] = File(...),
+    ) -> dict:
+        if not 1 <= len(files) <= _MAX_FILES:
+            raise GradingError("invalid_input", 422, "Chọn từ 1 đến 5 file PDF.")
+        payload: list[tuple[str, bytes]] = []
+        total = 0
+        for upload in files:
+            name = (upload.filename or "").strip()
+            data = await upload.read(_MAX_FILE_BYTES + 1)
+            if len(data) > _MAX_FILE_BYTES:
+                raise GradingError("too_large", 413, "Mỗi file tối đa 10 MB.")
+            total += len(data)
+            if total > _MAX_TOTAL_BYTES:
+                raise GradingError("too_large", 413, "Tổng dung lượng tối đa 25 MB.")
+            if not name.lower().endswith(".pdf") or not data.startswith(b"%PDF-"):
+                raise GradingError("unsupported_file", 415, "Chỉ hỗ trợ PDF.")
+            payload.append((name, data))
+
+        try:
+            extracted = _extract_pdf_passages()(payload, slide_number)
+        except ImportError:
+            raise GradingError("internal_error", 500, "Máy chủ thiếu thư viện đọc PDF.") from None
+        except Exception as exc:  # broken, locked, image-only or oversized PDF
+            raise GradingError("invalid_document", 422, f"PDF bị lỗi, bị khóa hoặc thiếu lớp văn bản. {exc}") from None
+        if not extracted["passages"]:
+            raise GradingError("invalid_document", 422, "PDF thiếu lớp văn bản.")
+
+        with session(resolved_db) as conn:
+            save_draft(conn, slide_number=slide_number, documents=extracted["documents"], passages=extracted["passages"])
+            return get_admin_detail(conn, slide_number)
+
+    @app.post("/api/v1/admin/slides/{slide_number}/publish")
+    def admin_publish(body: PublishRequest, slide_number: int = PathParam(ge=1, le=14)) -> dict:
+        with session(resolved_db) as conn:
+            publish_draft(conn, slide_number=slide_number, revision_id=str(body.revision_id))
+            return get_admin_detail(conn, slide_number)
 
     # Mount static frontend if directory exists (unified local fullstack / production container)
     frontend_dir = Path(__file__).resolve().parent.parent / "frontend"

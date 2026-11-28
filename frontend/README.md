@@ -56,7 +56,9 @@ In the admin mock, Slide 03 has a draft waiting to be published and Slide 07 has
 
 ## Integration notes for the backend (Lâm)
 
-- **Student page tested against `backend/app.py` (main `b39e64a`, fake mode) on 2026-11-28** through Playwright: `GET /api/v1/catalog` 200, `POST /api/v1/attempts` 201, `POST /api/v1/submissions` 200, no console errors. The result screen listed citations with file name, page and source id. The backend has no `/api/v1/admin/*` routes yet, so the admin page has only been tested with the mock.
+- **Student page tested against `backend/app.py` (main `b39e64a`, fake mode) on 2026-11-28** through Playwright: `GET /api/v1/catalog` 200, `POST /api/v1/attempts` 201, `POST /api/v1/submissions` 200, no console errors. The result screen listed citations with file name, page and source id.
+- **Admin page tested against the admin API (T005, branch `cramai/phuoc-anh-admin-api`) on 2026-11-28** through Playwright with HTTP Basic: list 200, detail 200, an image-only PDF rejected with 422 `invalid_document`, a text PDF uploaded as a draft with its excerpts, then published 200. Without credentials the API answers 401.
+- The backend reads admin credentials from `CRAMAI_ADMIN_USER` and `CRAMAI_ADMIN_PASSWORD`. If either is empty, `/admin/` and `/api/v1/admin/*` stay closed. Writes from another `Origin` are refused with 403; set `CRAMAI_PUBLIC_ORIGIN` (for example `https://cramai.example`) when the service runs behind a proxy.
 - Error bodies must follow `ErrorResponse`. The UI maps `error.code` to Vietnamese copy with a recovery step. A 429 from the proxy without JSON is treated as `busy`, and a 413 without JSON as "file too large".
 - The admin upload sends `PUT /api/v1/admin/slides/{n}/draft` as multipart with repeated `files` fields. Before sending, the page checks: at most 5 files, at most 10 MiB each, at most 25 MiB in total.
 - The student page keeps the attempt in `sessionStorage` (`cramai.student.v1`) for the current tab only. A reload resumes the quiz or shows the result again. Re-sending the same answers after a network error relies on submission being idempotent.
