@@ -539,7 +539,7 @@ class InsufficientExamEvidence(ValueError):
 
 
 _WEB_EXAM_ID = re.compile(r"^(slide-(0[1-9]|1[0-4])|midterm)$")
-_WEB_SOURCE_ID = re.compile(r"^day(0[1-9]|1[0-4])-d([0-9]{2,})-p([0-9]{3,})-s([0-9]{2,})$")
+_WEB_SOURCE_ID = re.compile(r"^day(0[1-9]|1[0-4])(?:-d([0-9]{2,}))?-p([0-9]{3,})-s([0-9]{2,})$")
 _WEB_ANSWER_IDS = ("A", "B", "C", "D")
 _WEB_QUESTION_LIMIT = 5
 _MIDTERM_QUESTION_LIMIT = 14
@@ -591,10 +591,13 @@ def _web_passage_set(
             source_id = raw.get("source_id")
             match = _WEB_SOURCE_ID.fullmatch(source_id) if isinstance(source_id, str) else None
             if match is None:
-                # Keep the source identity untouched. Legacy IDs without the
-                # document component are not valid citations in web contract v1.
+                # Keep the original source identity untouched. Older published
+                # revisions omit the document component and represent document 1.
                 continue
-            source_slide, document_index, page_from_id, passage_index = map(int, match.groups())
+            source_slide = int(match.group(1))
+            document_index = int(match.group(2) or "1")
+            page_from_id = int(match.group(3))
+            passage_index = int(match.group(4))
             file_name, page, text = raw.get("file_name"), raw.get("page"), raw.get("text")
             if source_slide != slide_number or document_index < 1 or passage_index < 1:
                 continue

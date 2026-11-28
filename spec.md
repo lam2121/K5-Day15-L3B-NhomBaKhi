@@ -178,6 +178,7 @@ Mỗi người sửa file thuộc vai của mình và bàn giao thay đổi file
 | 28/11 · 00:37 | Chạy lượt 2 trên cùng 24 câu với `claude-haiku-5-5`: 22/24 (91,7%), 0 lỗi kỹ thuật và 63/63 trích dẫn khớp trace khi đối chiếu. | T019/T021; kết quả, lỗi B05/B16 và metric phủ nhiều ngày 5/7 (71,4%) được ghi ở [báo cáo](eval/report.md). Chuẩn và metric CP2 không đổi. |
 | 28/11 · 01:01 | Chạy mô phỏng 50 phiên và hoàn thiện bảng chi phí, gồm chi phí / task thành công cùng ba kịch bản. | T022; Haiku $7.42/tháng ở kịch bản cơ sở, $0.0158/người/tháng. Sonnet và Gemini là ước tính từ lượng token Haiku. |
 | 28/11 | Render, rà và xuất 8 trang thành `demo-slides.pdf`; ghi dàn nội dung và người nói dự kiến trong `slides/outline.md`. | T024; số liệu đã đối chiếu với bằng chứng, eval và cost. PDF là bản raster; khuyến nghị iterate dựa trên độ phủ nhiều ngày 71,4% cần nhóm xác nhận và tập demo. Lâm sẽ tự thực hiện video CP4. |
+| 28/11 | Cho phép bộ tạo đề dùng cả mã nguồn citation mới và mã legacy của các revision PDF đã xuất bản trước đây; giữ nguyên ID nguồn gốc. | Lỗi tạo đề Slide 01: 20 passage trong revision admin đã xuất bản dùng `dayNN-pNNN-sNN`, trong khi validator chỉ nhận `dayNN-dNN-pNNN-sNN` nên loại hết nguồn trước khi gọi model. |
 
 **Sau CP4 (đến 23:59 Thứ Bảy 28/11)** (sửa theo góp ý — không sửa chuẩn "đạt", câu thử, số bằng chứng, kết quả các lượt đã chạy)
 

@@ -5,7 +5,7 @@ HTTP dùng [OpenAPI](openapi.json). CLI, eval và simulate tiếp tục dùng [h
 ## Hưng và Khiêm
 
 - Khiêm bàn giao hàm `extract_pdf_passages(files, slide_number)` trong `codebase/tools.py`. Đầu vào là các file do backend đã kiểm giới hạn và vị trí admin đã chọn. Đầu ra gồm tên hiển thị, số trang và các `SlidePassage` của vị trí đó. Không ghi DB hoặc xuất bản từ hàm này.
-- Chuẩn mã đoạn `dayNN-dNN-pNNN-sNN` theo bộ slide, thứ tự PDF trong revision, trang vật lý PDF bắt đầu từ 1 và thứ tự đoạn trong trang. Ví dụ `day03-d01-p002-s01`. Metadata đến từ bộ trích xuất.
+- Mã mới dùng chuẩn `dayNN-dNN-pNNN-sNN` theo bộ slide, thứ tự PDF trong revision, trang vật lý PDF bắt đầu từ 1 và thứ tự đoạn trong trang. Ví dụ `day03-d01-p002-s01`. Để dùng tiếp revision admin đã xuất bản từ phiên bản cũ, backend cũng chấp nhận mã legacy `dayNN-pNNN-sNN` như tài liệu thứ nhất; giữ nguyên mã này trong citation và không sinh mã legacy cho PDF upload mới.
 - Hưng bàn giao `generate_exam(exam_id, passages)` trong `codebase/agent.py`. Backend truyền các đoạn từ đúng revision đã xuất bản. Hàm trả danh sách `ExamQuestion` đã kiểm, hoặc báo thiếu căn cứ. Lỗi provider được truyền để backend ánh xạ thành lỗi dịch vụ.
 
 ## Hưng và Lâm
