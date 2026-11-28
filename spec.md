@@ -185,4 +185,4 @@ Mỗi người sửa file thuộc vai của mình và bàn giao thay đổi file
 
 | Thời điểm | Đổi gì | Vì sao |
 |---|---|---|
-|  |  |  |
+| 28/11 | Tăng giới hạn PDF Admin lên 20 MiB/file và 50 MiB/lần upload. | Cho phép tải lên PDF lớn hơn để xử lý tài liệu bằng Vision; vẫn giới hạn tối đa 5 file mỗi lần. |
