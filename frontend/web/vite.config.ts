@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     root: app ? resolve(__dirname, app) : __dirname,
-    base: './',
+    base: app === 'admin' ? '/admin/' : './',
     publicDir: false,
     build: {
       outDir: app ? resolve(__dirname, '..', app) : resolve(__dirname, 'dist'),

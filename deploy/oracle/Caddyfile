@@ -9,5 +9,13 @@
         }
     }
     encode zstd gzip
-    reverse_proxy app:8000
+    route {
+        @admin_trailing_slash path /admin/
+        redir @admin_trailing_slash /admin 308
+
+        @admin_root path /admin
+        rewrite @admin_root /admin/
+
+        reverse_proxy app:8000
+    }
 }
